@@ -44,6 +44,8 @@ export class ProxyService {
     delete cleanedHeaders['connection'];
     delete cleanedHeaders['cookie']; 
     delete cleanedHeaders['content-length'];
+    delete cleanedHeaders['origin']; // Fix "Invalid CORS request" 403 error
+    delete cleanedHeaders['referer'];
 
     // 1. Check for sessionId in cookies to attach Authorization header
     if (sessionId) {
