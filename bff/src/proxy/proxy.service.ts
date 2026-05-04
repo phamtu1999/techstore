@@ -125,15 +125,19 @@ export class ProxyService {
     }
 
     try {
-      this.logger.log(`[Proxy] Forwarding ${method} ${path} to ${url}`);
+      this.logger.log(`[Proxy] Forwarding ${method} ${path} -> ${url}`);
       const response = await firstValueFrom(this.httpService.request(config));
+      this.logger.log(`[Proxy] Backend responded: ${response.status} for ${path}`);
       return {
         status: response.status,
         data: response.data,
         headers: response.headers,
       };
     } catch (error) {
-      this.logger.error(`Error forwarding request to backend: ${error.message}`);
+      this.logger.error(`[Proxy] Critical error forwarding to ${url}: ${error.message}`);
+      if (error.response) {
+        this.logger.error(`[Proxy] Backend error response: ${error.response.status} - ${JSON.stringify(error.response.data)}`);
+      }
       throw error;
     }
   }
