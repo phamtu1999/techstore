@@ -27,6 +27,15 @@ async function bootstrap() {
   });
 
   const port = process.env.PORT || 3000;
+  
+  // 🛡️ Khiên bảo vệ: Ngăn chặn tuyệt đối việc sập App do lỗi Redis hoặc lỗi không mong muốn
+  process.on('uncaughtException', (err) => {
+    console.error('[Critical] Uncaught Exception:', err.message);
+  });
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error('[Critical] Unhandled Rejection at:', promise, 'reason:', reason);
+  });
+
   await app.listen(port, '0.0.0.0');
   console.log(`BFF is listening on port: ${port}`);
 }
