@@ -45,8 +45,8 @@ import { AuthModule } from './auth/auth.module';
             ...redisConfig,
             ...redisOptions,
             ttl: 3600000,
-            onClientCreated: (client) => {
-              client.on('error', (err) => {
+            onClientCreated: (client: any) => {
+              client.on('error', (err: any) => {
                 console.warn('[Redis] Client Error:', err.message);
               });
             }
