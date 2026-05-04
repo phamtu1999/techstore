@@ -37,45 +37,26 @@ import { AuthModule } from './auth/auth.module';
         };
         
         try {
-          const commonOptions = {
+          const redisConfig: any = url ? { url } : { host, port: Number(port), password };
+          
+          console.log(`[Redis] Attempting to connect to: ${host}:${port}...`);
+          
+          const store = await redisStore({
+            ...redisConfig,
             ...redisOptions,
             ttl: 3600000,
-            // ⚠️ Quan trọng: Bắt lỗi của Redis client để không làm sập tiến trình Node.js
-            onClientCreated: (client: any) => {
-              client.on('error', (err: any) => {
-                console.warn('[Redis] Connection Error:', err.message);
+            onClientCreated: (client) => {
+              client.on('error', (err) => {
+                console.warn('[Redis] Client Error:', err.message);
               });
             }
-          };
+          });
 
-          if (url) {
-            console.log(`[Redis] Connecting to BFF Cache using URL...`);
-            return {
-              store: await redisStore({
-                url: url,
-                ...commonOptions,
-              })
-            };
-          }
-
-          if (host && host !== 'localhost' && host !== '127.0.0.1') {
-            console.log(`[Redis] Connecting BFF Cache via host ${host}:${port}...`);
-            return {
-              store: await redisStore({
-                host,
-                port: Number(port),
-                password,
-                ...commonOptions,
-              })
-            };
-          }
+          return { store };
         } catch (e) {
-          console.error('[Redis] Failed to initialize Redis store:', e.message);
+          console.error('[Redis] Connection failed, switching to In-Memory:', e.message);
         }
 
-        console.warn(
-          '[Redis] Falling back to in-memory cache. Sessions and cache will reset on restart.',
-        );
         return {
           ttl: 3600000,
         };
