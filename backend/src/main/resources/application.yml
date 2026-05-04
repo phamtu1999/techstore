@@ -62,6 +62,7 @@ spring:
 
     # ✅ Redis - thêm timeout và SSL cho Railway Redis
     redis:
+      url: ${REDIS_URL:${REDIS_URI:}}
       host: ${REDISHOST:${REDIS_HOST:localhost}}
       port: ${REDISPORT:${REDIS_PORT:6379}}
       password: ${REDISPASSWORD:${REDIS_PASSWORD:}}
