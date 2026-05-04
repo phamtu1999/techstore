@@ -20,24 +20,25 @@ import { AuthModule } from './auth/auth.module';
       isGlobal: true,
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
-        const url = configService.get('REDIS_URL');
-        const host = configService.get('REDIS_HOST');
-        const port = configService.get('REDIS_PORT', 6379);
-        const password = configService.get('REDIS_PASSWORD');
+        const url = configService.get('REDIS_URL') || configService.get('REDIS_URI');
+        const host = configService.get('REDISHOST') || configService.get('REDIS_HOST') || 'localhost';
+        const port = configService.get('REDISPORT') || configService.get('REDIS_PORT') || 6379;
+        const password = configService.get('REDISPASSWORD') || configService.get('REDIS_PASSWORD');
         
         const redisOptions = {
           enableOfflineQueue: false,
-          connectTimeout: 10000,
-          maxRetriesPerRequest: 0, // Critical for avoiding Unhandled Error Event in some scenarios
+          connectTimeout: 5000, // Giảm timeout xuống để fail nhanh hơn
+          maxRetriesPerRequest: 0,
           retryStrategy: (times: number) => {
-            const delay = Math.min(times * 100, 3000);
-            return delay;
+            // Chỉ retry tối đa 3 lần khi khởi động để tránh treo app
+            if (times > 3) return null; 
+            return Math.min(times * 200, 1000);
           },
         };
         
         try {
           if (url) {
-            console.log(`[Redis] Connecting using URL...`);
+            console.log(`[Redis] Connecting to BFF Cache using URL...`);
             return {
               store: await redisStore({
                 url: url,
@@ -48,11 +49,11 @@ import { AuthModule } from './auth/auth.module';
           }
 
           if (host && host !== 'localhost' && host !== '127.0.0.1') {
-            console.log(`[Redis] Connecting via host/port ${host}:${port}...`);
+            console.log(`[Redis] Connecting BFF Cache via host ${host}:${port}...`);
             return {
               store: await redisStore({
                 host,
-                port,
+                port: Number(port),
                 password,
                 ...redisOptions,
                 ttl: 3600000,
