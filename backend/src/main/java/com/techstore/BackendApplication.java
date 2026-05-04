@@ -67,9 +67,11 @@ public class BackendApplication {
 		return args -> {
 			try (RedisConnection connection = connectionFactory.getConnection()) {
 				connection.serverCommands().flushDb();
-				System.out.println("✅ DEPLOYMENT: Redis cache flushed successfully via ConnectionFactory.");
+				System.out.println("✅ DEPLOYMENT: Redis cache flushed successfully.");
 			} catch (Exception e) {
-				System.err.println("❌ DEPLOYMENT: Failed to flush Redis: " + e.getMessage());
+				// ⚠️ Không crash app - Redis có thể chưa sẵn sàng lúc khởi động
+				System.err.println("⚠️ DEPLOYMENT: Redis not available, skipping cache flush. Reason: " + e.getMessage());
+				System.err.println("   App will continue running. Redis will connect when available.");
 			}
 		};
 	}
