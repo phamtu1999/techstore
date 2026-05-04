@@ -38,7 +38,7 @@ const menuItems: MenuItem[] = [
   { path: '/admin/livestreams', icon: LayoutDashboard, label: 'Livestreams', requiredRoles: ['ROLE_STAFF', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
   { path: '/admin/users', icon: Users, label: 'Người dùng', requiredRoles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
   { path: '/admin/logs', icon: LayoutDashboard, label: 'Nhật ký', requiredRoles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
-  { path: '/admin/settings', icon: Settings, label: 'Cài đặt', requiredRoles: ['ROLE_SUPER_ADMIN'] },
+  { path: '/admin/settings', icon: Settings, label: 'Cài đặt', requiredRoles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
 ]
 
 const Sidebar = ({ isOpen, onClose, onLogout }: SidebarProps) => {
