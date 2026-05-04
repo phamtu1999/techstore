@@ -139,7 +139,7 @@ export class ProxyService {
       const isMutation = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method.toUpperCase());
       if (isMutation && response.status >= 200 && response.status < 300) {
         this.logger.log(`[Proxy] Mutation detected on ${path}. Invalidating entire cache for consistency.`);
-        await this.cacheManager.reset();
+        await (this.cacheManager as any).reset();
       }
 
       return {
