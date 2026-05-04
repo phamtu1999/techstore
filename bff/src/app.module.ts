@@ -37,13 +37,23 @@ import { AuthModule } from './auth/auth.module';
         };
         
         try {
+          const commonOptions = {
+            ...redisOptions,
+            ttl: 3600000,
+            // ⚠️ Quan trọng: Bắt lỗi của Redis client để không làm sập tiến trình Node.js
+            onClientCreated: (client) => {
+              client.on('error', (err) => {
+                console.warn('[Redis] Connection Error:', err.message);
+              });
+            }
+          };
+
           if (url) {
             console.log(`[Redis] Connecting to BFF Cache using URL...`);
             return {
               store: await redisStore({
                 url: url,
-                ...redisOptions,
-                ttl: 3600000,
+                ...commonOptions,
               })
             };
           }
@@ -55,8 +65,7 @@ import { AuthModule } from './auth/auth.module';
                 host,
                 port: Number(port),
                 password,
-                ...redisOptions,
-                ttl: 3600000,
+                ...commonOptions,
               })
             };
           }
