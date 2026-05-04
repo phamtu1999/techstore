@@ -40,10 +40,14 @@ export class ProxyController {
       }
     }
 
+    // Nếu là multipart (upload file), gửi raw req để Axios xử lý dưới dạng stream
+    const isMultipart = (headers['content-type'] as string)?.includes('multipart/form-data');
+    const data = isMultipart ? req : req.body;
+
     let response = await this.proxyService.forward(
       req.method,
       path,
-      req.body,
+      data,
       headers,
       req.query,
     );
@@ -59,7 +63,7 @@ export class ProxyController {
         response = await this.proxyService.forward(
           req.method,
           path,
-          req.body,
+          data,
           headers,
           req.query,
         );

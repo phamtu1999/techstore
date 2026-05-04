@@ -41,9 +41,13 @@ export class ProxyService {
     // Clean sensitive or conflicting headers
     const cleanedHeaders = { ...headers };
     delete cleanedHeaders['host'];
-    delete cleanedHeaders['connection'];
     delete cleanedHeaders['cookie']; 
-    delete cleanedHeaders['content-length'];
+    
+    // Chỉ xóa content-length nếu không phải upload file (Multipart)
+    if (!cleanedHeaders['content-type']?.includes('multipart/form-data')) {
+      delete cleanedHeaders['content-length'];
+    }
+    
     delete cleanedHeaders['origin']; // Fix "Invalid CORS request" 403 error
     delete cleanedHeaders['referer'];
 
