@@ -134,6 +134,14 @@ export class ProxyService {
       this.logger.log(`[Proxy] Forwarding ${method} ${path} -> ${url}`);
       const response = await firstValueFrom(this.httpService.request(config));
       this.logger.log(`[Proxy] Backend responded: ${response.status} for ${path}`);
+
+      // Nếu là lệnh thay đổi dữ liệu (POST, PUT, DELETE, PATCH) thành công, xóa sạch cache
+      const isMutation = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method.toUpperCase());
+      if (isMutation && response.status >= 200 && response.status < 300) {
+        this.logger.log(`[Proxy] Mutation detected on ${path}. Invalidating entire cache for consistency.`);
+        await this.cacheManager.reset();
+      }
+
       return {
         status: response.status,
         data: response.data,
