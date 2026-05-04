@@ -14,7 +14,7 @@ export class ProxyController {
     private readonly authService: AuthService,
   ) {}
 
-  @All(':path*')
+  @All('*')
   async proxy(@Req() req: Request, @Res() res: Response) {
     const path = req.path;
     
