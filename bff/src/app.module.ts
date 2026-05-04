@@ -41,8 +41,8 @@ import { AuthModule } from './auth/auth.module';
             ...redisOptions,
             ttl: 3600000,
             // ⚠️ Quan trọng: Bắt lỗi của Redis client để không làm sập tiến trình Node.js
-            onClientCreated: (client) => {
-              client.on('error', (err) => {
+            onClientCreated: (client: any) => {
+              client.on('error', (err: any) => {
                 console.warn('[Redis] Connection Error:', err.message);
               });
             }
