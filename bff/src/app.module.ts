@@ -21,11 +21,7 @@ import { AuthModule } from './auth/auth.module';
       isGlobal: true,
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
-        const url = configService.get('REDIS_URL') || configService.get('REDIS_URI');
-        const host = configService.get('REDISHOST') || configService.get('REDIS_HOST') || 'localhost';
-        const port = configService.get('REDISPORT') || configService.get('REDIS_PORT') || 6379;
-        const password = configService.get('REDISPASSWORD') || configService.get('REDIS_PASSWORD');
-        
+        const redisUrl = configService.get<string>('REDIS_URL') || configService.get<string>('REDIS_URI');
         const redisOptions = {
           enableOfflineQueue: false,
           connectTimeout: 5000,
@@ -37,11 +33,13 @@ import { AuthModule } from './auth/auth.module';
         };
         
         try {
-          const redisConfig: any = url ? { url } : { host, port: Number(port), password };
-          console.log(`[Redis] Re-enabling Redis for: ${host}:${port}...`);
+          if (!redisUrl) {
+            throw new Error('REDIS_URL (or REDIS_URI) is required');
+          }
+
+          console.log('[Redis] Re-enabling Redis from REDIS_URL...');
           
-          const client = new Redis({
-            ...redisConfig,
+          const client = new Redis(redisUrl, {
             ...redisOptions,
           });
 
@@ -55,7 +53,7 @@ import { AuthModule } from './auth/auth.module';
           });
 
           return { store };
-        } catch (e) {
+        } catch (e: any) {
           console.error('[Redis] Re-enable failed, using In-memory:', e.message);
         }
 
