@@ -1,5 +1,10 @@
 import api from '../utils/axios'
 
+const normalizeBaseUrl = (url) => {
+  if (!url) return ''
+  return url.trim().replace(/\/+$/, '').replace(/\/api\/v1$/, '')
+}
+
 export const authAPI = {
   login: (credentials) => api.post('/auth/authenticate', credentials),
   register: (userData) => api.post('/auth/register', userData),
@@ -7,12 +12,8 @@ export const authAPI = {
   resetPassword: (data) => api.post('/auth/password/reset', data),
   verifyPassword: (password) => api.post('/auth/password/verify', { password }),
   googleLogin: () => {
-    const envUrl = import.meta.env.VITE_API_URL;
-    const baseUrl = envUrl
-      ? envUrl.replace(/\/api\/v1\/?$/, '')
-      : 'http://localhost:3000';
-
-    const url = baseUrl.endsWith('/') ? `${baseUrl}api/v1/auth/google` : `${baseUrl}/api/v1/auth/google`;
-    window.location.href = url;
+    const baseUrl = normalizeBaseUrl(import.meta.env.VITE_API_URL || 'http://localhost:3000')
+    const url = `${baseUrl}/api/v1/auth/google`
+    window.location.href = url
   },
 }

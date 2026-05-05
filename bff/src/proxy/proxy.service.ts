@@ -20,11 +20,11 @@ export class ProxyService {
     @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
   ) {
-    let url = this.configService.get<string>('BACKEND_URL') || 'http://localhost:8081';
-    if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
-      url = `https://${url}`;
-    }
-    this.backendUrl = url;
+    const rawUrl = this.configService.get<string>('BACKEND_URL') || 'http://localhost:8081';
+    const normalizedUrl = rawUrl.trim().replace(/\/+$/, '');
+    this.backendUrl = normalizedUrl.startsWith('http://') || normalizedUrl.startsWith('https://')
+      ? normalizedUrl
+      : `https://${normalizedUrl}`;
     this.logger.log(`ProxyService initialized with backendUrl: ${this.backendUrl}`);
   }
 

@@ -1,10 +1,15 @@
 import axios from 'axios'
 
-const getBaseURL = () => {
-  const envUrl = import.meta.env.VITE_API_URL;
-  if (envUrl) return envUrl.endsWith('/') ? `${envUrl}api/v1` : `${envUrl}/api/v1`;
+const normalizeBaseUrl = (url) => {
+  if (!url) return ''
+  return url.trim().replace(/\/+$/, '')
+}
 
-  return 'http://localhost:3000/api/v1';
+const getBaseURL = () => {
+  const envUrl = normalizeBaseUrl(import.meta.env.VITE_API_URL)
+  if (envUrl) return `${envUrl}/api/v1`
+
+  return 'http://localhost:3000/api/v1'
 }
 
 const api = axios.create({
