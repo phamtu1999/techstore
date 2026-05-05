@@ -8,6 +8,7 @@ import Toast from '../components/Toast'
 import ReviewList from '../components/ReviewList'
 import ReviewForm from '../components/ReviewForm'
 import ProductCard from '../components/ProductCard'
+import WishlistButton from '../components/WishlistButton'
 import { addToRecentlyViewed } from '../components/RecentlyViewed'
 import {
   getProductGalleryImages,
@@ -373,17 +374,25 @@ const ProductDetail = () => {
                </button>
             </div>
 
-            <button
-              onClick={async () => {
-                await handleAddToCart()
-                if (!isCartLoading) navigate('/checkout')
-              }}
-              disabled={stockQuantity === 0 || isCartLoading}
-              className="w-full bg-primary-MAIN h-[64px] sm:h-[72px] rounded-2xl flex flex-col items-center justify-center text-white shadow-2xl shadow-primary-500/30 hover:shadow-primary-500/50 hover:scale-[1.01] active:scale-95 transition-all disabled:opacity-50 disabled:grayscale no-hover-scale"
-            >
-              <span className="font-black text-lg sm:text-xl tracking-wide">MUA NGAY</span>
-              <span className="text-[10px] font-bold opacity-80 uppercase text-center px-2">Giao hàng tận nơi hoặc Nhận tại cửa hàng</span>
-            </button>
+            <div className="flex gap-4">
+              <button
+                onClick={async () => {
+                  await handleAddToCart()
+                  if (!isCartLoading) navigate('/checkout')
+                }}
+                disabled={stockQuantity === 0 || isCartLoading}
+                className="flex-1 bg-primary-MAIN h-[64px] sm:h-[72px] rounded-2xl flex flex-col items-center justify-center text-white shadow-2xl shadow-primary-500/30 hover:shadow-primary-500/50 hover:scale-[1.01] active:scale-95 transition-all disabled:opacity-50 disabled:grayscale no-hover-scale"
+              >
+                <span className="font-black text-lg sm:text-xl tracking-wide">MUA NGAY</span>
+                <span className="text-[10px] font-bold opacity-80 uppercase text-center px-2">Giao hàng tận nơi hoặc Nhận tại cửa hàng</span>
+              </button>
+              <div className="flex-shrink-0 flex items-center justify-center bg-gray-50 dark:bg-white/5 px-4 rounded-2xl border border-gray-100 dark:border-white/5">
+                <WishlistButton 
+                  productId={currentProduct.id} 
+                  onToggle={() => !user && navigate('/login')}
+                />
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-3 gap-3 border-t border-gray-100 pt-8 mt-4">

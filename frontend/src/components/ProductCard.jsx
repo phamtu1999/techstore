@@ -7,11 +7,15 @@ import { addToCompare, removeFromCompare } from '../store/slices/comparisonSlice
 import Toast from './Toast'
 import LazyImage from './LazyImage'
 import { getProductImageSources, handleProductImageError, DEFAULT_PRODUCT_PLACEHOLDER } from '../utils/productImageFallback'
+import WishlistButton from './WishlistButton'
+import { useNavigate } from 'react-router-dom'
 
 const ProductCard = ({ product, showBadge }) => {
   const dispatch = useDispatch()
   const { items: compareItems } = useSelector((state) => state.comparison)
   const { isLoading: isCartLoading } = useSelector((state) => state.cart)
+  const { user } = useSelector((state) => state.auth)
+  const navigate = useNavigate()
   const isComparing = compareItems.find(i => i.id === product.id)
   const [toast, setToast] = useState(null)
 
@@ -85,6 +89,14 @@ const ProductCard = ({ product, showBadge }) => {
                 ⭐ Mới
               </div>
             )}
+        </div>
+
+        {/* Wishlist Button Overlay */}
+        <div className="absolute right-3 top-3 sm:right-5 sm:top-5 z-10">
+          <WishlistButton 
+            productId={product.id} 
+            onToggle={() => !user && navigate('/login')}
+          />
         </div>
 
         {/* Image Container */}

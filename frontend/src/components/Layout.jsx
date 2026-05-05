@@ -9,7 +9,7 @@ import ThemeToggle from './ThemeToggle'
 import { settingsAPI } from '../api/settings'
 import { productsAPI } from '../api/products'
 import { getProductImageSources, handleProductImageError } from '../utils/productImageFallback'
-import { getApiErrorMessage } from '../utils/apiError'
+import { fetchWishlist } from '../store/slices/wishlistSlice'
 import ChatWidget from './chat/ChatWidget'
 
 const Layout = () => {
@@ -38,7 +38,10 @@ const Layout = () => {
       }
     }
     loadSettings()
-  }, [])
+    if (user) {
+      dispatch(fetchWishlist())
+    }
+  }, [dispatch, user])
 
   const handleLogout = () => {
     dispatch(logout())
