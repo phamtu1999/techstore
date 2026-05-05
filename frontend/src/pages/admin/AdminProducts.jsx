@@ -342,30 +342,35 @@ const AdminProducts = () => {
   ], [])
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-5 sm:space-y-8 pb-12 sm:pb-16">
       {/* Header with Bulk Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Quản lý sản phẩm</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Tổng số: <span className="font-semibold">{products.length}</span> sản phẩm
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div className="max-w-2xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-50 text-primary-700 text-xs font-bold uppercase tracking-[0.2em] mb-3">
+            Catalog
+          </div>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-text-primary dark:text-dark-text tracking-tight">
+            Quản lý sản phẩm
+          </h1>
+          <p className="text-sm sm:text-base text-text-secondary dark:text-gray-400 mt-2 leading-relaxed">
+            Tổng số <span className="font-bold text-text-primary dark:text-dark-text">{products.length}</span> sản phẩm trong danh mục hiện tại.
           </p>
         </div>
         
         {selectedRows.length > 0 && (
-          <div className="flex items-center gap-3 bg-primary-50 border border-primary-200 rounded-lg px-4 py-2">
-            <span className="text-sm font-medium text-primary-900">
+          <div className="flex flex-wrap items-center gap-2 bg-white dark:bg-dark-card border border-border dark:border-dark-border rounded-2xl px-4 py-3 shadow-sm">
+            <span className="text-sm font-semibold text-text-primary dark:text-dark-text">
               Đã chọn {selectedRows.length} sản phẩm
             </span>
             <button
               onClick={handleBulkDelete}
-              className="px-3 py-1.5 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
+              className="px-3.5 py-2 bg-red-600 text-white text-sm font-semibold rounded-xl hover:bg-red-700 transition-colors"
             >
               Xóa tất cả
             </button>
             <button
               onClick={() => setSelectedRows([])}
-              className="px-3 py-1.5 bg-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-300 transition-colors"
+              className="px-3.5 py-2 bg-gray-100 text-gray-700 text-sm font-semibold rounded-xl hover:bg-gray-200 transition-colors"
             >
               Bỏ chọn
             </button>
@@ -373,7 +378,7 @@ const AdminProducts = () => {
         )}
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6">
+      <div className="bg-white dark:bg-dark-card rounded-[1.5rem] sm:rounded-[2rem] shadow-sm border border-border dark:border-dark-border p-4 sm:p-6">
         <ProductFilters 
             searchTerm={searchTerm} 
             setSearchTerm={setSearchTerm} 

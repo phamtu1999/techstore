@@ -1,4 +1,4 @@
-import { Moon, Sun } from 'lucide-react'
+import { Moon, Sun, Menu } from 'lucide-react'
 
 interface HeaderProps {
   title: string
@@ -11,20 +11,23 @@ interface HeaderProps {
 
 const Header = ({ title, isDarkMode, onToggleDarkMode, onMenuClick, username = 'Admin', role = 'Administrator' }: HeaderProps) => {
   return (
-    <header className="bg-white/95 dark:bg-dark-card/95 backdrop-blur-xl border-b border-border dark:border-dark-border sticky top-0 z-20 transition-colors duration-300">
-      <div className="px-3 sm:px-4 lg:px-8 py-3 sm:py-4 flex justify-between items-center gap-3">
-        <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
+    <header className="bg-white/90 dark:bg-dark-card/90 backdrop-blur-xl border-b border-border dark:border-dark-border sticky top-0 z-20 transition-colors duration-300 shadow-sm">
+      <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-5 flex justify-between items-center gap-3">
+        <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
           <button 
             onClick={onMenuClick}
             className="lg:hidden flex-shrink-0 p-2.5 -ml-1 rounded-xl hover:bg-gray-100 dark:hover:bg-dark-bg text-text-primary dark:text-dark-text"
             aria-label="Mở menu"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
+            <Menu className="h-6 w-6" />
           </button>
           <div className="min-w-0">
-            <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-text-primary dark:text-dark-text truncate leading-tight">
+            <div className="flex items-center gap-2 text-xs sm:text-sm text-text-secondary dark:text-gray-400 mb-0.5">
+              <span className="hidden sm:inline">Bảng điều khiển</span>
+              <span className="hidden sm:inline">/</span>
+              <span className="truncate">{title}</span>
+            </div>
+            <h1 className="text-lg sm:text-2xl lg:text-3xl font-black text-text-primary dark:text-dark-text truncate leading-tight tracking-tight">
               {title}
             </h1>
           </div>

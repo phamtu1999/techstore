@@ -57,11 +57,11 @@ const Sidebar = ({ isOpen, onClose, onLogout }: SidebarProps) => {
 
   return (
     <aside className={`
-      w-20 lg:w-64 bg-white dark:bg-dark-card border-r border-border dark:border-dark-border h-screen fixed lg:sticky left-0 top-0 z-50 transition-all duration-300 flex flex-col
+      w-20 lg:w-64 bg-white/95 dark:bg-dark-card/95 backdrop-blur-xl border-r border-border dark:border-dark-border h-screen fixed lg:sticky left-0 top-0 z-50 transition-all duration-300 flex flex-col shadow-xl shadow-black/5
       ${isOpen ? 'translate-x-0 w-64' : '-translate-x-full lg:translate-x-0'}
     `}>
       {/* Logo */}
-      <div className="p-3 sm:p-4 lg:p-6 flex items-center justify-between">
+      <div className="p-4 sm:p-5 lg:p-6 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3 mx-auto lg:mx-0 min-w-0" onClick={onClose} title="Về trang chủ">
           <div className="h-10 w-10 bg-primary-main rounded-xl flex-shrink-0 flex items-center justify-center shadow-lg">
             <Store className="h-6 w-6 text-white" />
@@ -75,7 +75,7 @@ const Sidebar = ({ isOpen, onClose, onLogout }: SidebarProps) => {
 
       {/* Navigation */}
       <nav className="flex-1 px-3 sm:px-4 overflow-y-auto custom-scrollbar">
-        <div className="px-2 mb-2 text-xs font-semibold text-text-secondary dark:text-gray-500 uppercase tracking-wider">
+        <div className="px-2 mb-3 text-[11px] font-semibold text-text-secondary dark:text-gray-500 uppercase tracking-[0.2em]">
           Menu
         </div>
         <div className="space-y-1.5 pb-20">
@@ -86,7 +86,7 @@ const Sidebar = ({ isOpen, onClose, onLogout }: SidebarProps) => {
               onClick={onClose}
               className={`flex items-center lg:gap-3 px-3 py-3 rounded-xl transition-all duration-200 justify-center lg:justify-start ${
                 isActive(item.path)
-                  ? 'bg-primary-main text-white shadow-lg shadow-primary-main/20'
+                  ? 'bg-primary-main text-white shadow-lg shadow-primary-main/20 ring-1 ring-primary-main/20'
                   : 'text-text-secondary hover:bg-gray-100 dark:hover:bg-dark-bg dark:text-dark-text font-medium'
               }`}
               title={item.label}
