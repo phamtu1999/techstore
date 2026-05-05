@@ -12,6 +12,7 @@ const AdminCoupons = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [editingCoupon, setEditingCoupon] = useState(null)
+    const [selectedIds, setSelectedIds] = useState([])
     const [formData, setFormData] = useState({
         code: '',
         discountType: 'FIXED_AMOUNT',
@@ -120,7 +121,58 @@ const AdminCoupons = () => {
         }
     }
 
+    const handleSelectAll = (e) => {
+        if (e.target.checked) {
+            setSelectedIds(coupons.map(c => c.id))
+        } else {
+            setSelectedIds([])
+        }
+    }
+
+    const handleSelectOne = (id) => {
+        if (selectedIds.includes(id)) {
+            setSelectedIds(selectedIds.filter(i => i !== id))
+        } else {
+            setSelectedIds([...selectedIds, id])
+        }
+    }
+
     const formatCurrency = (val) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val)
+
+    const bulkActionBar = selectedIds.length > 0 && (
+        <div className="flex items-center gap-3 bg-gray-900 text-white rounded-xl px-4 py-2 shadow-lg animate-scale-up mr-4">
+            <span className="text-[13px] font-bold">
+                Đã chọn <span className="text-primary-500 font-black">{selectedIds.length}</span>
+            </span>
+            <div className="w-[1px] h-4 bg-gray-700"></div>
+            <button 
+                onClick={async () => {
+                    const res = await Swal.fire({
+                        title: 'Xóa hàng loạt?',
+                        text: `Bạn có chắc muốn xóa ${selectedIds.length} mã giảm giá đã chọn?`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Đồng ý',
+                        cancelButtonText: 'Hủy'
+                    })
+                    if (res.isConfirmed) {
+                        try {
+                            await Promise.all(selectedIds.map(id => api.delete(`/admin/coupons/${id}`)))
+                            fireSuccess('Thành công', 'Đã xóa các mã giảm giá đã chọn')
+                            setSelectedIds([])
+                            fetchCoupons()
+                        } catch (err) { fireError(err, 'Lỗi khi xóa hàng loạt') }
+                    }
+                }}
+                className="text-[13px] font-bold text-red-400 hover:text-red-300 transition-colors"
+            >
+                Xóa nhanh
+            </button>
+            <button onClick={() => setSelectedIds([])} className="text-gray-400 hover:text-white">
+                <X className="w-4 h-4" />
+            </button>
+        </div>
+    )
 
     return (
         <div className="space-y-6 animate-fade-in">
@@ -128,14 +180,17 @@ const AdminCoupons = () => {
                 title="Quản lý" 
                 accentTitle="Mã giảm giá"
                 subtitle="Tạo và quản lý các chương trình khuyến mãi, voucher cho khách hàng."
-                rightElement={
-                    <button 
-                        onClick={() => handleOpenModal()}
-                        className="h-[46px] px-6 bg-primary-600 text-white rounded-xl font-bold text-[13px] flex items-center justify-center gap-2 shadow-lg shadow-primary-600/20 hover:bg-primary-700 transition-all active:scale-95 whitespace-nowrap"
-                    >
-                        <Plus className="h-5 w-5" /> 
-                        TẠO MÃ MỚI
-                    </button>
+                rightContent={
+                    <div className="flex items-center gap-3">
+                        {bulkActionBar}
+                        <button 
+                            onClick={() => handleOpenModal()}
+                            className="h-[46px] px-6 bg-primary-600 text-white rounded-xl font-bold text-[13px] flex items-center justify-center gap-2 shadow-lg shadow-primary-600/20 hover:bg-primary-700 transition-all active:scale-95 whitespace-nowrap"
+                        >
+                            <Plus className="h-5 w-5" /> 
+                            TẠO MÃ MỚI
+                        </button>
+                    </div>
                 }
             />
 
@@ -144,6 +199,15 @@ const AdminCoupons = () => {
                     <table className="w-full text-left">
                         <thead>
                             <tr className="bg-gray-50/50">
+                                <th className="px-6 py-4 w-10">
+                                    <input 
+                                        type="checkbox" 
+                                        className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
+                                        checked={selectedIds.length > 0 && selectedIds.length === coupons.length}
+                                        onChange={handleSelectAll}
+                                    />
+                                </th>
+                                <th className="px-4 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-center w-12">STT</th>
                                 <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Mã Coupon</th>
                                 <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Giảm giá</th>
                                 <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Đơn tối thiểu</th>
@@ -166,8 +230,19 @@ const AdminCoupons = () => {
                                         Chưa có mã giảm giá nào được tạo
                                     </td>
                                 </tr>
-                            ) : coupons.map((row) => (
-                                <tr key={row.id} className="hover:bg-gray-50 transition-colors group">
+                            ) : coupons.map((row, index) => (
+                                <tr key={row.id} className={`hover:bg-gray-50 transition-colors group ${selectedIds.includes(row.id) ? 'bg-primary-50/30' : ''}`}>
+                                    <td className="px-6 py-5">
+                                        <input 
+                                            type="checkbox" 
+                                            className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
+                                            checked={selectedIds.includes(row.id)}
+                                            onChange={() => handleSelectOne(row.id)}
+                                        />
+                                    </td>
+                                    <td className="px-4 py-5 text-center text-[12px] font-bold text-gray-400">
+                                        {(index + 1).toString().padStart(2, '0')}
+                                    </td>
                                     <td className="px-8 py-5">
                                         <div className="flex items-center gap-3">
                                             <div className="p-2 bg-primary-50 text-primary-600 rounded-xl group-hover:scale-110 transition-transform">

@@ -274,6 +274,7 @@ public class ProductRepositoryImpl implements ProductListingRepository {
         Map<String, BigDecimal> priceMap = fetchMinPriceMap(productIds);
         Map<String, Tuple> reviewSummaryMap = fetchReviewSummaryMap(productIds);
         Map<String, String> thumbnailMap = fetchThumbnailMap(productIds);
+        Map<String, String> variantMap = fetchDefaultVariantIdMap(productIds);
 
         for (ProductListingRow row : rows) {
             row.setPrice(priceMap.getOrDefault(row.getId(), BigDecimal.ZERO));
@@ -285,7 +286,27 @@ public class ProductRepositoryImpl implements ProductListingRepository {
             }
 
             row.setThumbnailUrl(thumbnailMap.get(row.getId()));
+            row.setDefaultVariantId(variantMap.get(row.getId()));
         }
+    }
+
+    private Map<String, String> fetchDefaultVariantIdMap(List<String> productIds) {
+        List<Tuple> tuples = entityManager.createQuery("""
+                SELECT v.product.id AS productId, v.id AS variantId
+                FROM ProductVariant v
+                WHERE v.active = true AND v.product.id IN :productIds
+                ORDER BY v.id ASC
+                """, Tuple.class)
+                .setParameter("productIds", productIds)
+                .getResultList();
+
+        Map<String, String> result = new HashMap<>();
+        for (Tuple tuple : tuples) {
+            String productId = tuple.get("productId", String.class);
+            // Only put if not already present (take the first variant found by ID)
+            result.putIfAbsent(productId, tuple.get("variantId", String.class));
+        }
+        return result;
     }
 
     private Map<String, BigDecimal> fetchMinPriceMap(List<String> productIds) {

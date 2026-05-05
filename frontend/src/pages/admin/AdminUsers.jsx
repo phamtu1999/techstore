@@ -20,6 +20,7 @@ const AdminUsers = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
     const debouncedSearch = useDebounce(searchTerm, 500)
+    const [selectedIds, setSelectedIds] = useState([])
     
     // Pagination and Filter states
     const [pagination, setPagination] = useState({
@@ -261,6 +262,22 @@ const AdminUsers = () => {
         }
     }, [currentUser])
 
+    const handleSelectAll = (e) => {
+        if (e.target.checked) {
+            setSelectedIds(users.map(u => u.id))
+        } else {
+            setSelectedIds([])
+        }
+    }
+
+    const handleSelectOne = (id) => {
+        if (selectedIds.includes(id)) {
+            setSelectedIds(selectedIds.filter(i => i !== id))
+        } else {
+            setSelectedIds([...selectedIds, id])
+        }
+    }
+
     const getRolePill = useCallback((roles) => {
         const role = (roles && roles.length > 0) ? roles[0] : 'ROLE_CUSTOMER'
         switch (role) {
@@ -294,20 +311,58 @@ const AdminUsers = () => {
         setPagination(prev => ({ ...prev, page: 0 }))
     }, [])
 
+    const bulkActionBar = selectedIds.length > 0 && (
+        <div className="flex items-center gap-3 bg-gray-900 text-white rounded-xl px-4 py-2 shadow-lg animate-scale-up mr-4">
+            <span className="text-[13px] font-bold">
+                Đã chọn <span className="text-primary-500 font-black">{selectedIds.length}</span>
+            </span>
+            <div className="w-[1px] h-4 bg-gray-700"></div>
+            <button 
+                onClick={async () => {
+                    const res = await Swal.fire({
+                        title: 'Khóa hàng loạt?',
+                        text: `Bạn có chắc muốn khóa ${selectedIds.length} người dùng đã chọn?`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Đồng ý',
+                        cancelButtonText: 'Hủy'
+                    })
+                    if (res.isConfirmed) {
+                        try {
+                            await Promise.all(selectedIds.map(id => usersAPI.lockUser(id)))
+                            fireSuccess('Thành công', 'Đã khóa các người dùng đã chọn')
+                            setSelectedIds([])
+                            fetchUsers()
+                        } catch (err) { fireError(err, 'Lỗi khi khóa hàng loạt') }
+                    }
+                }}
+                className="text-[13px] font-bold text-red-400 hover:text-red-300 transition-colors"
+            >
+                Khóa nhanh
+            </button>
+            <button onClick={() => setSelectedIds([])} className="text-gray-400 hover:text-white">
+                <X className="w-4 h-4" />
+            </button>
+        </div>
+    )
+
     return (
         <div className="space-y-6 animate-fade-in">
             <AdminPageHeader 
                 title="Quản lý" 
                 accentTitle="Người dùng"
                 subtitle="Quản lý tài khoản, phân quyền và kiểm soát hoạt động hệ thống."
-                rightElement={
-                    <button 
-                        onClick={handleAddUser}
-                        className="h-[46px] px-6 bg-primary-600 text-white rounded-xl font-bold text-[13px] flex items-center justify-center gap-2 shadow-lg shadow-primary-600/20 hover:bg-primary-700 transition-all active:scale-95 whitespace-nowrap"
-                    >
-                        <UserPlus className="h-5 w-5" /> 
-                        THÊM THÀNH VIÊN
-                    </button>
+                rightContent={
+                    <div className="flex items-center gap-3">
+                        {bulkActionBar}
+                        <button 
+                            onClick={handleAddUser}
+                            className="h-[46px] px-6 bg-primary-600 text-white rounded-xl font-bold text-[13px] flex items-center justify-center gap-2 shadow-lg shadow-primary-600/20 hover:bg-primary-700 transition-all active:scale-95 whitespace-nowrap"
+                        >
+                            <UserPlus className="h-5 w-5" /> 
+                            THÊM THÀNH VIÊN
+                        </button>
+                    </div>
                 }
             />
 
@@ -388,6 +443,15 @@ const AdminUsers = () => {
                     <table className="w-full text-left">
                         <thead>
                             <tr className="bg-gray-50/50">
+                                <th className="px-6 py-4 w-10">
+                                    <input 
+                                        type="checkbox" 
+                                        className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
+                                        checked={selectedIds.length > 0 && selectedIds.length === users.length}
+                                        onChange={handleSelectAll}
+                                    />
+                                </th>
+                                <th className="px-4 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-center w-12">STT</th>
                                 <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Người dùng</th>
                                 <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Liên hệ</th>
                                 <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Vai trò</th>
@@ -408,8 +472,19 @@ const AdminUsers = () => {
                                         Không tìm thấy người dùng phù hợp
                                     </td>
                                 </tr>
-                            ) : users.map((row) => (
-                                <tr key={row.id} className={`hover:bg-gray-50 transition-colors ${!row.enabled ? 'bg-gray-50/50' : ''}`}>
+                            ) : users.map((row, index) => (
+                                <tr key={row.id} className={`hover:bg-gray-50 transition-colors ${!row.enabled ? 'bg-gray-50/50' : ''} ${selectedIds.includes(row.id) ? 'bg-primary-50/30' : ''}`}>
+                                    <td className="px-6 py-5">
+                                        <input 
+                                            type="checkbox" 
+                                            className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
+                                            checked={selectedIds.includes(row.id)}
+                                            onChange={() => handleSelectOne(row.id)}
+                                        />
+                                    </td>
+                                    <td className="px-4 py-5 text-center text-[12px] font-bold text-gray-400">
+                                        {(pagination.page * pagination.size + index + 1).toString().padStart(2, '0')}
+                                    </td>
                                     <td className="px-8 py-5">
                                         <div className="flex items-center gap-3">
                                             <div className="relative">

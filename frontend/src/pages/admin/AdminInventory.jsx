@@ -7,7 +7,8 @@ import {
   TrendingUp, 
   Search, 
   Filter,
-  ArrowRightLeft
+  ArrowRightLeft,
+  X
 } from 'lucide-react'
 import api from '../../utils/axios'
 import Swal from 'sweetalert2'
@@ -77,6 +78,7 @@ const AdminInventory = () => {
   })
   const [searchTerm, setSearchTerm] = useState('')
   const [stockFilter, setStockFilter] = useState('') // '' or 'low-stock'
+  const [selectedIds, setSelectedIds] = useState([])
   const debouncedSearch = useDebounce(searchTerm, 500)
   const currencyFormatter = useMemo(() => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }), [])
   
@@ -235,12 +237,72 @@ const AdminInventory = () => {
     setPagination(p => ({ ...p, page: 0 }))
   }, [])
 
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedIds(variants.map(v => v.id))
+    } else {
+      setSelectedIds([])
+    }
+  }
+
+  const handleSelectOne = (id) => {
+    if (selectedIds.includes(id)) {
+      setSelectedIds(selectedIds.filter(i => i !== id))
+    } else {
+      setSelectedIds([...selectedIds, id])
+    }
+  }
+
+  const bulkActionBar = selectedIds.length > 0 && (
+    <div className="flex items-center gap-3 bg-gray-900 text-white rounded-xl px-4 py-2 shadow-lg animate-scale-up mr-4">
+      <span className="text-[13px] font-bold">
+        Đã chọn <span className="text-primary-500 font-black">{selectedIds.length}</span>
+      </span>
+      <div className="w-[1px] h-4 bg-gray-700"></div>
+      <button 
+        onClick={async () => {
+          const res = await Swal.fire({
+            title: 'Nhập hàng hàng loạt?',
+            text: `Bạn muốn nhập thêm hàng cho ${selectedIds.length} mã đã chọn?`,
+            input: 'number',
+            inputPlaceholder: 'Số lượng nhập mỗi mã...',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Đồng ý',
+            cancelButtonText: 'Hủy'
+          })
+          if (res.isConfirmed && res.value) {
+            try {
+              await Promise.all(selectedIds.map(id => api.post('/admin/inventory/transaction', {
+                variantId: id,
+                type: 'IMPORT',
+                quantity: parseInt(res.value),
+                note: 'Nhập hàng hàng loạt từ bảng quản trị',
+                warehouse: 'Kho Chính'
+              })))
+              fireSuccess('Thành công', 'Đã cập nhật kho cho các mã đã chọn')
+              setSelectedIds([])
+              fetchStock(pagination.page)
+            } catch (err) { fireError(err, 'Lỗi khi nhập hàng hàng loạt') }
+          }
+        }}
+        className="text-[13px] font-bold hover:text-primary-400 transition-colors"
+      >
+        Nhập nhanh
+      </button>
+      <button onClick={() => setSelectedIds([])} className="text-gray-400 hover:text-white">
+        <X className="w-4 h-4" />
+      </button>
+    </div>
+  )
+
   return (
     <div className="space-y-6 animate-fade-in">
       <AdminPageHeader 
         title="Quản lý" 
         accentTitle="Kho hàng"
         subtitle="Theo dõi tồn kho, biến động và giá trị hàng hóa theo thời gian thực."
+        rightContent={bulkActionBar}
       />
 
       {/* Header Summary Stats */}
@@ -319,6 +381,14 @@ const AdminInventory = () => {
             <table className="w-full text-left">
               <thead>
                 <tr className="bg-gray-50/50">
+                  <th className="px-6 py-4 w-10 text-left">
+                    <input 
+                      type="checkbox" 
+                      className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
+                      checked={selectedIds.length > 0 && selectedIds.length === variants.length}
+                      onChange={handleSelectAll}
+                    />
+                  </th>
                   <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-primary-600 w-16">STT</th>
                   <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Sản phẩm & Biến thể</th>
                   <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Tồn kho</th>
@@ -343,6 +413,8 @@ const AdminInventory = () => {
                     isFinanceVisible={isFinanceVisible}
                     formatCurrency={formatCurrency}
                     onAdjustStock={handleAdjustStock}
+                    isSelected={selectedIds.includes(v.id)}
+                    onSelect={() => handleSelectOne(v.id)}
                   />
                 ))}
               </tbody>

@@ -15,6 +15,7 @@ const AdminCategories = () => {
   const [statusFilter, setStatusFilter] = useState('all') // all, active, inactive
   const [showModal, setShowModal] = useState(false)
   const [editingCategory, setEditingCategory] = useState(null)
+  const [selectedIds, setSelectedIds] = useState([])
   
   // Form State
   const [formData, setFormData] = useState({
@@ -142,6 +143,22 @@ const AdminCategories = () => {
     }
   }
 
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedIds(sortedAndFiltered.map(c => c.id))
+    } else {
+      setSelectedIds([])
+    }
+  }
+
+  const handleSelectOne = (id) => {
+    if (selectedIds.includes(id)) {
+      setSelectedIds(selectedIds.filter(i => i !== id))
+    } else {
+      setSelectedIds([...selectedIds, id])
+    }
+  }
+
   const handleActivateAll = async () => {
     const result = await Swal.fire({
       title: 'Kích hoạt tất cả?',
@@ -184,15 +201,51 @@ const AdminCategories = () => {
     })
     .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
 
+  const bulkActionBar = selectedIds.length > 0 && (
+    <div className="flex items-center gap-3 bg-gray-900 text-white rounded-xl px-4 py-2 shadow-lg animate-scale-up mr-4">
+      <span className="text-[13px] font-bold">
+        Đã chọn <span className="text-primary-500 font-black">{selectedIds.length}</span>
+      </span>
+      <div className="w-[1px] h-4 bg-gray-700"></div>
+      <button 
+        onClick={async () => {
+          const res = await Swal.fire({
+            title: 'Ẩn hàng loạt?',
+            text: `Bạn có chắc muốn ẩn ${selectedIds.length} danh mục đã chọn?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Đồng ý',
+            cancelButtonText: 'Hủy'
+          })
+          if (res.isConfirmed) {
+            try {
+              await Promise.all(selectedIds.map(id => categoriesAPI.updateCategory(id, { active: false })))
+              fireSuccess('Thành công', 'Đã ẩn các danh mục đã chọn')
+              setSelectedIds([])
+              fetchCategories()
+            } catch (err) { fireError(err, 'Lỗi khi ẩn hàng loạt') }
+          }
+        }}
+        className="text-[13px] font-bold hover:text-primary-400 transition-colors"
+      >
+        Ẩn nhanh
+      </button>
+      <button onClick={() => setSelectedIds([])} className="text-gray-400 hover:text-white">
+        <X className="w-4 h-4" />
+      </button>
+    </div>
+  )
+
   return (
     <div className="space-y-6 animate-fade-in">
       <AdminPageHeader 
         title="Quản lý" 
         accentTitle="Danh mục"
         subtitle="Tạo, sắp xếp và quản lý danh mục sản phẩm theo cấu trúc rõ ràng."
-        rightElement={
-          <div className="flex gap-3">
-             <button 
+        rightContent={
+          <div className="flex items-center gap-3">
+            {bulkActionBar}
+            <button 
               onClick={handleActivateAll}
               className="h-[46px] px-5 bg-white border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 transition-all text-[13px] flex items-center justify-center gap-2 whitespace-nowrap"
             >
@@ -250,6 +303,15 @@ const AdminCategories = () => {
             <table className="w-full text-left">
               <thead>
                 <tr className="bg-gray-50/50">
+                  <th className="px-6 py-4 w-10">
+                    <input 
+                      type="checkbox" 
+                      className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
+                      checked={selectedIds.length > 0 && selectedIds.length === sortedAndFiltered.length}
+                      onChange={handleSelectAll}
+                    />
+                  </th>
+                  <th className="px-4 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-center w-12">STT</th>
                   <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Danh mục</th>
                   <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Đường dẫn</th>
                   <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-center">Thứ tự</th>
@@ -266,8 +328,19 @@ const AdminCategories = () => {
                     </td>
                   </tr>
                 ) : (
-                  sortedAndFiltered.map((category) => (
-                    <tr key={category.id} className="hover:bg-gray-50/30 transition-colors group">
+                  sortedAndFiltered.map((category, index) => (
+                    <tr key={category.id} className={`hover:bg-gray-50/30 transition-colors group ${selectedIds.includes(category.id) ? 'bg-primary-50/30' : ''}`}>
+                      <td className="px-6 py-5">
+                        <input 
+                          type="checkbox" 
+                          className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
+                          checked={selectedIds.includes(category.id)}
+                          onChange={() => handleSelectOne(category.id)}
+                        />
+                      </td>
+                      <td className="px-4 py-5 text-center text-[12px] font-bold text-gray-400">
+                        {(index + 1).toString().padStart(2, '0')}
+                      </td>
                       <td className="px-8 py-5">
                         <div className="flex items-center gap-4">
                           <div className="h-12 w-12 rounded-xl bg-gray-50 border border-gray-100 overflow-hidden flex-shrink-0">

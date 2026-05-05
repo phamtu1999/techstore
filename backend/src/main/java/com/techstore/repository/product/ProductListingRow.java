@@ -30,6 +30,7 @@ public class ProductListingRow {
     private Double rating = 0D;
     private Long reviewCount = 0L;
     private String thumbnailUrl;
+    private String defaultVariantId;
 
     public ProductListingRow(
             String id,

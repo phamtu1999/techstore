@@ -13,6 +13,7 @@ const AdminBrands = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [editingBrand, setEditingBrand] = useState(null)
+  const [selectedIds, setSelectedIds] = useState([])
   
   // Form State
   const [formData, setFormData] = useState({
@@ -126,9 +127,60 @@ const AdminBrands = () => {
     }
   }
 
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedIds(filteredBrands.map(b => b.id))
+    } else {
+      setSelectedIds([])
+    }
+  }
+
+  const handleSelectOne = (id) => {
+    if (selectedIds.includes(id)) {
+      setSelectedIds(selectedIds.filter(i => i !== id))
+    } else {
+      setSelectedIds([...selectedIds, id])
+    }
+  }
+
   const filteredBrands = brands.filter(brand => 
     brand.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     brand.slug?.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+
+  const bulkActionBar = selectedIds.length > 0 && (
+    <div className="flex items-center gap-3 bg-gray-900 text-white rounded-xl px-4 py-2 shadow-lg animate-scale-up mr-4">
+      <span className="text-[13px] font-bold">
+        Đã chọn <span className="text-primary-500 font-black">{selectedIds.length}</span>
+      </span>
+      <div className="w-[1px] h-4 bg-gray-700"></div>
+      <button 
+        onClick={async () => {
+          const res = await Swal.fire({
+            title: 'Xóa hàng loạt?',
+            text: `Bạn có chắc muốn xóa ${selectedIds.length} thương hiệu đã chọn?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Đồng ý',
+            cancelButtonText: 'Hủy'
+          })
+          if (res.isConfirmed) {
+            try {
+              await Promise.all(selectedIds.map(id => brandsAPI.delete(id)))
+              fireSuccess('Thành công', 'Đã xóa các thương hiệu đã chọn')
+              setSelectedIds([])
+              fetchBrands()
+            } catch (err) { fireError(err, 'Lỗi khi xóa hàng loạt') }
+          }
+        }}
+        className="text-[13px] font-bold text-red-400 hover:text-red-300 transition-colors"
+      >
+        Xóa nhanh
+      </button>
+      <button onClick={() => setSelectedIds([])} className="text-gray-400 hover:text-white">
+        <X className="w-4 h-4" />
+      </button>
+    </div>
   )
 
   return (
@@ -137,14 +189,17 @@ const AdminBrands = () => {
         title="Quản lý" 
         accentTitle="Thương hiệu"
         subtitle="Tổ chức và tối ưu danh sách thương hiệu hiển thị trên cửa hàng."
-        rightElement={
-          <button 
-            onClick={handleAddNew}
-            className="h-[46px] px-6 bg-primary-600 text-white rounded-xl font-bold text-[13px] flex items-center justify-center gap-2 shadow-lg shadow-primary-600/20 hover:bg-primary-700 transition-all active:scale-95 whitespace-nowrap"
-          >
-            <Plus className="h-5 w-5" /> 
-            THÊM THƯƠNG HIỆU
-          </button>
+        rightContent={
+          <div className="flex items-center gap-3">
+            {bulkActionBar}
+            <button 
+              onClick={handleAddNew}
+              className="h-[46px] px-6 bg-primary-600 text-white rounded-xl font-bold text-[13px] flex items-center justify-center gap-2 shadow-lg shadow-primary-600/20 hover:bg-primary-700 transition-all active:scale-95 whitespace-nowrap"
+            >
+              <Plus className="h-5 w-5" /> 
+              THÊM THƯƠNG HIỆU
+            </button>
+          </div>
         }
       />
 
@@ -173,6 +228,15 @@ const AdminBrands = () => {
             <table className="w-full text-left">
               <thead>
                 <tr className="bg-gray-50/50">
+                  <th className="px-6 py-4 w-10">
+                    <input 
+                      type="checkbox" 
+                      className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
+                      checked={selectedIds.length > 0 && selectedIds.length === filteredBrands.length}
+                      onChange={handleSelectAll}
+                    />
+                  </th>
+                  <th className="px-4 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-center w-12">STT</th>
                   <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Thương hiệu</th>
                   <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Đường dẫn</th>
                   <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Mô tả</th>
@@ -187,8 +251,19 @@ const AdminBrands = () => {
                     </td>
                   </tr>
                 ) : (
-                  filteredBrands.map((brand) => (
-                    <tr key={brand.id} className="hover:bg-gray-50/30 transition-colors group">
+                  filteredBrands.map((brand, index) => (
+                    <tr key={brand.id} className={`hover:bg-gray-50/30 transition-colors group ${selectedIds.includes(brand.id) ? 'bg-primary-50/30' : ''}`}>
+                      <td className="px-6 py-5">
+                        <input 
+                          type="checkbox" 
+                          className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
+                          checked={selectedIds.includes(brand.id)}
+                          onChange={() => handleSelectOne(brand.id)}
+                        />
+                      </td>
+                      <td className="px-4 py-5 text-center text-[12px] font-bold text-gray-400">
+                        {(index + 1).toString().padStart(2, '0')}
+                      </td>
                       <td className="px-8 py-5">
                         <div className="flex items-center gap-4">
                           <div className="h-12 w-12 rounded-xl bg-gray-50 border border-gray-100 p-2 flex-shrink-0 flex items-center justify-center">

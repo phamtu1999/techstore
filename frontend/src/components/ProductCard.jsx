@@ -82,83 +82,69 @@ const ProductCard = ({ product, showBadge }) => {
         </div>
 
         {/* Image Container */}
-        <div className="relative aspect-[4/5] sm:aspect-square w-full overflow-hidden bg-gray-50/50 dark:bg-black/20">
+        <div className="relative h-[200px] sm:h-[240px] w-full overflow-hidden bg-gray-50/50 dark:bg-black/20 flex items-center justify-center">
           <img 
             src={imageUrl || DEFAULT_PRODUCT_PLACEHOLDER} 
             alt={product.name}
-            className="h-full w-full object-contain p-4 sm:p-8 transition-transform duration-700 group-hover:scale-110"
+            className="h-full w-full object-contain p-4 sm:p-6 transition-transform duration-700 group-hover:scale-110"
             onError={(e) => handleProductImageError(e, fallbackImageUrl)}
           />
-          
-          {/* Action Bar Overlay (Desktop) */}
-          <div className="absolute bottom-4 left-4 right-4 hidden sm:block translate-y-full group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 z-20">
-             <div className="bg-white/90 dark:bg-black/80 backdrop-blur-xl rounded-[1.5rem] p-1.5 flex items-center gap-1 shadow-2xl border border-white/30 dark:border-white/10">
-                <button 
-                  onClick={handleCompare} 
-                  className={`flex-1 flex items-center justify-center py-3.5 rounded-[1.25rem] transition-all gap-2 font-black text-[10px] uppercase tracking-widest ${isComparing ? 'bg-primary-600 text-white' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-secondary-800 dark:text-gray-200'}`}
-                  title={isComparing ? "Xóa khỏi so sánh" : "So sánh"}
-                >
-                   <GitCompare className="h-4 w-4" />
-                   <span>So sánh</span>
-                </button>
-                
-                <button 
-                  onClick={handleAddToCart} 
-                  disabled={isCartLoading}
-                  className="flex-[1.2] flex items-center justify-center py-3.5 bg-primary-600 text-white rounded-[1.25rem] hover:bg-primary-700 transition-all gap-2 font-black text-[10px] uppercase tracking-widest disabled:opacity-50 shadow-lg shadow-primary-600/20"
-                >
-                  <ShoppingCart className={`h-4 w-4 ${isCartLoading ? 'animate-spin' : ''}`} />
-                  <span>{isCartLoading ? 'ĐANG THÊM' : 'THÊM NGAY'}</span>
-                </button>
-             </div>
-          </div>
-
-          {/* Quick Action (Mobile Only) */}
-          <div className="absolute bottom-3 right-3 sm:hidden z-20">
-              <button 
-                onClick={handleAddToCart}
-                disabled={isCartLoading}
-                className="w-12 h-12 bg-primary-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-primary-600/30 active:scale-90 transition-transform"
-              >
-                {isCartLoading ? <RefreshCw className="h-5 w-5 animate-spin" /> : <Plus className="h-6 w-6" />}
-              </button>
-          </div>
         </div>
 
         {/* Info */}
-        <div className="p-5 sm:p-7 flex-1 flex flex-col">
+        <div className="p-4 sm:p-5 flex-1 flex flex-col">
           <div className="flex items-center gap-3 mb-3">
              <div className="flex text-amber-400">
                 {[...Array(5)].map((_, i) => (
                    <Star key={i} className={`h-3 w-3 ${i < Math.floor(product.rating || 5) ? 'fill-current' : 'text-gray-200 dark:text-dark-border'}`} />
                 ))}
              </div>
-             <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest">
+             <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
                {displaySoldCount}
              </span>
           </div>
 
-          <h3 className="mb-4 text-[15px] sm:text-[17px] font-black text-secondary-900 dark:text-white line-clamp-2 leading-tight min-h-[3rem] group-hover:text-primary-600 transition-colors">
+          <h3 className="mb-4 text-[15px] sm:text-[17px] font-bold text-secondary-900 dark:text-white line-clamp-2 leading-tight min-h-[2.5rem] group-hover:text-primary-600 transition-colors">
             {product.name}
           </h3>
 
-          <div className="mt-auto flex flex-col gap-4">
-            <div className="flex items-end justify-between gap-3">
-              <div className="flex flex-col">
-                <span className="text-xl sm:text-2xl font-black text-primary-600 tracking-tight leading-none">
+          <div className="mt-auto flex flex-col gap-5">
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-[22px] font-black text-primary-600 tracking-tight leading-none">
                   {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price)}
                 </span>
                 {product.originalPrice > price && (
-                  <span className="mt-1 text-[11px] sm:text-xs text-gray-400 line-through font-bold opacity-70">
+                  <span className="text-xs text-gray-400 line-through font-bold opacity-70">
                     {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.originalPrice)}
                   </span>
                 )}
               </div>
               
-              <div className="flex items-center gap-1.5 text-[10px] font-black text-emerald-600 dark:text-emerald-500 uppercase tracking-tight">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                  <span>Sẵn sàng</span>
+              <div className="flex items-center gap-1.5 text-[11px] font-bold text-gray-500 dark:text-gray-400 tracking-tight">
+                  <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+                  <span>Còn hàng</span>
               </div>
+            </div>
+
+            {/* Action Buttons - Always Visible */}
+            <div className="flex items-center gap-2">
+                <button 
+                  onClick={handleCompare} 
+                  className={`flex-1 flex items-center justify-center py-2.5 rounded-xl border-2 transition-all gap-2 font-bold text-[11px] uppercase tracking-wider ${isComparing ? 'bg-primary-600 border-primary-600 text-white' : 'border-gray-100 dark:border-dark-border text-gray-600 dark:text-gray-300 hover:border-primary-600 hover:text-primary-600'}`}
+                >
+                   <GitCompare className="h-3.5 w-3.5" />
+                   <span>So sánh</span>
+                </button>
+                
+                <button 
+                  onClick={handleAddToCart} 
+                  disabled={isCartLoading}
+                  className="flex-[1.5] flex items-center justify-center py-2.5 bg-[#1a1a2e] text-white rounded-xl hover:bg-black transition-all gap-2 font-bold text-[11px] uppercase tracking-wider disabled:opacity-50"
+                >
+                  <ShoppingCart className={`h-3.5 w-3.5 ${isCartLoading ? 'animate-spin' : ''}`} />
+                  <span>{isCartLoading ? 'ĐANG THÊM' : '+ Thêm vào giỏ'}</span>
+                </button>
             </div>
           </div>
         </div>

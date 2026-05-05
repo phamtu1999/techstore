@@ -16,6 +16,7 @@ import {
   Command,
   TerminalSquare
 } from 'lucide-react';
+import AdminPageHeader from '../../components/admin/shared/AdminPageHeader';
 
 const AdminLogs = () => {
     const [logs, setLogs] = useState([]);
@@ -82,19 +83,11 @@ const AdminLogs = () => {
 
     return (
         <div className="space-y-6 animate-fade-in mb-10">
-            {/* Header Section */}
-            <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20 blur-3xl"></div>
-                <div className="relative flex items-center gap-6">
-                    <div className="p-4 bg-white/10 rounded-2xl backdrop-blur-md border border-white/10 shadow-inner">
-                        <FileText className="h-10 w-10 text-indigo-300" />
-                    </div>
-                    <div>
-                        <h1 className="text-4xl font-black tracking-tight">System Logs</h1>
-                        <p className="text-slate-400 mt-2 font-medium">Trung tâm điều tra và truy vết hoạt động hệ thống</p>
-                    </div>
-                </div>
-            </div>
+            <AdminPageHeader 
+                title="System" 
+                accentTitle="Logs"
+                subtitle="Trung tâm điều tra và truy vết hoạt động hệ thống theo thời gian thực."
+            />
 
             {/* Filter Section */}
             <div className="bg-white dark:bg-dark-card rounded-[2rem] shadow-xl border border-slate-100 dark:border-dark-border overflow-hidden">
@@ -156,13 +149,13 @@ const AdminLogs = () => {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
                         <thead>
-                            <tr className="bg-slate-50/50 text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">
-                                <th className="px-8 py-5">Timestamp</th>
-                                <th className="px-8 py-5">Action</th>
-                                <th className="px-8 py-5">Operator</th>
-                                <th className="px-8 py-5">Detail</th>
-                                <th className="px-8 py-5">IP Address</th>
-                                <th className="px-8 py-5 text-center">Status</th>
+                            <tr className="bg-slate-50/50">
+                                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400">Timestamp</th>
+                                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400">Action</th>
+                                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400">Operator</th>
+                                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400">Detail</th>
+                                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400">IP Address</th>
+                                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400 text-center">Status</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">

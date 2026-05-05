@@ -7,6 +7,9 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 import api from '../../utils/axios';
+import AdminPageHeader from '../../components/admin/shared/AdminPageHeader';
+import { fireError } from '../../utils/swalError';
+import { X } from 'lucide-react';
 
 const AdminLivestreams = () => {
     const navigate = useNavigate();
@@ -20,6 +23,7 @@ const AdminLivestreams = () => {
     const [searchProduct, setSearchProduct] = useState('');
     const [products, setProducts] = useState([]);
     const [isSearchingProducts, setIsSearchingProducts] = useState(false);
+    const [selectedIds, setSelectedIds] = useState([]);
 
     const fetchStreams = async () => {
         try {
@@ -87,21 +91,76 @@ const AdminLivestreams = () => {
         return () => clearTimeout(delayDebounceFn);
     }, [searchProduct]);
 
+    const handleSelectAll = (e) => {
+        if (e.target.checked) {
+            setSelectedIds(streams.map(s => s.id))
+        } else {
+            setSelectedIds([])
+        }
+    }
+
+    const handleSelectOne = (id) => {
+        if (selectedIds.includes(id)) {
+            setSelectedIds(selectedIds.filter(i => i !== id))
+        } else {
+            setSelectedIds([...selectedIds, id])
+        }
+    }
+
+    const bulkActionBar = selectedIds.length > 0 && (
+        <div className="flex items-center gap-3 bg-gray-900 text-white rounded-xl px-4 py-2 shadow-lg animate-scale-up mr-4">
+            <span className="text-[13px] font-bold">
+                Đã chọn <span className="text-primary-500 font-black">{selectedIds.length}</span>
+            </span>
+            <div className="w-[1px] h-4 bg-gray-700"></div>
+            <button 
+                onClick={async () => {
+                    const res = await Swal.fire({
+                        title: 'Xóa hàng loạt?',
+                        text: `Bạn có chắc muốn xóa ${selectedIds.length} phiên live đã chọn?`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Đồng ý',
+                        cancelButtonText: 'Hủy'
+                    })
+                    if (res.isConfirmed) {
+                        try {
+                            await Promise.all(selectedIds.map(id => api.delete(`/admin/livestreams/${id}`)))
+                            Swal.fire({ icon: 'success', title: 'Thành công', text: 'Đã xóa các phiên live đã chọn', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
+                            setSelectedIds([])
+                            fetchStreams()
+                        } catch (err) { fireError(err, 'Lỗi khi xóa hàng loạt') }
+                    }
+                }}
+                className="text-[13px] font-bold text-red-400 hover:text-red-300 transition-colors"
+            >
+                Xóa nhanh
+            </button>
+            <button onClick={() => setSelectedIds([])} className="text-gray-400 hover:text-white">
+                <X className="w-4 h-4" />
+            </button>
+        </div>
+    )
+
     return (
         <div className="space-y-8 animate-fade-in">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-black text-secondary-900 tracking-tight">QUẢN LÝ <span className="text-primary-600">LIVESTREAM</span></h1>
-                    <p className="text-sm font-bold text-gray-500">Tổ chức các buổi Live Shopping và đẩy sản phẩm thời gian thực</p>
-                </div>
-                <button 
-                    onClick={() => setIsCreating(true)}
-                    className="bg-primary-600 text-white px-6 py-3 rounded-2xl font-black text-sm flex items-center gap-2 hover:bg-primary-700 transition-all shadow-xl shadow-primary-500/20"
-                >
-                    <Plus size={20} />
-                    PHIÊN LIVE MỚI
-                </button>
-            </div>
+            <AdminPageHeader 
+                title="Quản lý" 
+                accentTitle="Livestream"
+                subtitle="Tổ chức các buổi Live Shopping và đẩy sản phẩm thời gian thực."
+                rightContent={
+                    <div className="flex items-center gap-3">
+                        {bulkActionBar}
+                        <button 
+                            onClick={() => setIsCreating(true)}
+                            className="h-[46px] px-6 bg-primary-600 text-white rounded-xl font-bold text-[13px] flex items-center justify-center gap-2 shadow-lg shadow-primary-600/20 hover:bg-primary-700 transition-all active:scale-95 whitespace-nowrap"
+                        >
+                            <Plus className="h-5 w-5" /> 
+                            PHIÊN LIVE MỚI
+                        </button>
+                    </div>
+                }
+            />
 
             {/* Active Control Panel */}
             {activeStream && (
@@ -179,6 +238,15 @@ const AdminLivestreams = () => {
                     <table className="w-full">
                         <thead className="bg-gray-50 border-b border-gray-100 uppercase">
                             <tr>
+                                <th className="px-6 py-4 w-10 text-left">
+                                    <input 
+                                        type="checkbox" 
+                                        className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
+                                        checked={selectedIds.length > 0 && selectedIds.length === streams.length}
+                                        onChange={handleSelectAll}
+                                    />
+                                </th>
+                                <th className="px-4 py-4 text-[10px] font-black text-gray-400 tracking-widest text-center w-12">STT</th>
                                 <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Phiên Live</th>
                                 <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Người live</th>
                                 <th className="px-6 py-4 text-center text-[10px] font-black text-gray-400 tracking-widest">Trạng thái</th>
@@ -187,8 +255,19 @@ const AdminLivestreams = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {streams.map(stream => (
-                                <tr key={stream.id} className="hover:bg-gray-50/50 transition-colors group">
+                            {streams.map((stream, index) => (
+                                <tr key={stream.id} className={`hover:bg-gray-50/50 transition-colors group ${selectedIds.includes(stream.id) ? 'bg-primary-50/30' : ''}`}>
+                                    <td className="px-6 py-4">
+                                        <input 
+                                            type="checkbox" 
+                                            className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
+                                            checked={selectedIds.includes(stream.id)}
+                                            onChange={() => handleSelectOne(stream.id)}
+                                        />
+                                    </td>
+                                    <td className="px-4 py-4 text-center text-[12px] font-bold text-gray-400">
+                                        {(index + 1).toString().padStart(2, '0')}
+                                    </td>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-4">
                                             <div className="w-16 h-10 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">

@@ -31,4 +31,5 @@ public class ProductMinResponse {
     Long reviewCount;
     Integer discountPercentage;
     Boolean isNew;
+    String defaultVariantId;
 }

@@ -9,6 +9,8 @@ const AdminInventoryStockRow = ({
   isFinanceVisible,
   formatCurrency,
   onAdjustStock,
+  isSelected,
+  onSelect
 }) => {
   const margin = variant.price > 0 && variant.costPrice > 0
     ? (((variant.price - variant.costPrice) / variant.price) * 100).toFixed(1)
@@ -21,7 +23,15 @@ const AdminInventoryStockRow = ({
   }
 
   return (
-    <tr className="hover:bg-gray-50/50 transition-colors group">
+    <tr className={`hover:bg-gray-50/50 transition-colors group ${isSelected ? 'bg-primary-50/30' : ''}`}>
+      <td className="px-6 py-5">
+        <input 
+          type="checkbox" 
+          className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
+          checked={isSelected}
+          onChange={onSelect}
+        />
+      </td>
       <td className="px-8 py-5 text-[11px] font-black text-gray-400">
         {pagination.page * pagination.size + index + 1}
       </td>

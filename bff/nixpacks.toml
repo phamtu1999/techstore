@@ -1,0 +1,9 @@
+# Nixpacks configuration for NestJS BFF
+[phases.setup]
+nixPkgs = ["...", "nodejs_20"]
+
+[phases.build]
+cmds = ["npm ci", "npm run build"]
+
+[start]
+cmd = "node dist/main.js"

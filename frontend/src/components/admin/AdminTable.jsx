@@ -60,8 +60,8 @@ const AdminTable = ({
               </th>
             )}
             {showIndex && (
-              <th className="admin-table-header w-16">
-                #
+              <th className="px-4 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-center w-12">
+                STT
               </th>
             )}
             {columns.map((column) => (
@@ -118,8 +118,8 @@ const AdminTable = ({
                   </td>
                 )}
                 {showIndex && (
-                  <td className="px-6 py-4 whitespace-nowrap text-[14px] text-gray-500 font-medium">
-                    {currentPage * pageSize + index + 1}
+                  <td className="px-4 py-5 text-center text-[12px] font-bold text-gray-400">
+                    {(currentPage * pageSize + index + 1).toString().padStart(2, '0')}
                   </td>
                 )}
                 {columns.map((column) => (
