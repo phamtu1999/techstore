@@ -57,5 +57,3 @@ const DashboardKPIs = ({ data, isLoading, userRole }) => {
 }
 
 export default DashboardKPIs
-
-export default DashboardKPIs
