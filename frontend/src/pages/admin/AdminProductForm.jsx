@@ -162,7 +162,8 @@ const AdminProductForm = () => {
       categoryId: formState.categoryId,
       imageUrls: sanitizeImageUrls(imageUrls),
       variants: [{
-        sku: editingProduct?.variants?.[0]?.sku || formState.sku || `${formState.slug}-sku`,
+        id: editingProduct?.variants?.[0]?.id,
+        sku: formState.sku || editingProduct?.variants?.[0]?.sku || `${formState.slug}-sku`,
         name: formState.modelName || formState.name,
         price: Number(formState.price),
         originalPrice: formState.originalPrice ? Number(formState.originalPrice) : null,

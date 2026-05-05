@@ -209,33 +209,43 @@ public class ProductAdminService {
 
     private void syncVariants(Product product, List<ProductRequest.VariantRequest> variantRequests) {
         if (variantRequests == null || variantRequests.isEmpty()) {
+            // Không xóa nếu đã có đơn hàng (hoặc xử lý an toàn hơn ở đây)
             product.getVariants().clear();
             return;
         }
 
-        // Tạo map SKU hiện tại để tra cứu nhanh
+        // Ưu tiên Map theo ID để tránh xóa nhầm bản ghi đang được tham chiếu
         Map<String, ProductVariant> existingVariantsMap = product.getVariants().stream()
-                .collect(Collectors.toMap(ProductVariant::getSku, v -> v));
+                .collect(Collectors.toMap(ProductVariant::getId, v -> v));
 
-        Set<String> incomingSkus = new HashSet<>();
+        Set<String> processedIds = new java.util.HashSet<>();
+        
         for (ProductRequest.VariantRequest req : variantRequests) {
-            String sku = req.getSku();
-            if (sku == null || sku.isBlank()) {
-                continue;
-            }
-            incomingSkus.add(sku);
+            ProductVariant variant = null;
             
-            ProductVariant variant = existingVariantsMap.get(sku);
+            // 1. Tìm theo ID gửi lên
+            if (req.getId() != null && !req.getId().isBlank()) {
+                variant = existingVariantsMap.get(req.getId());
+            }
+            
+            // 2. Nếu không thấy ID, thử tìm theo SKU
+            if (variant == null && req.getSku() != null && !req.getSku().isBlank()) {
+                variant = product.getVariants().stream()
+                        .filter(v -> req.getSku().equals(v.getSku()))
+                        .findFirst().orElse(null);
+            }
+
             if (variant == null) {
-                // Tạo mới nếu chưa có SKU này
+                // Tạo mới nếu thực sự là mới
                 variant = ProductVariant.builder()
                         .product(product)
-                        .sku(sku)
+                        .sku(req.getSku())
                         .build();
                 product.getVariants().add(variant);
             }
 
-            // Cập nhật các thông tin khác
+            // Cập nhật thông tin
+            variant.setSku(req.getSku()); // Cho phép đổi SKU trên chính bản ghi cũ
             variant.setName(req.getName());
             variant.setPrice(req.getPrice());
             variant.setOriginalPrice(req.getOriginalPrice());
@@ -244,10 +254,15 @@ public class ProductAdminService {
             variant.setSize(req.getSize());
             variant.setSortOrder(req.getSortOrder());
             variant.setActive(true);
+            
+            if (variant.getId() != null) {
+                processedIds.add(variant.getId());
+            }
         }
 
-        // Xóa các Variant cũ không còn xuất hiện trong request
-        product.getVariants().removeIf(v -> !incomingSkus.contains(v.getSku()));
+        // Chỉ xóa những Variant không nằm trong danh sách xử lý (processedIds)
+        // Lưu ý: Nếu variant đã có trong Order, DB vẫn sẽ chặn xóa ở bước save() nếu processedIds thiếu nó.
+        product.getVariants().removeIf(v -> v.getId() != null && !processedIds.contains(v.getId()));
     }
 
     private void syncAttributes(Product product, List<ProductRequest.AttributeRequest> attributeRequests) {
