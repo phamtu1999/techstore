@@ -123,4 +123,22 @@ public class GlobalExceptionHandler {
                         .result(errors)
                         .build());
     }
+    @ExceptionHandler(value = org.springframework.dao.DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse<?>> handlingDataIntegrityViolationException(org.springframework.dao.DataIntegrityViolationException exception) {
+        log.warn("Data integrity violation: {}", exception.getMessage());
+        String message = "Lỗi ràng buộc dữ liệu hoặc trùng lặp mã (SKU/Slug)";
+        
+        String detail = exception.getRootCause() != null ? exception.getRootCause().getMessage() : exception.getMessage();
+        if (detail != null && detail.contains("idx_variant_sku")) {
+            message = "Mã SKU này đã tồn tại ở một sản phẩm khác. Vui lòng kiểm tra lại.";
+        } else if (detail != null && detail.contains("slug")) {
+            message = "Đường dẫn (Slug) này đã tồn tại. Vui lòng đổi tên hoặc chỉnh sửa slug.";
+        }
+
+        return ResponseEntity.status(org.springframework.http.HttpStatus.CONFLICT)
+                .body(ApiResponse.<Object>builder()
+                        .code(409)
+                        .message(message)
+                        .build());
+    }
 }

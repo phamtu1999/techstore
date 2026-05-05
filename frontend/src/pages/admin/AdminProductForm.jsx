@@ -63,7 +63,9 @@ const AdminProductForm = () => {
         setEditingProduct(p)
         setFormState({
           name: p.name, slug: p.slug, brandId: p.brand?.id || '', categoryId: String(p.category?.id || ''),
-          description: p.description, price: v.price || '', originalPrice: v.originalPrice || '', stockQuantity: v.stockQuantity || 0, modelName: v.name || '', active: p.active
+          description: p.description, price: v.price || '', originalPrice: v.originalPrice || '', 
+          stockQuantity: v.stockQuantity || 0, modelName: v.name || '', active: p.active,
+          sku: v.sku || ''
         })
         setImageUrls(sanitizeImageUrls(p.imageUrls || p.images?.map(img => img.url)))
         setSpecs(normalizeSpecs(p.attributes))
