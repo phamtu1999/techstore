@@ -3,6 +3,7 @@ import api from '../utils/axios'
 export const productsAPI = {
   getAll: (params) => api.get('/products', { params }),
   getAdminAll: (params) => api.get('/admin/products', { params }),
+  getAdminById: (id) => api.get(`/admin/products/${id}`),
   getById: (slug) => api.get(`/products/${slug}`),
   getByCategory: (category, params) => api.get('/products', { params: { category, ...params } }),
   search: (keyword, params) => api.get('/products', { params: { q: keyword, ...params } }),

@@ -58,7 +58,7 @@ const AdminProducts = () => {
   }, [navigate])
 
   const handleEdit = useCallback((product) => {
-    navigate(`/admin/products/${product.slug}/edit`)
+    navigate(`/admin/products/${product.id}/edit`)
   }, [navigate])
 
   const handleDelete = async (product) => {
@@ -128,7 +128,7 @@ const AdminProducts = () => {
   const handleDuplicate = async (product) => {
     try {
       Swal.fire({ title: 'Đang nhân bản...', allowOutsideClick: false, didOpen: () => Swal.showLoading() })
-      const { data } = await productsAPI.getById(product.slug)
+      const { data } = await productsAPI.getAdminById(product.id)
       const p = data?.result
       
       const newProduct = {
@@ -172,7 +172,7 @@ const AdminProducts = () => {
   const handleToggleStatus = async (product) => {
     try {
       Swal.fire({ title: 'Đang xử lý...', allowOutsideClick: false, didOpen: () => Swal.showLoading() })
-      const { data } = await productsAPI.getById(product.slug)
+      const { data } = await productsAPI.getAdminById(product.id)
       const p = data?.result
 
       const payload = {

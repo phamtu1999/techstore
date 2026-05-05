@@ -23,9 +23,9 @@ const normalizeSpecs = (attributes = []) => {
 }
 
 const AdminProductForm = () => {
-  const { slug } = useParams()
+  const { id } = useParams()
   const navigate = useNavigate()
-  const isEditing = !!slug
+  const isEditing = !!id
 
   const [formState, setFormState] = useState(EMPTY_FORM)
   const [editingProduct, setEditingProduct] = useState(null)
@@ -55,7 +55,7 @@ const AdminProductForm = () => {
       if (!isEditing) return
       try {
         Swal.fire({ title: 'Đang tải...', allowOutsideClick: false, didOpen: () => Swal.showLoading() })
-        const { data } = await productsAPI.getById(slug)
+        const { data } = await productsAPI.getAdminById(id)
         const p = data?.result
         if (!p) throw new Error('Product not found')
         
@@ -74,7 +74,7 @@ const AdminProductForm = () => {
       }
     }
     fetchProduct()
-  }, [slug, isEditing, navigate])
+  }, [id, isEditing, navigate])
 
   const generateSlug = (name) => {
     return name

@@ -84,7 +84,7 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="products/new" element={<AdminProductForm />} />
-          <Route path="products/:slug/edit" element={<AdminProductForm />} />
+          <Route path="products/:id/edit" element={<AdminProductForm />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="inventory" element={<AdminInventory />} />
           <Route path="categories" element={<AdminCategories />} />
