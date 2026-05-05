@@ -38,8 +38,7 @@ public class RateLimitingAspect {
     private String getClientIp(HttpServletRequest request) {
         String xfHeader = request.getHeader("X-Forwarded-For");
         if (xfHeader != null && !xfHeader.isBlank()) {
-            String[] ips = xfHeader.split(",");
-            return ips[ips.length - 1].trim();
+            return xfHeader.split(",")[0].trim();
         }
         return request.getRemoteAddr();
     }

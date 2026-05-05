@@ -26,11 +26,11 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
     @EntityGraph(attributePaths = {"category", "brand"})
     Optional<Product> findBySlug(String slug);
 
-    @EntityGraph(attributePaths = {"category", "brand", "images", "variants", "attributes"})
+    @EntityGraph(attributePaths = {"category", "brand"})
     @Query("SELECT p FROM Product p WHERE p.slug = :slug")
     Optional<Product> fetchBySlugWithDetails(@Param("slug") String slug);
 
-    @EntityGraph(attributePaths = {"category", "brand", "images", "variants", "attributes"})
+    @EntityGraph(attributePaths = {"category", "brand"})
     @Query("SELECT p FROM Product p WHERE p.id = :id")
     Optional<Product> fetchByIdWithDetails(@Param("id") String id);
 

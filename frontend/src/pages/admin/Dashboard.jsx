@@ -57,7 +57,7 @@ const Dashboard = () => {
   useEffect(() => { fetchDashboardData() }, [timeRange])
 
   return (
-    <div className="space-y-5 sm:space-y-10 pb-12 sm:pb-20 animate-fade-in px-3 sm:px-0">
+    <div className="space-y-5 sm:space-y-10 pb-12 sm:pb-20 animate-fade-in px-0">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
         <div className="min-w-0">

@@ -22,9 +22,11 @@ export class ProxyService {
   ) {
     const rawUrl = this.configService.get<string>('BACKEND_URL') || 'http://localhost:8081';
     const normalizedUrl = rawUrl.trim().replace(/\/+$/, '');
-    this.backendUrl = normalizedUrl.startsWith('http://') || normalizedUrl.startsWith('https://')
+    this.backendUrl = (normalizedUrl.startsWith('http://') || normalizedUrl.startsWith('https://'))
       ? normalizedUrl
-      : `https://${normalizedUrl}`;
+      : (normalizedUrl.includes('localhost') || normalizedUrl.includes(':') || !normalizedUrl.includes('.') 
+          ? `http://${normalizedUrl}` 
+          : `https://${normalizedUrl}`);
     this.logger.log(`ProxyService initialized with backendUrl: ${this.backendUrl}`);
   }
 
@@ -138,12 +140,29 @@ export class ProxyService {
       // Nếu là lệnh thay đổi dữ liệu (POST, PUT, DELETE, PATCH) thành công, xóa sạch cache
       const isMutation = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method.toUpperCase());
       if (isMutation && response.status >= 200 && response.status < 300) {
-        this.logger.log(`[Proxy] Mutation detected on ${path}. Invalidating entire cache for consistency.`);
-        const manager = this.cacheManager as any;
-        if (typeof manager.reset === 'function') {
-          await manager.reset();
-        } else if (typeof manager.clear === 'function') {
-          await manager.clear();
+        this.logger.log(`[Proxy] Mutation detected on ${path}. Invalidating proxy cache...`);
+        try {
+          const manager = this.cacheManager as any;
+          const store = manager.store;
+          
+          // Nếu dùng Redis (ioredis), ta có thể quét và xóa theo pattern
+          if (store && store.client && typeof store.client.keys === 'function') {
+            const client = store.client;
+            const keys = await client.keys('proxy:cache:*');
+            if (keys.length > 0) {
+              await client.del(...keys);
+              this.logger.log(`[Proxy] Deleted ${keys.length} cached proxy keys`);
+            }
+          } else {
+            // Fallback cho in-memory cache
+            if (typeof manager.reset === 'function') {
+              await manager.reset();
+            } else if (typeof manager.clear === 'function') {
+              await manager.clear();
+            }
+          }
+        } catch (e) {
+          this.logger.error(`[Proxy] Failed to invalidate cache: ${e.message}`);
         }
       }
 

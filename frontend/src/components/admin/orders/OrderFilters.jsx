@@ -11,21 +11,19 @@ const OrderFilters = ({
   onReset
 }) => {
   return (
-    <div className="card">
+    <div className="bg-white dark:bg-dark-card rounded-[1.5rem] p-4 sm:p-6 border border-border dark:border-dark-border shadow-sm">
       <div className="space-y-4">
-        {/* Search Bar */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
           <input
             type="text"
             placeholder="Tìm theo mã đơn, tên khách hàng, số điện thoại..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="input pl-10 w-full"
+            className="w-full h-12 pl-11 pr-4 rounded-2xl border border-border dark:border-dark-border bg-white dark:bg-dark-bg text-text-primary dark:text-dark-text focus:ring-4 focus:ring-primary-main/10 focus:border-primary-main outline-none text-sm font-medium"
           />
         </div>
 
-        {/* Advanced Filters Row */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Trạng thái</label>

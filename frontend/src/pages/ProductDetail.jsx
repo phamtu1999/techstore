@@ -14,8 +14,10 @@ import {
   getProductImageSources,
   handleProductImageError,
 } from '../utils/productImageFallback'
-import Product3DViewer from '../components/products/Product3DViewer'
 import { Rotate3d } from 'lucide-react'
+import React, { Suspense, lazy } from 'react'
+
+const Product3DViewer = lazy(() => import('../components/products/Product3DViewer'))
 
 const ProductDetail = () => {
   const { slug } = useParams()
@@ -142,10 +144,12 @@ const ProductDetail = () => {
         <div className="space-y-3 sm:space-y-6 lg:sticky lg:top-32 h-fit">
           <div className="group relative aspect-square bg-white rounded-2xl sm:rounded-[2.5rem] overflow-hidden border border-gray-100 shadow-sm flex items-center justify-center p-2.5 sm:p-4 transition-all hover:shadow-2xl">
             {show3D ? (
-              <Product3DViewer type={
-                currentProduct.category?.slug?.includes('laptop') ? 'laptop' : 
-                (currentProduct.category?.slug?.includes('dong-ho') ? 'watch' : 'phone')
-              } />
+              <Suspense fallback={<div className="animate-pulse bg-gray-100 w-full h-full rounded-2xl flex items-center justify-center text-xs font-bold text-gray-400">Đang tải mô hình 3D...</div>}>
+                <Product3DViewer type={
+                  currentProduct.category?.slug?.includes('laptop') ? 'laptop' : 
+                  (currentProduct.category?.slug?.includes('dong-ho') ? 'watch' : 'phone')
+                } />
+              </Suspense>
             ) : (
               <img
                 src={selectedImage || images[0]}

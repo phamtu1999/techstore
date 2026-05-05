@@ -300,11 +300,18 @@ const AdminOrders = () => {
   ]
 
   return (
-    <div className="space-y-6 sm:space-y-10 pb-16 sm:pb-20 animate-in fade-in duration-500">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3">
-        <div>
-          <h2 className="text-3xl font-black text-gray-900 tracking-tight">Quản Lý <span className="text-primary-600">Đơn Hàng</span></h2>
-          <p className="text-sm font-medium text-gray-500 mt-1">Theo dõi và cập nhật trạng thái đơn hàng thời gian thực.</p>
+    <div className="space-y-5 sm:space-y-8 pb-16 sm:pb-20 animate-in fade-in duration-500">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+        <div className="max-w-2xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-main/10 text-primary-main text-xs font-bold uppercase tracking-[0.2em] mb-3">
+            Orders
+          </div>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-text-primary dark:text-dark-text tracking-tight">
+            Quản lý <span className="text-primary-main">đơn hàng</span>
+          </h2>
+          <p className="text-sm sm:text-base font-medium text-text-secondary dark:text-gray-400 mt-2 leading-relaxed">
+            Theo dõi, xử lý và cập nhật trạng thái đơn hàng theo thời gian thực.
+          </p>
         </div>
       </div>
 

@@ -1,14 +1,13 @@
 export const toCamelCase = (obj: any): any => {
   if (Array.isArray(obj)) {
     return obj.map((v) => toCamelCase(v));
-  } else if (obj !== null && obj !== undefined && obj.constructor === Object) {
-    return Object.keys(obj).reduce(
-      (result, key) => ({
-        ...result,
-        [key.replace(/(_\w)/g, (m) => m[1].toUpperCase())]: toCamelCase(obj[key]),
-      }),
-      {},
-    );
+  } else if (obj !== null && typeof obj === 'object' && obj.constructor === Object) {
+    const result: any = {};
+    for (const key of Object.keys(obj)) {
+      const camelKey = key.replace(/(_\w)/g, (m) => m[1].toUpperCase());
+      result[camelKey] = toCamelCase(obj[key]);
+    }
+    return result;
   }
   return obj;
 };
@@ -16,14 +15,13 @@ export const toCamelCase = (obj: any): any => {
 export const toSnakeCase = (obj: any): any => {
   if (Array.isArray(obj)) {
     return obj.map((v) => toSnakeCase(v));
-  } else if (obj !== null && obj !== undefined && obj.constructor === Object) {
-    return Object.keys(obj).reduce(
-      (result, key) => ({
-        ...result,
-        [key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`)]: toSnakeCase(obj[key]),
-      }),
-      {},
-    );
+  } else if (obj !== null && typeof obj === 'object' && obj.constructor === Object) {
+    const result: any = {};
+    for (const key of Object.keys(obj)) {
+      const snakeKey = key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+      result[snakeKey] = toSnakeCase(obj[key]);
+    }
+    return result;
   }
   return obj;
 };
