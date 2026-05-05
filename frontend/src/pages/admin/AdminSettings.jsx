@@ -88,6 +88,15 @@ const AdminSettings = () => {
                 setVatRate(data.vatRate.toString())
                 setStoreStatus(data.storeStatus)
                 
+                // Default states for non-backend settings yet
+                const defaultPayment = { vnpay: true, momo: true, cod: true, bankTransfer: true };
+                setPaymentMethods(defaultPayment);
+                setCodFee('0');
+                setMinOrder('0');
+                setMetaTitle('Tech Store');
+                setMetaKeywords('điện thoại, laptop');
+                setMetaDescription('Hệ thống bán lẻ điện thoại, laptop chính hãng');
+
                 // Save original for comparison
                 setOriginalData({
                     storeName: data.storeName,
@@ -99,7 +108,7 @@ const AdminSettings = () => {
                     timezone: data.timezone,
                     vatRate: data.vatRate,
                     storeStatus: data.storeStatus,
-                    paymentMethods: mockPayment,
+                    paymentMethods: defaultPayment,
                     codFee: 0,
                     minOrder: 0,
                     metaTitle: 'Tech Store',
@@ -190,38 +199,36 @@ const AdminSettings = () => {
         { id: 'database', label: 'Dữ liệu', icon: Database, group: 'Hệ thống' },
     ]
 
-    const groupedTabs = tabs.reduce((acc, tab) => {
-        if (!acc[tab.group]) acc[tab.group] = []
-        acc[tab.group].push(tab)
-        return acc
-    }, {})
-
     return (
-        <div className="min-h-screen bg-[#f8fafc] dark:bg-dark-bg -m-6 p-6 space-y-6 animate-fade-in pb-32">
+        <div className="min-h-screen bg-[#f8fafc] dark:bg-dark-bg -m-6 p-6 space-y-8 animate-fade-in pb-32">
             <div className="flex items-center gap-2 text-sm text-gray-500">
                 <span className="hover:text-primary-600 cursor-pointer transition-colors" onClick={() => navigate('/admin')}>Dashboard</span>
                 <ChevronRight className="h-4 w-4" />
                 <span className="font-semibold text-gray-900">Cài đặt</span>
             </div>
 
-            <div className="bg-white dark:bg-dark-card rounded-[2rem] p-8 border border-gray-100 dark:border-dark-border shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            {/* Header Card */}
+            <div className="bg-white dark:bg-dark-card rounded-[2.5rem] p-8 border border-gray-100 dark:border-dark-border shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                     <div className="flex items-center gap-6">
-                        <div className="p-4 bg-gradient-to-br from-orange-500 to-primary-600 rounded-2xl shadow-lg shadow-primary-200">
+                        <div className="p-5 bg-gradient-to-br from-primary-600 to-orange-500 rounded-[1.5rem] shadow-xl shadow-primary-200/50">
                             <Settings className="h-8 w-8 text-white" />
                         </div>
                         <div>
                             <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Cài đặt hệ thống</h1>
-                            <p className="text-gray-500 font-medium mt-1">Quản lý cấu hình, bảo mật và tùy chỉnh cửa hàng</p>
+                            <div className="mt-1.5 flex items-center gap-3">
+                                <p className="text-gray-500 font-medium">Quản lý cấu hình, bảo mật và tùy chỉnh cửa hàng</p>
+                                <span className="px-2 py-0.5 bg-primary-50 text-primary-600 text-[10px] font-bold rounded-full border border-primary-100 uppercase tracking-wider">v2.0</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 bg-gray-50/50 dark:bg-white/5 p-2 rounded-2xl border border-gray-100 dark:border-white/10">
                         {hasChanges && (
                             <button 
                                 onClick={handleDiscard} 
                                 disabled={loading || saving} 
-                                className="px-6 h-12 rounded-xl font-black text-[13px] text-gray-500 hover:bg-gray-50 hover:text-rose-600 transition-all disabled:opacity-50 flex items-center gap-2"
+                                className="px-6 h-11 rounded-xl font-bold text-[13px] text-gray-500 hover:bg-white dark:hover:bg-dark-card hover:text-rose-600 transition-all disabled:opacity-50 flex items-center gap-2 hover:shadow-sm"
                             >
                                 <RefreshCcw className="h-4 w-4" />
                                 Hủy bỏ
@@ -230,10 +237,10 @@ const AdminSettings = () => {
                         <button 
                             onClick={handleSave} 
                             disabled={!hasChanges || saving || loading} 
-                            className={`px-8 h-12 rounded-xl font-black text-[13px] flex items-center gap-2 transition-all duration-300 relative overflow-hidden group border-2 ${
+                            className={`px-8 h-11 rounded-xl font-black text-[13px] flex items-center gap-2 transition-all duration-300 relative overflow-hidden group border-2 ${
                                 hasChanges 
-                                    ? 'text-white bg-gradient-to-r from-primary-600 to-orange-500 shadow-lg shadow-primary-200/50 hover:scale-105 active:scale-95 border-transparent' 
-                                    : 'text-gray-400 bg-gray-50 border-gray-100 cursor-not-allowed'
+                                    ? 'text-white bg-gradient-to-r from-primary-600 to-orange-500 shadow-lg shadow-primary-200/50 hover:scale-[1.02] active:scale-95 border-transparent' 
+                                    : 'text-gray-400 bg-gray-100 border-gray-200 cursor-not-allowed'
                             }`}
                         >
                             {saving ? (
@@ -250,74 +257,69 @@ const AdminSettings = () => {
                         </button>
                     </div>
                 </div>
-                <div className="mt-2 flex items-center gap-2 text-[10px] font-bold text-gray-300 uppercase tracking-widest">
-                    <div className="h-1 w-1 rounded-full bg-gray-300"></div>
-                    <span>System Settings v2.0 • Active Action Bar</span>
+
+                {/* Horizontal Navigation Tabs */}
+                <div className="mt-10 flex flex-wrap items-center gap-2 border-t border-gray-100 dark:border-dark-border pt-6">
+                    {tabs.map(tab => (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)}
+                            className={`flex items-center gap-2.5 px-6 py-3 rounded-2xl transition-all duration-300 group relative ${
+                                activeTab === tab.id 
+                                    ? 'bg-primary-600 text-white shadow-lg shadow-primary-100' 
+                                    : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'
+                            }`}
+                        >
+                            <tab.icon className={`h-4 w-4 ${activeTab === tab.id ? 'text-white' : 'text-gray-400 group-hover:text-primary-600'}`} />
+                            <span className={`text-[13px] tracking-tight ${activeTab === tab.id ? 'font-bold' : 'font-semibold'}`}>{tab.label}</span>
+                            {activeTab === tab.id && (
+                                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-8 h-1.5 bg-primary-600 rounded-t-full hidden lg:block"></div>
+                            )}
+                        </button>
+                    ))}
                 </div>
             </div>
         
-            <div className="flex flex-col lg:flex-row gap-6">
-                <div className="w-full lg:w-72 space-y-6">
-                    {Object.entries(groupedTabs).map(([group, groupTabs]) => (
-                        <div key={group} className="space-y-1">
-                            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-4 pt-4 pb-2">{group}</h3>
-                            {groupTabs.map(tab => (
-                                <button
-                                    key={tab.id}
-                                    onClick={() => setActiveTab(tab.id)}
-                                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 group relative ${
-                                        activeTab === tab.id 
-                                            ? 'bg-primary-50 text-primary-700' 
-                                            : 'text-gray-500 hover:bg-gray-100/50 hover:text-gray-900'
-                                    }`}
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <tab.icon className={`h-4 w-4 ${activeTab === tab.id ? 'text-primary-600' : 'text-gray-400 group-hover:text-gray-600'}`} />
-                                        <span className={`text-[13px] tracking-tight ${activeTab === tab.id ? 'font-bold' : 'font-medium'}`}>{tab.label}</span>
-                                    </div>
-                                    {activeTab === tab.id && (
-                                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary-600 rounded-r-full"></div>
-                                    )}
-                                </button>
-                            ))}
-                        </div>
-                    ))}
-                </div>
-
-                <div className="flex-1">
-                    <div className="mb-6">
-                        <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">{tabs.find(t => t.id === activeTab)?.label}</h2>
+            <div className="max-w-6xl mx-auto">
+                <div className="mb-8 flex items-center justify-between">
+                    <div>
+                        <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-3">
+                            {tabs.find(t => t.id === activeTab)?.label}
+                            <span className="w-2 h-2 rounded-full bg-primary-500 animate-pulse"></span>
+                        </h2>
                         <p className="text-gray-500 font-medium text-sm mt-1">Cấu hình chi tiết các tham số của hệ thống</p>
                     </div>
+                </div>
 
-                    <div className="max-w-4xl">
-                        {activeTab === 'general' && <GeneralSettings 
-                             logo={logo} uploading={uploading} handleLogoChange={handleLogoChange}
-                             storeName={storeName} setStoreName={setStoreName} supportEmail={supportEmail} setSupportEmail={setSupportEmail}
-                             hotlinePhone={hotlinePhone} setHotlinePhone={setHotlinePhone} address={address} setAddress={setAddress}
-                             currency={currency} setCurrency={setCurrency} timezone={timezone} setTimezone={setTimezone}
-                             vatRate={vatRate} setVatRate={setVatRate} storeStatus={storeStatus} setStoreStatus={setStoreStatus}
-                        />}
+                <div className="animate-slide-up">
+                    {activeTab === 'general' && <GeneralSettings 
+                         logo={logo} uploading={uploading} handleLogoChange={handleLogoChange}
+                         storeName={storeName} setStoreName={setStoreName} supportEmail={supportEmail} setSupportEmail={setSupportEmail}
+                         hotlinePhone={hotlinePhone} setHotlinePhone={setHotlinePhone} address={address} setAddress={setAddress}
+                         currency={currency} setCurrency={setCurrency} timezone={timezone} setTimezone={setTimezone}
+                         vatRate={vatRate} setVatRate={setVatRate} storeStatus={storeStatus} setStoreStatus={setStoreStatus}
+                    />}
+
                         {activeTab === 'payment' && (
                             <div className="space-y-6">
-                                <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-xl p-6 border border-blue-200">
-                                    <h3 className="font-bold text-blue-900 mb-2 flex items-center gap-2">
-                                        <CreditCard className="h-5 w-5" /> 
+                                <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-[2rem] p-8 border border-blue-100 dark:border-white/5">
+                                    <h3 className="font-black text-blue-900 dark:text-blue-200 mb-2 flex items-center gap-3 text-lg">
+                                        <CreditCard className="h-6 w-6" /> 
                                         Cổng thanh toán
                                     </h3>
-                                    <p className="text-sm text-blue-700 mb-4">Quản lý các phương thức thanh toán khả dụng cho khách hàng</p>
+                                    <p className="text-sm text-blue-700 dark:text-blue-300/80 mb-8 font-medium">Quản lý các phương thức thanh toán khả dụng cho khách hàng</p>
                                     
-                                    <div className="space-y-3">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {/* VNPAY */}
-                                        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                                            <div className="flex items-center justify-between p-4">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <div className="bg-white dark:bg-dark-bg rounded-2xl border border-gray-100 dark:border-dark-border p-5 hover:shadow-md transition-all">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-xl flex items-center justify-center">
                                                         <CreditCard className="h-6 w-6 text-blue-600" />
                                                     </div>
                                                     <div>
-                                                        <span className="font-bold text-gray-900 block">VNPAY</span>
-                                                        <span className="text-xs text-gray-500">Cổng thanh toán trực tuyến</span>
+                                                        <span className="font-bold text-gray-900 dark:text-white block">VNPAY</span>
+                                                        <span className="text-xs text-gray-500 font-medium">Cổng thanh toán trực tuyến</span>
                                                     </div>
                                                 </div>
                                                 <label className="relative inline-flex items-center cursor-pointer">
@@ -332,40 +334,16 @@ const AdminSettings = () => {
                                             </div>
                                         </div>
 
-                                        {/* Momo */}
-                                        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                                            <div className="flex items-center justify-between p-4">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center">
-                                                        <span className="text-xl font-bold text-pink-600">M</span>
-                                                    </div>
-                                                    <div>
-                                                        <span className="font-bold text-gray-900 block">Momo</span>
-                                                        <span className="text-xs text-gray-500">Ví điện tử Momo</span>
-                                                    </div>
-                                                </div>
-                                                <label className="relative inline-flex items-center cursor-pointer">
-                                                    <input 
-                                                        type="checkbox" 
-                                                        className="sr-only peer" 
-                                                        checked={paymentMethods.momo} 
-                                                        onChange={(e) => setPaymentMethods(p => ({...p, momo: e.target.checked}))}
-                                                    />
-                                                    <div className="w-11 h-6 bg-gray-200 peer-focus:ring-2 peer-focus:ring-primary-500 rounded-full peer-checked:bg-primary-600 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
-                                                </label>
-                                            </div>
-                                        </div>
-
                                         {/* COD */}
-                                        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                                            <div className="flex items-center justify-between p-4">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                        <div className="bg-white dark:bg-dark-bg rounded-2xl border border-gray-100 dark:border-dark-border p-5 hover:shadow-md transition-all">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-12 h-12 bg-green-50 dark:bg-green-900/20 rounded-xl flex items-center justify-center">
                                                         <DollarSign className="h-6 w-6 text-green-600" />
                                                     </div>
                                                     <div>
-                                                        <span className="font-bold text-gray-900 block">Thanh toán COD</span>
-                                                        <span className="text-xs text-gray-500">Thanh toán khi nhận hàng</span>
+                                                        <span className="font-bold text-gray-900 dark:text-white block">Thanh toán COD</span>
+                                                        <span className="text-xs text-gray-500 font-medium">Thanh toán khi nhận hàng</span>
                                                     </div>
                                                 </div>
                                                 <label className="relative inline-flex items-center cursor-pointer">
@@ -379,80 +357,28 @@ const AdminSettings = () => {
                                                 </label>
                                             </div>
                                         </div>
-
-                                        {/* Bank Transfer */}
-                                        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                                            <div className="flex items-center justify-between p-4">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                                                        <Store className="h-6 w-6 text-purple-600" />
-                                                    </div>
-                                                    <div>
-                                                        <span className="font-bold text-gray-900 block">Chuyển khoản ngân hàng</span>
-                                                        <span className="text-xs text-gray-500">Chuyển khoản trực tiếp</span>
-                                                    </div>
-                                                </div>
-                                                <label className="relative inline-flex items-center cursor-pointer">
-                                                    <input 
-                                                        type="checkbox" 
-                                                        className="sr-only peer" 
-                                                        checked={paymentMethods.bankTransfer} 
-                                                        onChange={(e) => setPaymentMethods(p => ({...p, bankTransfer: e.target.checked}))}
-                                                    />
-                                                    <div className="w-11 h-6 bg-gray-200 peer-focus:ring-2 peer-focus:ring-primary-500 rounded-full peer-checked:bg-primary-600 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
-                                                </label>
-                                            </div>
-                                        </div>
-
-                                        {/* Stripe (International) */}
-                                        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden opacity-60">
-                                            <div className="flex items-center justify-between p-4">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
-                                                        <Globe className="h-6 w-6 text-indigo-600" />
-                                                    </div>
-                                                    <div>
-                                                        <span className="font-bold text-gray-900 block flex items-center gap-2">
-                                                            Stripe
-                                                            <span className="text-xs px-2 py-0.5 bg-gray-200 text-gray-600 rounded-full">Sắp ra mắt</span>
-                                                        </span>
-                                                        <span className="text-xs text-gray-500">Thanh toán quốc tế</span>
-                                                    </div>
-                                                </div>
-                                                <label className="relative inline-flex items-center cursor-not-allowed">
-                                                    <input type="checkbox" className="sr-only peer" disabled />
-                                                    <div className="w-11 h-6 bg-gray-200 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5"></div>
-                                                </label>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
 
                                 {/* Payment Settings */}
-                                <div className="bg-white rounded-xl p-6 border border-gray-200">
-                                    <h3 className="font-bold text-gray-900 mb-4">Cài đặt thanh toán</h3>
-                                    <div className="space-y-4">
-                                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                                            <div>
-                                                <span className="font-semibold text-gray-900 block">Phí COD</span>
-                                                <span className="text-xs text-gray-500">Phí thu thêm khi thanh toán COD</span>
-                                            </div>
+                                <div className="bg-white dark:bg-dark-card rounded-[2rem] p-8 border border-gray-100 dark:border-dark-border shadow-sm">
+                                    <h3 className="text-lg font-black text-gray-900 dark:text-white mb-6">Cài đặt thanh toán</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-1">Phí COD</label>
                                             <input 
                                                 type="number" 
-                                                className="w-48 h-12 px-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 font-bold text-gray-900" 
+                                                className="w-full h-14 px-5 bg-gray-50 dark:bg-dark-bg border border-gray-100 dark:border-dark-border rounded-2xl focus:ring-2 focus:ring-primary-500 font-bold text-gray-900 dark:text-white outline-none" 
                                                 value={codFee}
                                                 onChange={(e) => setCodFee(e.target.value)}
                                                 placeholder="0 ₫"
                                             />
                                         </div>
-                                        <div className="flex items-center justify-between p-6 bg-gray-50/50 rounded-2xl border border-gray-100">
-                                            <div>
-                                                <span className="font-bold text-gray-900 block tracking-tight text-lg">Đơn hàng tối thiểu</span>
-                                                <span className="text-sm text-gray-500 font-medium">Giá trị đơn hàng tối thiểu để được phép đặt hàng</span>
-                                            </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-1">Đơn hàng tối thiểu</label>
                                             <input 
                                                 type="number" 
-                                                className="w-48 h-12 px-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 font-bold text-gray-900" 
+                                                className="w-full h-14 px-5 bg-gray-50 dark:bg-dark-bg border border-gray-100 dark:border-dark-border rounded-2xl focus:ring-2 focus:ring-primary-500 font-bold text-gray-900 dark:text-white outline-none" 
                                                 value={minOrder}
                                                 onChange={(e) => setMinOrder(e.target.value)}
                                                 placeholder="0 ₫"
@@ -485,21 +411,6 @@ const AdminSettings = () => {
                                                 onChange={(e) => setMetaTitle(e.target.value)}
                                                 placeholder="Nhập tiêu đề trang..." 
                                             />
-                                            <div className="flex justify-between px-1">
-                                                <span className="text-[11px] text-gray-400 font-medium">Tiêu đề xuất hiện trên tab trình duyệt</span>
-                                                <span className={`text-[11px] font-bold ${metaTitle.length > 60 ? 'text-orange-500' : 'text-gray-400'}`}>{metaTitle.length}/60</span>
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-1">Meta Keywords</label>
-                                            <input 
-                                                type="text" 
-                                                className="w-full h-14 px-5 bg-gray-50 dark:bg-dark-bg border border-gray-100 dark:border-dark-border rounded-2xl focus:ring-2 focus:ring-indigo-500 font-bold text-gray-900 dark:text-white transition-all outline-none" 
-                                                value={metaKeywords}
-                                                onChange={(e) => setMetaKeywords(e.target.value)}
-                                                placeholder="Từ khóa cách nhau bởi dấu phẩy..." 
-                                            />
                                         </div>
 
                                         <div className="space-y-2">
@@ -510,10 +421,6 @@ const AdminSettings = () => {
                                                 onChange={(e) => setMetaDescription(e.target.value)}
                                                 placeholder="Nhập mô tả ngắn về cửa hàng của bạn..."
                                             />
-                                            <div className="flex justify-between px-1">
-                                                <span className="text-[11px] text-gray-400 font-medium">Mô tả xuất hiện dưới link tìm kiếm Google</span>
-                                                <span className={`text-[11px] font-bold ${metaDescription.length > 160 ? 'text-orange-500' : 'text-gray-400'}`}>{metaDescription.length}/160</span>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -545,10 +452,8 @@ const AdminSettings = () => {
                     </div>
                 </div>
             </div>
-        </div>
     )
 }
 
 export default AdminSettings
-
 
