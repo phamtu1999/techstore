@@ -200,30 +200,33 @@ const AdminSettings = () => {
     ]
 
     return (
-        <div className="min-h-screen bg-[#f8fafc] dark:bg-dark-bg -m-6 p-6 space-y-8 animate-fade-in pb-32">
-            <div className="flex items-center gap-2 text-sm text-gray-500">
-                <span className="hover:text-primary-600 cursor-pointer transition-colors" onClick={() => navigate('/admin')}>Dashboard</span>
+        <div className="space-y-5 sm:space-y-8 pb-24 sm:pb-32 animate-fade-in">
+            <div className="flex items-center gap-2 text-xs sm:text-sm text-text-secondary dark:text-gray-400">
+                <span className="hover:text-primary-main cursor-pointer transition-colors" onClick={() => navigate('/admin')}>Dashboard</span>
                 <ChevronRight className="h-4 w-4" />
-                <span className="font-semibold text-gray-900">Cài đặt</span>
+                <span className="font-semibold text-text-primary dark:text-dark-text">Cài đặt</span>
             </div>
 
             {/* Header Card */}
-            <div className="bg-white dark:bg-dark-card rounded-[2.5rem] p-8 border border-gray-100 dark:border-dark-border shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+            <div className="bg-white dark:bg-dark-card rounded-[1.75rem] sm:rounded-[2rem] p-5 sm:p-6 lg:p-8 border border-border dark:border-dark-border shadow-sm">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                     <div className="flex items-center gap-6">
-                        <div className="p-5 bg-gradient-to-br from-primary-600 to-orange-500 rounded-[1.5rem] shadow-xl shadow-primary-200/50">
+                        <div className="p-4 sm:p-5 bg-gradient-to-br from-primary-main to-orange-500 rounded-[1.25rem] shadow-xl shadow-primary-main/20">
                             <Settings className="h-8 w-8 text-white" />
                         </div>
                         <div>
-                            <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Cài đặt hệ thống</h1>
-                            <div className="mt-1.5 flex items-center gap-3">
-                                <p className="text-gray-500 font-medium">Quản lý cấu hình, bảo mật và tùy chỉnh cửa hàng</p>
-                                <span className="px-2 py-0.5 bg-primary-50 text-primary-600 text-[10px] font-bold rounded-full border border-primary-100 uppercase tracking-wider">v2.0</span>
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-main/10 text-primary-main text-[10px] font-bold uppercase tracking-[0.2em] mb-2">
+                                System
+                            </div>
+                            <h1 className="text-2xl sm:text-3xl font-black text-text-primary dark:text-dark-text tracking-tight">Cài đặt hệ thống</h1>
+                            <div className="mt-2 flex items-center gap-3 flex-wrap">
+                                <p className="text-text-secondary dark:text-gray-400 font-medium">Quản lý cấu hình, bảo mật và tùy chỉnh cửa hàng</p>
+                                <span className="px-2 py-0.5 bg-primary-main/10 text-primary-main text-[10px] font-bold rounded-full border border-primary-main/10 uppercase tracking-wider">v2.0</span>
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3 bg-gray-50/50 dark:bg-white/5 p-2 rounded-2xl border border-gray-100 dark:border-white/10">
+                    <div className="flex items-center gap-3 bg-gray-50/70 dark:bg-white/5 p-2 rounded-2xl border border-border dark:border-dark-border">
                         {hasChanges && (
                             <button 
                                 onClick={handleDiscard} 
@@ -259,15 +262,15 @@ const AdminSettings = () => {
                 </div>
 
                 {/* Horizontal Navigation Tabs */}
-                <div className="mt-10 flex flex-wrap items-center gap-2 border-t border-gray-100 dark:border-dark-border pt-6">
+                <div className="mt-8 flex flex-wrap items-center gap-2 border-t border-border dark:border-dark-border pt-5">
                     {tabs.map(tab => (
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
-                            className={`flex items-center gap-2.5 px-6 py-3 rounded-2xl transition-all duration-300 group relative ${
+                            className={`flex items-center gap-2.5 px-5 py-3 rounded-2xl transition-all duration-300 group relative ${
                                 activeTab === tab.id 
-                                    ? 'bg-primary-600 text-white shadow-lg shadow-primary-100' 
-                                    : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'
+                                    ? 'bg-primary-main text-white shadow-lg shadow-primary-main/20' 
+                                    : 'text-text-secondary hover:bg-gray-50 dark:hover:bg-white/5 hover:text-text-primary dark:hover:text-dark-text'
                             }`}
                         >
                             <tab.icon className={`h-4 w-4 ${activeTab === tab.id ? 'text-white' : 'text-gray-400 group-hover:text-primary-600'}`} />
@@ -283,11 +286,11 @@ const AdminSettings = () => {
             <div className="max-w-6xl mx-auto">
                 <div className="mb-8 flex items-center justify-between">
                     <div>
-                        <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-3">
+                        <h2 className="text-2xl sm:text-3xl font-black text-text-primary dark:text-dark-text tracking-tight flex items-center gap-3">
                             {tabs.find(t => t.id === activeTab)?.label}
-                            <span className="w-2 h-2 rounded-full bg-primary-500 animate-pulse"></span>
+                            <span className="w-2 h-2 rounded-full bg-primary-main animate-pulse"></span>
                         </h2>
-                        <p className="text-gray-500 font-medium text-sm mt-1">Cấu hình chi tiết các tham số của hệ thống</p>
+                        <p className="text-text-secondary dark:text-gray-400 font-medium text-sm mt-1">Cấu hình chi tiết các tham số của hệ thống</p>
                     </div>
                 </div>
 
