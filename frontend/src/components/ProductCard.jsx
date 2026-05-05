@@ -26,14 +26,20 @@ const ProductCard = ({ product, showBadge }) => {
     if (isCartLoading) return
     
     try {
+      const variantId = currentVariant.id || product.defaultVariantId
+      
+      if (!variantId) {
+        throw new Error('Sản phẩm không có phiên bản hợp lệ')
+      }
+
       await dispatch(addToCart({ 
         productId: product.id, 
-        variantId: currentVariant.id,
+        variantId: variantId,
         quantity: 1 
       })).unwrap()
       setToast({ message: 'Đã thêm vào giỏ hàng!', type: 'success' })
     } catch (error) {
-      setToast({ message: error || 'Không thể thêm vào giỏ hàng', type: 'error' })
+      setToast({ message: typeof error === 'string' ? error : (error.message || 'Không thể thêm vào giỏ hàng'), type: 'error' })
     }
   }
 

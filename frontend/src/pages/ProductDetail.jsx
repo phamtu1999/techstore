@@ -107,7 +107,7 @@ const ProductDetail = () => {
       ).unwrap()
       setToast({ message: 'Đã thêm sản phẩm vào giỏ hàng thành công!', type: 'success' })
     } catch (error) {
-      setToast({ message: error || 'Không thể thêm vào giỏ hàng', type: 'error' })
+      setToast({ message: typeof error === 'string' ? error : (error.message || 'Không thể thêm vào giỏ hàng'), type: 'error' })
     }
   }
 

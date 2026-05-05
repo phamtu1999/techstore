@@ -161,6 +161,7 @@ public class ProductMapper {
                 .currency("VND")
                 .rating(averageRating)
                 .reviewCount(reviewCount)
+                .defaultVariantId(getVisibleVariants(product).stream().findFirst().map(ProductVariant::getId).orElse(null))
                 .isNew(product.getCreatedAt() != null && product.getCreatedAt().isAfter(java.time.LocalDateTime.now().minusDays(30)));
 
         if (product.getBrand() != null) {
@@ -201,6 +202,7 @@ public class ProductMapper {
                 .currency("VND")
                 .rating(product.getRating() == null ? 0D : product.getRating())
                 .reviewCount(product.getReviewCount() == null ? 0L : product.getReviewCount())
+                .defaultVariantId(product.getDefaultVariantId())
                 .isNew(product.getCreatedAt() != null && product.getCreatedAt().isAfter(java.time.LocalDateTime.now().minusDays(30)));
 
         if (StringUtils.hasText(product.getBrandId())) {
