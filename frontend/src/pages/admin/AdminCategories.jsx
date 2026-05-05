@@ -178,7 +178,21 @@ const AdminCategories = () => {
     .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0)) // Sort by sortOrder ascending
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-5 sm:space-y-8 pb-12 sm:pb-16 animate-fade-in">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+        <div className="max-w-2xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-main/10 text-primary-main text-xs font-bold uppercase tracking-[0.2em] mb-3">
+            Categories
+          </div>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-text-primary dark:text-dark-text tracking-tight">
+            Quản lý danh mục
+          </h1>
+          <p className="text-sm sm:text-base text-text-secondary dark:text-gray-400 mt-2 leading-relaxed">
+            Tạo, sắp xếp và quản lý danh mục sản phẩm theo cấu trúc rõ ràng.
+          </p>
+        </div>
+      </div>
+
       {/* Header with Search & Filters */}
       <div className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
         <div className="flex flex-col md:flex-row gap-3 flex-1 w-full">
@@ -229,7 +243,7 @@ const AdminCategories = () => {
       {isLoading ? (
         <div className="flex justify-center py-20"><div className="loading-spinner"></div></div>
       ) : (
-        <div className="bg-white dark:bg-dark-card rounded-3xl shadow-sm border border-gray-100 dark:border-dark-border overflow-hidden">
+        <div className="bg-white dark:bg-dark-card rounded-[1.75rem] shadow-sm border border-border dark:border-dark-border overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
@@ -341,7 +355,7 @@ const AdminCategories = () => {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50 p-4 transition-all duration-300">
-          <div className="bg-white dark:bg-dark-card rounded-[2.5rem] shadow-2xl w-full max-w-3xl overflow-hidden animate-zoom-in border border-white/20 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-dark-card rounded-[1.75rem] shadow-2xl w-full max-w-3xl overflow-hidden animate-zoom-in border border-border dark:border-dark-border max-h-[90vh] overflow-y-auto">
             {/* Header */}
             <div className="relative p-8 overflow-hidden sticky top-0 bg-white dark:bg-dark-card z-10">
                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-400 via-primary-600 to-primary-400"></div>
