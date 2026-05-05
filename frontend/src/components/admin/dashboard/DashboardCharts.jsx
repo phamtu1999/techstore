@@ -1,6 +1,6 @@
 import { 
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, 
-  PieChart, Pie, Cell, Legend, Label, BarChart, Bar
+  PieChart, Pie, Cell
 } from 'recharts'
 import { useState } from 'react'
 
@@ -13,19 +13,19 @@ const DashboardCharts = ({ revenueHistory, statusDistribution, isLoading, userRo
     CONFIRMED: '#3b82f6',  // Blue 500
     SHIPPED: '#8b5cf6',    // Violet 500
     SHIPPING: '#6366f1',   // Indigo 500
-    PENDING: '#f97316',   // Orange 500 - Matches Orders
+    PENDING: '#ea580c',   // Primary Orange
     REVIEWED: '#eab308',   // Yellow 500
     CANCELLED: '#ef4444',  // Red 500
   }
 
   const statusMap = {
-    DELIVERED: 'Đã giao',
-    PENDING: 'Chờ xử lý',
-    CANCELLED: 'Đã hủy',
-    CONFIRMED: 'Xác nhận',
-    SHIPPED: 'Đang giao',
-    SHIPPING: 'Đang chuyển',
-    REVIEWED: 'Đã đánh giá'
+    DELIVERED: 'GIAO THÀNH CÔNG',
+    PENDING: 'CHỜ XÁC NHẬN',
+    CANCELLED: 'ĐÃ HỦY',
+    CONFIRMED: 'ĐÃ XÁC NHẬN',
+    SHIPPED: 'ĐANG GIAO HÀNG',
+    SHIPPING: 'ĐANG CHUYỂN',
+    REVIEWED: 'ĐÃ ĐÁNH GIÁ'
   }
 
   const priority = ['DELIVERED', 'CONFIRMED', 'SHIPPED', 'SHIPPING', 'PENDING', 'REVIEWED', 'CANCELLED'];
@@ -40,35 +40,26 @@ const DashboardCharts = ({ revenueHistory, statusDistribution, isLoading, userRo
 
   const totalOrders = pieData.reduce((acc, curr) => acc + curr.value, 0)
 
-  const formatCurrency = (val) => {
-    return new Intl.NumberFormat('vi-VN', {
-      notation: 'compact',
-      compactDisplay: 'short',
-      maximumFractionDigits: 1
-    }).format(val);
+  const formatCurrencyY = (val) => {
+    if (val >= 1000000) return `${(val / 1000000).toFixed(0)} Tr`;
+    if (val >= 1000) return `${(val / 1000).toFixed(0)} K`;
+    return val;
   }
 
   const formatFullCurrency = (val) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val);
 
   const sortedHistory = [...(revenueHistory || [])].sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  const onPieEnter = (_, index) => {
-    setActiveIndex(index);
-  };
-  const onPieLeave = () => {
-    setActiveIndex(null);
-  };
-
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white dark:bg-dark-card rounded-xl border border-gray-100 dark:border-dark-border shadow-[0_10px_30px_rgba(0,0,0,0.1)] p-4">
-          <p className="font-bold text-gray-900 dark:text-white mb-2">{label}</p>
+        <div className="bg-white rounded-xl border border-gray-100 shadow-xl p-4">
+          <p className="font-bold text-gray-900 mb-2">{label}</p>
           {payload.map((entry, index) => (
             <div key={index} className="flex items-center gap-2 mt-1">
               <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: entry.color }}></span>
-              <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                {entry.name}: <span className="font-bold text-gray-900 dark:text-white">
+              <span className="text-sm font-medium text-gray-600">
+                {entry.name}: <span className="font-bold text-gray-900">
                   {entry.name === 'Doanh thu' ? formatFullCurrency(entry.value) : entry.value}
                 </span>
               </span>
@@ -82,123 +73,85 @@ const DashboardCharts = ({ revenueHistory, statusDistribution, isLoading, userRo
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-        <div className="lg:col-span-2 space-y-4 sm:space-y-6">
-            <div className="bg-white dark:bg-dark-card p-4 sm:p-6 rounded-[20px] shadow-[0_8px_24px_rgba(0,0,0,0.05)] border border-gray-100 animate-pulse h-64"></div>
-            <div className="bg-white dark:bg-dark-card p-4 sm:p-6 rounded-[20px] shadow-[0_8px_24px_rgba(0,0,0,0.05)] border border-gray-100 animate-pulse h-64"></div>
-        </div>
-        <div className="bg-white dark:bg-dark-card p-4 sm:p-6 rounded-[20px] shadow-[0_8px_24px_rgba(0,0,0,0.05)] border border-gray-100 animate-pulse h-96"></div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 h-[400px] bg-white rounded-2xl border border-gray-100 shadow-sm animate-pulse"></div>
+        <div className="h-[400px] bg-white rounded-2xl border border-gray-100 shadow-sm animate-pulse"></div>
       </div>
     )
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-      {/* Split Charts Section */}
-      <div className="lg:col-span-2 flex flex-col gap-4 sm:gap-6 min-w-0">
-        
-        {isFinanceVisible && (
-            <div className="bg-white dark:bg-dark-card p-4 sm:p-6 rounded-[20px] border border-gray-100 dark:border-dark-border shadow-[0_8px_24px_rgba(0,0,0,0.05)] overflow-hidden">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 sm:mb-6">
-                    <div>
-                        <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">Doanh thu</h3>
-                        <p className="text-xs text-gray-500 font-medium">30 ngày gần nhất</p>
-                    </div>
-                </div>
-                
-                <div className="w-full min-h-[240px] sm:min-h-[300px]">
-                    <ResponsiveContainer width="100%" height={280}>
-                        <AreaChart data={sortedHistory} margin={{ top: 10, right: 8, left: 0, bottom: 0 }}>
-                            <defs>
-                                <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                                </linearGradient>
-                            </defs>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                            <XAxis 
-                                dataKey="date" 
-                                tick={{ fontSize: 9, fontWeight: 600, fill: '#94a3b8' }} 
-                                tickFormatter={(val) => val.split('-').slice(1).reverse().join('/')}
-                                tickLine={false} axisLine={false} dy={8}
-                            />
-                            <YAxis 
-                                tick={{ fontSize: 9, fontWeight: 600, fill: '#64748b' }} 
-                                tickFormatter={formatCurrency} 
-                                tickLine={false} axisLine={false} 
-                            />
-                            <Tooltip content={<CustomTooltip />} />
-                            <Area 
-                                type="monotone" dataKey="revenue" name="Doanh thu" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" 
-                                animationDuration={1000}
-                            />
-                        </AreaChart>
-                    </ResponsiveContainer>
-                </div>
-            </div>
-        )}
-
-        {/* Orders Bar Chart */}
-        <div className="bg-white dark:bg-dark-card p-4 sm:p-6 rounded-[20px] border border-gray-100 dark:border-dark-border shadow-[0_8px_24px_rgba(0,0,0,0.05)] overflow-hidden">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 sm:mb-6">
-                <div>
-                    <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">Số lượng đơn hàng</h3>
-                    <p className="text-xs text-gray-500 font-medium">30 ngày gần nhất</p>
-                </div>
-            </div>
-            
-            <div className="w-full min-h-[240px] sm:min-h-[300px]">
-                <ResponsiveContainer width="100%" height={280}>
-                    <BarChart data={sortedHistory} margin={{ top: 10, right: 8, left: 0, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                        <XAxis 
-                            dataKey="date" 
-                            tick={{ fontSize: 10, fontWeight: 600, fill: '#94a3b8' }} 
-                            tickFormatter={(val) => val.split('-').slice(1).reverse().join('/')}
-                            tickLine={false} axisLine={false} dy={10}
-                        />
-                        <YAxis 
-                            tick={{ fontSize: 10, fontWeight: 600, fill: '#64748b' }} 
-                            tickLine={false} axisLine={false}
-                        />
-                        <Tooltip content={<CustomTooltip />} cursor={{fill: '#f1f5f9', opacity: 0.4}}/>
-                        <Bar 
-                            dataKey="orders" name="Số đơn" fill="#f97316" radius={[4, 4, 0, 0]} barSize={20}
-                            animationDuration={1000}
-                        />
-                    </BarChart>
-                </ResponsiveContainer>
-            </div>
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Revenue Area Chart */}
+      <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+        <div className="mb-6">
+          <h3 className="text-[18px] font-bold text-gray-900">Doanh thu 30 ngày gần nhất</h3>
+          <p className="text-[13px] text-gray-500 font-medium">Thống kê biến động doanh thu theo thời gian</p>
         </div>
-
+        
+        <div className="w-full h-[300px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={sortedHistory} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <defs>
+                <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
+                  <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+              <XAxis 
+                dataKey="date" 
+                tick={{ fontSize: 10, fontWeight: 600, fill: '#94a3b8' }} 
+                tickFormatter={(val) => val.split('-').slice(1).reverse().join('/')}
+                tickLine={false} axisLine={false} dy={10}
+              />
+              <YAxis 
+                tick={{ fontSize: 10, fontWeight: 600, fill: '#64748b' }} 
+                tickFormatter={formatCurrencyY} 
+                tickLine={false} axisLine={false} 
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Area 
+                type="monotone" 
+                dataKey="revenue" 
+                name="Doanh thu" 
+                stroke="#10b981" 
+                strokeWidth={3} 
+                fillOpacity={1} 
+                fill="url(#colorRev)" 
+                animationDuration={1500}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
       </div>
 
-      {/* Distribution Pie Chart */}
-      <div className="bg-white dark:bg-dark-card p-6 rounded-[20px] border border-gray-100 dark:border-dark-border shadow-[0_8px_24px_rgba(0,0,0,0.05)] flex flex-col h-full">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Trạng thái đơn hàng</h3>
-        <p className="text-xs text-gray-500 font-medium mb-6">Tỷ lệ phân bổ đơn hàng</p>
+      {/* Distribution Donut Chart */}
+      <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col">
+        <h3 className="text-[18px] font-bold text-gray-900">Trạng thái đơn hàng</h3>
+        <p className="text-[13px] text-gray-500 font-medium mb-6">Tỷ lệ phân bổ theo trạng thái</p>
         
-        <div className="w-full relative flex-shrink-0 min-h-[250px]">
-          <ResponsiveContainer width="100%" height={250}>
+        <div className="w-full relative h-[220px] flex-shrink-0">
+          <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={pieData}
                 cx="50%"
                 cy="50%"
-                innerRadius={70}
-                outerRadius={95}
-                paddingAngle={3}
+                innerRadius={65}
+                outerRadius={85}
+                paddingAngle={4}
                 dataKey="value"
-                onMouseEnter={onPieEnter}
-                onMouseLeave={onPieLeave}
-                animationDuration={1000}
+                onMouseEnter={(_, index) => setActiveIndex(index)}
+                onMouseLeave={() => setActiveIndex(null)}
+                animationDuration={1500}
                 stroke="none"
               >
                 {pieData.map((entry, index) => (
                   <Cell 
                     key={`cell-${index}`} 
                     fill={entry.color} 
-                    opacity={activeIndex === index || activeIndex === null ? 1 : 0.3}
+                    opacity={activeIndex === index || activeIndex === null ? 1 : 0.4}
                     className="transition-opacity duration-300 outline-none"
                   />
                 ))}
@@ -206,30 +159,29 @@ const DashboardCharts = ({ revenueHistory, statusDistribution, isLoading, userRo
               <Tooltip content={<CustomTooltip />} />
             </PieChart>
           </ResponsiveContainer>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none flex flex-col items-center justify-center">
-            <span className="text-3xl font-bold text-gray-900 dark:text-white leading-none">{totalOrders}</span>
-            <span className="text-xs text-gray-500 font-medium mt-1 uppercase">Đơn hàng</span>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
+            <span className="text-3xl font-black text-gray-900 block leading-none">{totalOrders}</span>
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1 block">TỔNG ĐƠN</span>
           </div>
         </div>
 
-        {/* Custom Legend attached securely */}
-        <div className="mt-8 flex-1 flex flex-col justify-center space-y-3">
+        <div className="mt-6 space-y-2.5 flex-1 overflow-y-auto custom-scrollbar pr-1">
           {pieData.map((item, i) => (
             <div 
-                key={i} 
-                className={`flex items-center justify-between p-3 rounded-xl transition-all duration-200 cursor-pointer ${
-                    activeIndex === i ? 'bg-gray-50 dark:bg-dark-bg scale-[1.02]' : 'hover:bg-gray-50 dark:hover:bg-dark-bg'
-                }`}
-                onMouseEnter={() => setActiveIndex(i)}
-                onMouseLeave={() => setActiveIndex(null)}
+              key={i} 
+              className={`flex items-center justify-between p-2.5 rounded-xl transition-all duration-200 ${
+                activeIndex === i ? 'bg-gray-50 scale-[1.02]' : 'hover:bg-gray-50'
+              }`}
+              onMouseEnter={() => setActiveIndex(i)}
+              onMouseLeave={() => setActiveIndex(null)}
             >
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: item.color }}></div>
-                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">{item.name}</span>
+              <div className="flex items-center gap-2.5">
+                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }}></div>
+                <span className="text-[13px] font-bold text-gray-600">{item.name}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-gray-900 dark:text-white">{item.value}</span>
-                <span className="text-xs font-medium text-gray-400">({((item.value / totalOrders) * 100).toFixed(1)}%)</span>
+                <span className="text-[13px] font-black text-gray-900">{item.value}</span>
+                <span className="text-[11px] font-bold text-gray-400">({totalOrders > 0 ? ((item.value / totalOrders) * 100).toFixed(0) : 0}%)</span>
               </div>
             </div>
           ))}

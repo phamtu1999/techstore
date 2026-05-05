@@ -33,43 +33,45 @@ const ProductFilters = ({
   const hasActiveFilters = selectedCategory || selectedStatus || searchTerm
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-3 xl:gap-4">
-        <div className="relative flex-1 xl:max-w-xl w-full min-w-0">
-          <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+    <div className="space-y-6">
+      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+        <div className="relative flex-1 xl:max-w-xl">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
           <input
             type="text"
-            placeholder="Tìm kiếm sản phẩm..."
+            placeholder="Tìm kiếm sản phẩm, SKU hoặc mô tả..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyPress={handleKeyPress}
-            className="w-full h-12 pl-11 pr-10 border border-border dark:border-dark-border bg-white dark:bg-dark-bg rounded-2xl focus:ring-4 focus:ring-primary-main/10 focus:border-primary-main transition-all outline-none text-sm font-medium text-text-primary dark:text-dark-text"
+            className="w-full h-[46px] pl-12 pr-10 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-primary-600/20 focus:bg-white transition-all outline-none text-[14px] font-medium placeholder:text-gray-400"
           />
           {searchTerm && (
             <button
               onClick={() => { setSearchTerm(''); handleSearch() }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
             >
               <X className="h-4 w-4" />
             </button>
           )}
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 w-full xl:w-auto">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`inline-flex items-center justify-center h-12 px-4 rounded-2xl border transition-all w-full sm:w-auto font-semibold ${hasActiveFilters ? 'border-primary-main bg-primary-main/5 text-primary-main' : 'border-border dark:border-dark-border bg-white dark:bg-dark-bg text-text-primary dark:text-dark-text hover:bg-gray-50 dark:hover:bg-dark-card'}`}
+            className={`inline-flex items-center h-[46px] px-5 rounded-xl border font-bold text-[13px] transition-all ${hasActiveFilters ? 'border-primary-600 bg-primary-600/5 text-primary-600' : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'}`}
           >
             <Filter className="mr-2 h-4 w-4" />
-            Lọc
+            Bộ lọc
             {hasActiveFilters && (
-              <span className="ml-2 px-2 py-0.5 bg-primary-main text-white text-[11px] rounded-full">
+              <span className="ml-2 w-5 h-5 flex items-center justify-center bg-primary-600 text-white text-[10px] rounded-full">
                 {[selectedCategory, selectedStatus, searchTerm].filter(Boolean).length}
               </span>
             )}
           </button>
 
-          <label className="inline-flex cursor-pointer items-center justify-center h-12 px-4 rounded-2xl border border-border dark:border-dark-border bg-white dark:bg-dark-bg text-text-primary dark:text-dark-text hover:bg-gray-50 dark:hover:bg-dark-card transition-all w-full sm:w-auto font-semibold">
+          <div className="h-6 w-[1px] bg-gray-200 mx-1 hidden sm:block"></div>
+
+          <label className="inline-flex cursor-pointer items-center h-[46px] px-4 rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-all font-bold text-[13px]">
             <FileUp className="mr-2 h-4 w-4" />
             Nhập Excel
             <input type="file" className="hidden" accept=".xlsx,.xls" onChange={handleImportExcel} />
@@ -77,15 +79,15 @@ const ProductFilters = ({
 
           <button 
             onClick={handleExportExcel} 
-            className="inline-flex items-center justify-center h-12 px-4 rounded-2xl border border-border dark:border-dark-border bg-white dark:bg-dark-bg text-text-primary dark:text-dark-text hover:bg-gray-50 dark:hover:bg-dark-card transition-all w-full sm:w-auto font-semibold"
+            className="inline-flex items-center h-[46px] px-4 rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-all font-bold text-[13px]"
           >
             <FileDown className="mr-2 h-4 w-4" />
-            Xuất Excel
+            Xuất file
           </button>
 
           <button 
             onClick={handleAddNew} 
-            className="inline-flex items-center justify-center h-12 px-5 rounded-2xl bg-primary-main text-white font-bold shadow-lg shadow-primary-main/20 hover:opacity-95 transition-all w-full sm:w-auto"
+            className="inline-flex items-center h-[46px] px-5 rounded-xl bg-primary-600 text-white font-bold text-[13px] shadow-sm shadow-primary-600/20 hover:bg-primary-700 transition-all active:scale-95"
           >
             <Plus className="mr-2 h-5 w-5" />
             Thêm sản phẩm
@@ -94,26 +96,26 @@ const ProductFilters = ({
       </div>
 
       {showFilters && (
-        <div className="bg-gray-50 dark:bg-dark-bg rounded-[1.5rem] p-4 sm:p-5 border border-border dark:border-dark-border animate-slide-in-up">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-text-primary dark:text-dark-text">Bộ lọc nâng cao</h3>
+        <div className="bg-gray-50/50 rounded-2xl p-6 border border-gray-100 animate-slide-in-up">
+          <div className="flex items-center justify-between mb-5">
+            <h3 className="text-[15px] font-bold text-gray-900 uppercase tracking-wider">Lọc nâng cao</h3>
             {hasActiveFilters && (
               <button
                 onClick={clearFilters}
-                className="text-sm text-primary-main hover:opacity-80 font-semibold"
+                className="text-[13px] text-primary-600 hover:underline font-bold"
               >
-                Xóa tất cả
+                Xóa tất cả bộ lọc
               </button>
             )}
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div>
-              <label className="block text-sm font-medium text-text-secondary dark:text-gray-400 mb-2">Danh mục</label>
+              <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">Danh mục</label>
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full h-11 px-3 rounded-2xl border border-border dark:border-dark-border bg-white dark:bg-dark-card focus:ring-4 focus:ring-primary-main/10 focus:border-primary-main outline-none text-sm text-text-primary dark:text-dark-text"
+                className="w-full h-11 px-4 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600 outline-none text-[14px] font-bold text-gray-700"
               >
                 <option value="">Tất cả danh mục</option>
                 {categories.map((cat) => (
@@ -125,11 +127,11 @@ const ProductFilters = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-text-secondary dark:text-gray-400 mb-2">Trạng thái</label>
+              <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">Trạng thái</label>
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
-                className="w-full h-11 px-3 rounded-2xl border border-border dark:border-dark-border bg-white dark:bg-dark-card focus:ring-4 focus:ring-primary-main/10 focus:border-primary-main outline-none text-sm text-text-primary dark:text-dark-text"
+                className="w-full h-11 px-4 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600 outline-none text-[14px] font-bold text-gray-700"
               >
                 <option value="">Tất cả trạng thái</option>
                 <option value="active">Đang hoạt động</option>
@@ -138,12 +140,24 @@ const ProductFilters = ({
               </select>
             </div>
 
+            <div>
+              <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">Sắp xếp</label>
+              <select
+                className="w-full h-11 px-4 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600 outline-none text-[14px] font-bold text-gray-700"
+              >
+                <option value="newest">Mới nhất</option>
+                <option value="oldest">Cũ nhất</option>
+                <option value="price-asc">Giá tăng dần</option>
+                <option value="price-desc">Giá giảm dần</option>
+              </select>
+            </div>
+
             <div className="flex items-end">
               <button
                 onClick={handleSearch}
-                className="w-full h-11 bg-primary-main text-white rounded-2xl font-bold hover:opacity-95 transition-colors"
+                className="w-full h-11 bg-gray-900 text-white rounded-xl font-bold text-[13px] hover:bg-gray-800 transition-colors active:scale-95"
               >
-                Áp dụng lọc
+                ÁP DỤNG
               </button>
             </div>
           </div>

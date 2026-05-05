@@ -200,88 +200,62 @@ const AdminSettings = () => {
     ]
 
     return (
-        <div className="space-y-5 sm:space-y-8 pb-24 sm:pb-32 animate-fade-in">
-            <div className="flex items-center gap-2 text-xs sm:text-sm text-text-secondary dark:text-gray-400">
-                <span className="hover:text-primary-main cursor-pointer transition-colors" onClick={() => navigate('/admin')}>Dashboard</span>
-                <ChevronRight className="h-4 w-4" />
-                <span className="font-semibold text-text-primary dark:text-dark-text">Cài đặt</span>
+    <div className="space-y-6 animate-fade-in">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div>
+                <h1 className="admin-h1">Cài đặt hệ thống</h1>
+                <p className="text-muted-label mt-1">
+                    Quản lý cấu hình, bảo mật và tùy chỉnh cửa hàng Tech Store.
+                </p>
             </div>
 
-            {/* Header Card */}
-            <div className="bg-white dark:bg-dark-card rounded-[1.75rem] sm:rounded-[2rem] p-5 sm:p-6 lg:p-8 border border-border dark:border-dark-border shadow-sm">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-                    <div className="flex items-center gap-6">
-                        <div className="p-4 sm:p-5 bg-gradient-to-br from-primary-main to-orange-500 rounded-[1.25rem] shadow-xl shadow-primary-main/20">
-                            <Settings className="h-8 w-8 text-white" />
-                        </div>
-                        <div>
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-main/10 text-primary-main text-[10px] font-bold uppercase tracking-[0.2em] mb-2">
-                                System
-                            </div>
-                            <h1 className="text-2xl sm:text-3xl font-black text-text-primary dark:text-dark-text tracking-tight">Cài đặt hệ thống</h1>
-                            <div className="mt-2 flex items-center gap-3 flex-wrap">
-                                <p className="text-text-secondary dark:text-gray-400 font-medium">Quản lý cấu hình, bảo mật và tùy chỉnh cửa hàng</p>
-                                <span className="px-2 py-0.5 bg-primary-main/10 text-primary-main text-[10px] font-bold rounded-full border border-primary-main/10 uppercase tracking-wider">v2.0</span>
-                            </div>
-                        </div>
-                    </div>
+            <div className="flex items-center gap-2">
+                {hasChanges && (
+                    <button 
+                        onClick={handleDiscard} 
+                        className="h-[42px] px-5 bg-white border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 transition-all text-[13px] flex items-center gap-2"
+                    >
+                        <RefreshCcw className="h-4 w-4" />
+                        Hoàn tác
+                    </button>
+                )}
+                <button 
+                    onClick={handleSave} 
+                    disabled={!hasChanges || saving || loading} 
+                    className="h-[42px] px-6 bg-admin-primary text-white rounded-xl font-bold text-[13px] flex items-center gap-2 shadow-sm shadow-admin-primary/20 hover:bg-admin-primary/90 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    {saving ? (
+                        <div className="h-4 w-4 border-2 border-white border-t-transparent animate-spin rounded-full"></div>
+                    ) : (
+                        <Save className="h-4 w-4" />
+                    )}
+                    LƯU THAY ĐỔI
+                </button>
+            </div>
+        </div>
 
-                    <div className="flex items-center gap-3 bg-gray-50/70 dark:bg-white/5 p-2 rounded-2xl border border-border dark:border-dark-border">
-                        {hasChanges && (
-                            <button 
-                                onClick={handleDiscard} 
-                                disabled={loading || saving} 
-                                className="px-6 h-11 rounded-xl font-bold text-[13px] text-gray-500 hover:bg-white dark:hover:bg-dark-card hover:text-rose-600 transition-all disabled:opacity-50 flex items-center gap-2 hover:shadow-sm"
-                            >
-                                <RefreshCcw className="h-4 w-4" />
-                                Hủy bỏ
-                            </button>
+        {/* Tab Navigation */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="flex overflow-x-auto scrollbar-hide">
+                {tabs.map(tab => (
+                    <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={`flex items-center gap-2.5 px-6 py-4 transition-all relative whitespace-nowrap ${
+                            activeTab === tab.id 
+                                ? 'text-admin-primary font-bold' 
+                                : 'text-gray-500 hover:text-gray-900 font-medium'
+                        }`}
+                    >
+                        <tab.icon className="h-4 w-4" />
+                        <span className="text-[14px]">{tab.label}</span>
+                        {activeTab === tab.id && (
+                            <div className="absolute bottom-0 left-0 w-full h-[3px] bg-admin-primary rounded-t-full"></div>
                         )}
-                        <button 
-                            onClick={handleSave} 
-                            disabled={!hasChanges || saving || loading} 
-                            className={`px-8 h-11 rounded-xl font-black text-[13px] flex items-center gap-2 transition-all duration-300 relative overflow-hidden group border-2 ${
-                                hasChanges 
-                                    ? 'text-white bg-gradient-to-r from-primary-600 to-orange-500 shadow-lg shadow-primary-200/50 hover:scale-[1.02] active:scale-95 border-transparent' 
-                                    : 'text-gray-400 bg-gray-100 border-gray-200 cursor-not-allowed'
-                            }`}
-                        >
-                            {saving ? (
-                                <>
-                                    <div className="h-4 w-4 border-2 border-white border-t-transparent animate-spin rounded-full"></div>
-                                    <span>Đang lưu...</span>
-                                </>
-                            ) : (
-                                <>
-                                    <Save className={`h-4 w-4 ${hasChanges ? 'group-hover:rotate-12' : ''} transition-transform`} /> 
-                                    <span>LƯU CÀI ĐẶT</span>
-                                </>
-                            )}
-                        </button>
-                    </div>
-                </div>
-
-                {/* Horizontal Navigation Tabs */}
-                <div className="mt-8 flex flex-wrap items-center gap-2 border-t border-border dark:border-dark-border pt-5">
-                    {tabs.map(tab => (
-                        <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id)}
-                            className={`flex items-center gap-2.5 px-5 py-3 rounded-2xl transition-all duration-300 group relative ${
-                                activeTab === tab.id 
-                                    ? 'bg-primary-main text-white shadow-lg shadow-primary-main/20' 
-                                    : 'text-text-secondary hover:bg-gray-50 dark:hover:bg-white/5 hover:text-text-primary dark:hover:text-dark-text'
-                            }`}
-                        >
-                            <tab.icon className={`h-4 w-4 ${activeTab === tab.id ? 'text-white' : 'text-gray-400 group-hover:text-primary-600'}`} />
-                            <span className={`text-[13px] tracking-tight ${activeTab === tab.id ? 'font-bold' : 'font-semibold'}`}>{tab.label}</span>
-                            {activeTab === tab.id && (
-                                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-8 h-1.5 bg-primary-600 rounded-t-full hidden lg:block"></div>
-                            )}
-                        </button>
-                    ))}
-                </div>
+                    </button>
+                ))}
             </div>
+        </div>
         
             <div className="max-w-6xl mx-auto">
                 <div className="mb-8 flex items-center justify-between">
@@ -305,24 +279,26 @@ const AdminSettings = () => {
 
                         {activeTab === 'payment' && (
                             <div className="space-y-6">
-                                <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-[2rem] p-8 border border-blue-100 dark:border-white/5">
-                                    <h3 className="font-black text-blue-900 dark:text-blue-200 mb-2 flex items-center gap-3 text-lg">
-                                        <CreditCard className="h-6 w-6" /> 
-                                        Cổng thanh toán
-                                    </h3>
-                                    <p className="text-sm text-blue-700 dark:text-blue-300/80 mb-8 font-medium">Quản lý các phương thức thanh toán khả dụng cho khách hàng</p>
+                                <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div className="p-2.5 bg-blue-50 rounded-xl text-blue-600">
+                                            <CreditCard className="h-5 w-5" />
+                                        </div>
+                                        <h3 className="text-[16px] font-bold text-gray-900">Cổng thanh toán</h3>
+                                    </div>
+                                    <p className="text-[13px] text-gray-500 mb-6 font-medium">Quản lý các phương thức thanh toán khả dụng cho khách hàng</p>
                                     
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {/* VNPAY */}
-                                        <div className="bg-white dark:bg-dark-bg rounded-2xl border border-gray-100 dark:border-dark-border p-5 hover:shadow-md transition-all">
+                                        <div className="bg-white rounded-xl border border-gray-100 p-4 hover:border-admin-primary/30 transition-all">
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-xl flex items-center justify-center">
-                                                        <CreditCard className="h-6 w-6 text-blue-600" />
+                                                    <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                                                        <CreditCard className="h-5 w-5 text-blue-600" />
                                                     </div>
                                                     <div>
-                                                        <span className="font-bold text-gray-900 dark:text-white block">VNPAY</span>
-                                                        <span className="text-xs text-gray-500 font-medium">Cổng thanh toán trực tuyến</span>
+                                                        <span className="font-bold text-[14px] text-gray-900 block">VNPAY</span>
+                                                        <span className="text-[12px] text-gray-400 font-medium">Cổng thanh toán trực tuyến</span>
                                                     </div>
                                                 </div>
                                                 <label className="relative inline-flex items-center cursor-pointer">
@@ -332,21 +308,21 @@ const AdminSettings = () => {
                                                         checked={paymentMethods.vnpay} 
                                                         onChange={(e) => setPaymentMethods(p => ({...p, vnpay: e.target.checked}))}
                                                     />
-                                                    <div className="w-11 h-6 bg-gray-200 peer-focus:ring-2 peer-focus:ring-primary-500 rounded-full peer-checked:bg-primary-600 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                                                    <div className="w-10 h-5.5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:transition-all peer-checked:bg-admin-primary"></div>
                                                 </label>
                                             </div>
                                         </div>
 
                                         {/* COD */}
-                                        <div className="bg-white dark:bg-dark-bg rounded-2xl border border-gray-100 dark:border-dark-border p-5 hover:shadow-md transition-all">
+                                        <div className="bg-white rounded-xl border border-gray-100 p-4 hover:border-admin-primary/30 transition-all">
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 bg-green-50 dark:bg-green-900/20 rounded-xl flex items-center justify-center">
-                                                        <DollarSign className="h-6 w-6 text-green-600" />
+                                                    <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+                                                        <DollarSign className="h-5 w-5 text-green-600" />
                                                     </div>
                                                     <div>
-                                                        <span className="font-bold text-gray-900 dark:text-white block">Thanh toán COD</span>
-                                                        <span className="text-xs text-gray-500 font-medium">Thanh toán khi nhận hàng</span>
+                                                        <span className="font-bold text-[14px] text-gray-900 block">Thanh toán COD</span>
+                                                        <span className="text-[12px] text-gray-400 font-medium">Thanh toán khi nhận hàng</span>
                                                     </div>
                                                 </div>
                                                 <label className="relative inline-flex items-center cursor-pointer">
@@ -356,7 +332,7 @@ const AdminSettings = () => {
                                                         checked={paymentMethods.cod} 
                                                         onChange={(e) => setPaymentMethods(p => ({...p, cod: e.target.checked}))}
                                                     />
-                                                    <div className="w-11 h-6 bg-gray-200 peer-focus:ring-2 peer-focus:ring-primary-500 rounded-full peer-checked:bg-primary-600 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                                                    <div className="w-10 h-5.5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:transition-all peer-checked:bg-admin-primary"></div>
                                                 </label>
                                             </div>
                                         </div>
@@ -364,27 +340,27 @@ const AdminSettings = () => {
                                 </div>
 
                                 {/* Payment Settings */}
-                                <div className="bg-white dark:bg-dark-card rounded-[2rem] p-8 border border-gray-100 dark:border-dark-border shadow-sm">
-                                    <h3 className="text-lg font-black text-gray-900 dark:text-white mb-6">Cài đặt thanh toán</h3>
+                                <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+                                    <h3 className="text-[16px] font-bold text-gray-900 mb-6">Cấu hình thanh toán</h3>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-1">Phí COD</label>
+                                            <label className="text-[12px] font-bold text-gray-500 uppercase tracking-wider pl-1">Phí COD (VND)</label>
                                             <input 
                                                 type="number" 
-                                                className="w-full h-14 px-5 bg-gray-50 dark:bg-dark-bg border border-gray-100 dark:border-dark-border rounded-2xl focus:ring-2 focus:ring-primary-500 font-bold text-gray-900 dark:text-white outline-none" 
+                                                className="w-full h-11 px-4 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-admin-primary/20 font-bold text-gray-900 outline-none transition-all" 
                                                 value={codFee}
                                                 onChange={(e) => setCodFee(e.target.value)}
-                                                placeholder="0 ₫"
+                                                placeholder="0"
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-1">Đơn hàng tối thiểu</label>
+                                            <label className="text-[12px] font-bold text-gray-500 uppercase tracking-wider pl-1">Đơn hàng tối thiểu (VND)</label>
                                             <input 
                                                 type="number" 
-                                                className="w-full h-14 px-5 bg-gray-50 dark:bg-dark-bg border border-gray-100 dark:border-dark-border rounded-2xl focus:ring-2 focus:ring-primary-500 font-bold text-gray-900 dark:text-white outline-none" 
+                                                className="w-full h-11 px-4 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-admin-primary/20 font-bold text-gray-900 outline-none transition-all" 
                                                 value={minOrder}
                                                 onChange={(e) => setMinOrder(e.target.value)}
-                                                placeholder="0 ₫"
+                                                placeholder="0"
                                             />
                                         </div>
                                     </div>
@@ -392,24 +368,24 @@ const AdminSettings = () => {
                             </div>
                         )}
                         {activeTab === 'seo' && (
-                            <div className="space-y-8">
-                                <div className="bg-white dark:bg-dark-card rounded-[2rem] p-8 border border-gray-100 dark:border-dark-border shadow-sm space-y-8">
-                                    <div className="flex items-center gap-4">
-                                        <div className="p-3 bg-indigo-50 dark:bg-indigo-950/20 rounded-xl text-indigo-600">
-                                            <Globe className="h-6 w-6" />
+                            <div className="space-y-6">
+                                <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+                                    <div className="flex items-center gap-3 mb-8">
+                                        <div className="p-2.5 bg-indigo-50 rounded-xl text-indigo-600">
+                                            <Globe className="h-5 w-5" />
                                         </div>
                                         <div>
-                                            <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Cấu hình SEO</h3>
-                                            <p className="text-sm text-gray-500 font-medium">Tối ưu hóa khả năng tìm kiếm trên Google, Facebook</p>
+                                            <h3 className="text-[16px] font-bold text-gray-900">Cấu hình SEO</h3>
+                                            <p className="text-[13px] text-gray-500 font-medium">Tối ưu hóa khả năng tìm kiếm trên Google, Facebook</p>
                                         </div>
                                     </div>
 
                                     <div className="grid grid-cols-1 gap-6">
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-1">Meta Title mặc định</label>
+                                            <label className="text-[12px] font-bold text-gray-500 uppercase tracking-wider pl-1">Meta Title mặc định</label>
                                             <input 
                                                 type="text" 
-                                                className="w-full h-14 px-5 bg-gray-50 dark:bg-dark-bg border border-gray-100 dark:border-dark-border rounded-2xl focus:ring-2 focus:ring-indigo-500 font-bold text-gray-900 dark:text-white transition-all outline-none" 
+                                                className="w-full h-11 px-4 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-500/20 font-bold text-gray-900 transition-all outline-none" 
                                                 value={metaTitle}
                                                 onChange={(e) => setMetaTitle(e.target.value)}
                                                 placeholder="Nhập tiêu đề trang..." 
@@ -417,9 +393,9 @@ const AdminSettings = () => {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-1">Meta Description (Mô tả)</label>
+                                            <label className="text-[12px] font-bold text-gray-500 uppercase tracking-wider pl-1">Meta Description (Mô tả)</label>
                                             <textarea 
-                                                className="w-full h-32 p-5 bg-gray-50 dark:bg-dark-bg border border-gray-100 dark:border-dark-border rounded-2xl focus:ring-2 focus:ring-indigo-500 font-bold text-gray-900 dark:text-white transition-all outline-none resize-none" 
+                                                className="w-full h-28 p-4 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-500/20 font-bold text-gray-900 transition-all outline-none resize-none" 
                                                 value={metaDescription}
                                                 onChange={(e) => setMetaDescription(e.target.value)}
                                                 placeholder="Nhập mô tả ngắn về cửa hàng của bạn..."
@@ -429,19 +405,21 @@ const AdminSettings = () => {
                                 </div>
 
                                 {/* Preview Card */}
-                                <div className="bg-gray-900 rounded-[2rem] p-8 shadow-2xl border border-gray-800">
-                                    <h4 className="text-gray-400 text-xs font-black uppercase tracking-widest mb-6 flex items-center gap-2">
-                                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                                        Xem trước trên Google
-                                    </h4>
-                                    <div className="space-y-2">
-                                        <div className="text-[#8ab4f8] text-xl font-medium hover:underline cursor-pointer truncate max-w-full">
+                                <div className="bg-[#1a1a2e] rounded-xl p-6 shadow-sm border border-gray-800">
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                                        <h4 className="text-gray-400 text-[11px] font-bold uppercase tracking-wider">
+                                            Xem trước trên Google
+                                        </h4>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <div className="text-[#8ab4f8] text-[16px] font-medium hover:underline cursor-pointer truncate">
                                             {metaTitle || 'Chưa có tiêu đề'}
                                         </div>
-                                        <div className="text-[#34a853] text-[15px] flex items-center gap-1">
-                                            https://techstore.com <span className="text-gray-500">▼</span>
+                                        <div className="text-[#34a853] text-[13px] flex items-center gap-1">
+                                            https://techstore.com <span className="text-gray-500 text-[10px]">▼</span>
                                         </div>
-                                        <div className="text-gray-400 text-[14px] leading-relaxed line-clamp-2">
+                                        <div className="text-gray-400 text-[13px] leading-relaxed line-clamp-2">
                                             {metaDescription || 'Chưa có mô tả để hiển thị kết quả tìm kiếm...'}
                                         </div>
                                     </div>

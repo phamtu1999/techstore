@@ -95,83 +95,77 @@ const AdminLayout = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-dark-bg transition-colors duration-300">
+    <div className="min-h-screen bg-admin-bg transition-colors duration-300 font-sans">
       <div className="flex">
-        <aside className="hidden lg:flex w-64 bg-[#0f172a] text-[#cbd5f5] border-r border-[#1e293b] min-h-screen fixed left-0 top-0 transition-colors duration-300 z-40 flex-col">
-          <div className="p-6">
+        {/* Sidebar */}
+        <aside className="hidden lg:flex w-[240px] bg-admin-sidebar text-gray-400 min-h-screen fixed left-0 top-0 z-40 flex-col shadow-xl">
+          <div className="p-8">
             <Link to="/" className="flex items-center gap-3 group" title="Về trang chủ">
-              {storeSettings?.logoUrl ? (
-                <img src={storeSettings.logoUrl} alt="Logo" className="h-10 w-10 rounded-xl object-contain bg-white shadow-md border border-gray-100" />
-              ) : (
-                <div className="h-10 w-10 bg-primary-MAIN rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
-                  <Store className="h-6 w-6 text-white" />
-                </div>
-              )}
-              <span className="text-xl font-bold text-white line-clamp-1">{storeSettings?.storeName || 'Tech Store'}</span>
+              <div className="h-10 w-10 bg-primary-600 rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
+                <Store className="h-6 w-6 text-white" />
+              </div>
+              <span className="text-xl font-bold text-white tracking-tight italic">Tech Store</span>
             </Link>
           </div>
 
-          <nav className="mt-4 px-4 text-left flex-1 overflow-y-auto">
-            <div className="px-2 mb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">Menu</div>
-            <div className="space-y-1 pb-6">
+          <nav className="mt-4 px-4 flex-1 overflow-y-auto custom-scrollbar">
+            <div className="px-4 mb-4 text-[12px] font-semibold text-gray-500 uppercase tracking-[0.1em]">Quản trị</div>
+            <div className="space-y-1.5 pb-6">
               {menuItems.map((item) => (
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 ${
+                  className={`flex items-center gap-3 px-4 py-3.5 rounded-lg transition-all duration-200 ${
                     isActive(item.path)
-                      ? 'bg-gradient-to-br from-[#f97316] to-[#fb923c] text-white shadow-md'
-                      : 'text-[#cbd5f5] hover:bg-[#1e293b] hover:text-white'
+                      ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/20'
+                      : 'text-gray-400 hover:bg-white/5 hover:text-white'
                   }`}
                 >
-                  <item.icon className="h-5 w-5" />
-                  <span className="font-medium">{item.label}</span>
+                  <item.icon className={`h-5 w-5 ${isActive(item.path) ? 'text-white' : 'text-gray-500'}`} />
+                  <span className="font-medium text-[14px]">{item.label}</span>
                 </Link>
               ))}
             </div>
           </nav>
 
-          <div className="mt-auto p-4 border-t border-[#1e293b]">
+          <div className="mt-auto p-6 border-t border-white/5">
             <button
               onClick={handleLogout}
-              className="flex items-center gap-3 px-3 py-3 text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 rounded-xl transition-all duration-200 w-full font-bold"
+              className="flex items-center gap-3 px-4 py-3.5 text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg transition-all duration-200 w-full font-bold group"
             >
-              <LogOut className="h-5 w-5" />
-              <span className="font-medium">Đăng xuất</span>
+              <LogOut className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+              <span className="font-medium text-[14px]">Đăng xuất</span>
             </button>
           </div>
         </aside>
 
+        {/* Mobile Sidebar */}
         {isMobileMenuOpen && (
           <div className="fixed inset-0 z-50 lg:hidden">
-            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
-            <div className="absolute left-0 top-0 h-full w-[86vw] max-w-[320px] bg-[#0f172a] text-white shadow-2xl flex flex-col">
-              <div className="p-5 border-b border-white/10 flex items-center justify-between">
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
+            <div className="absolute left-0 top-0 h-full w-[280px] bg-admin-sidebar text-white shadow-2xl flex flex-col">
+              <div className="p-8 border-b border-white/5 flex items-center justify-between">
                 <Link to="/" className="flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
-                  {storeSettings?.logoUrl ? (
-                    <img src={storeSettings.logoUrl} alt="Logo" className="h-10 w-10 rounded-xl object-contain bg-white" />
-                  ) : (
-                    <div className="h-10 w-10 bg-primary-MAIN rounded-xl flex items-center justify-center">
-                      <Store className="h-6 w-6 text-white" />
-                    </div>
-                  )}
-                  <span className="font-black text-lg line-clamp-1">{storeSettings?.storeName || 'Tech Store'}</span>
+                  <div className="h-10 w-10 bg-primary-600 rounded-xl flex items-center justify-center">
+                    <Store className="h-6 w-6 text-white" />
+                  </div>
+                  <span className="font-bold text-xl italic tracking-tight">Tech Store</span>
                 </Link>
-                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 rounded-xl hover:bg-white/10">
-                  <X className="h-5 w-5" />
+                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 rounded-xl hover:bg-white/10 text-gray-400">
+                  <X className="h-6 w-6" />
                 </button>
               </div>
 
-              <nav className="flex-1 overflow-y-auto p-4 space-y-1">
+              <nav className="flex-1 overflow-y-auto p-4 space-y-1.5 mt-4">
                 {menuItems.map((item) => (
                   <Link
                     key={item.path}
                     to={item.path}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-4 rounded-2xl transition-all ${
+                    className={`flex items-center gap-3 px-4 py-4 rounded-xl transition-all ${
                       isActive(item.path)
-                        ? 'bg-gradient-to-br from-[#f97316] to-[#fb923c] text-white shadow-md'
-                        : 'text-[#cbd5f5] hover:bg-[#1e293b] hover:text-white'
+                        ? 'bg-primary-600 text-white shadow-lg'
+                        : 'text-gray-400 hover:bg-white/5 hover:text-white'
                     }`}
                   >
                     <item.icon className="h-5 w-5" />
@@ -180,17 +174,17 @@ const AdminLayout = () => {
                 ))}
               </nav>
 
-              <div className="p-4 border-t border-white/10 space-y-3">
+              <div className="p-6 border-t border-white/5 space-y-3">
                 <button
                   onClick={toggleDarkMode}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-sm font-medium"
                 >
                   {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                   <span>{isDarkMode ? 'Chế độ sáng' : 'Chế độ tối'}</span>
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 transition-colors font-bold"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors font-bold"
                 >
                   <LogOut className="h-5 w-5" />
                   Đăng xuất
@@ -200,51 +194,57 @@ const AdminLayout = () => {
           </div>
         )}
 
-        <main className="flex-1 lg:ml-64 min-w-0">
-          <header className="bg-white dark:bg-dark-card border-b border-border dark:border-dark-border sticky top-0 z-30 transition-colors duration-300">
-            <div className="px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3 min-w-0">
+        {/* Main Content Area */}
+        <main className="flex-1 lg:ml-[240px] min-w-0 min-h-screen">
+          <header className="bg-white dark:bg-dark-card border-b border-gray-100 dark:border-dark-border sticky top-0 z-30 transition-colors duration-300 h-[72px] flex items-center">
+            <div className="px-8 w-full flex items-center justify-between gap-3">
+              <div className="flex items-center gap-4 min-w-0">
                 <button
                   onClick={() => setIsMobileMenuOpen(true)}
-                  className="lg:hidden p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-dark-bg transition-colors"
+                  className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-bg transition-colors"
                   aria-label="Mở menu admin"
                 >
-                  <Menu className="h-6 w-6 text-text-primary dark:text-dark-text" />
+                  <Menu className="h-6 w-6 text-gray-600 dark:text-dark-text" />
                 </button>
                 <div className="min-w-0">
-                  <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-text-primary dark:text-dark-text truncate">
+                  <h1 className="admin-h1 truncate">
                     {currentLabel}
                   </h1>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 sm:gap-4">
-                <button
-                  onClick={toggleDarkMode}
-                  className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-dark-bg transition-colors duration-200"
-                  title={isDarkMode ? 'Chế độ sáng' : 'Chế độ tối'}
-                >
-                  {isDarkMode ? (
-                    <Sun className="h-5 w-5 text-text-primary dark:text-dark-text" />
-                  ) : (
-                    <Moon className="h-5 w-5 text-text-primary dark:text-dark-text" />
-                  )}
-                </button>
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2">
+                   <button
+                    onClick={toggleDarkMode}
+                    className="p-2.5 rounded-lg border border-gray-100 hover:bg-gray-50 dark:hover:bg-dark-bg transition-colors duration-200"
+                    title={isDarkMode ? 'Chế độ sáng' : 'Chế độ tối'}
+                  >
+                    {isDarkMode ? (
+                      <Sun className="h-5 w-5 text-gray-600 dark:text-dark-text" />
+                    ) : (
+                      <Moon className="h-5 w-5 text-gray-600 dark:text-dark-text" />
+                    )}
+                  </button>
+                </div>
 
-                <div className="flex items-center gap-2 sm:gap-3">
+                <div className="h-8 w-[1px] bg-gray-100"></div>
+
+                <div className="flex items-center gap-3">
                   <div className="hidden sm:block text-right">
-                    <p className="text-sm font-medium text-text-primary dark:text-dark-text">{user?.email || 'Admin'}</p>
-                    <p className="text-xs text-text-secondary">{formatRole(user?.role)}</p>
+                    <p className="text-sm font-bold text-gray-900 dark:text-dark-text leading-tight">{user?.email?.split('@')[0] || 'Admin'}</p>
+                    <p className="text-[12px] font-medium text-gray-500 uppercase tracking-wider">{formatRole(user?.role)}</p>
                   </div>
-                  <div className="h-9 w-9 sm:h-10 sm:w-10 bg-primary-MAIN rounded-xl flex items-center justify-center text-white font-bold shadow-md">
+                  <div className="h-10 w-10 bg-primary-50 rounded-xl flex items-center justify-center text-primary-600 font-bold border border-primary-100 shadow-sm relative group cursor-pointer">
                     {(user?.email || 'A').charAt(0).toUpperCase()}
+                    <div className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 border-2 border-white rounded-full"></div>
                   </div>
                 </div>
               </div>
             </div>
           </header>
 
-          <div className="p-3 sm:p-4 lg:p-6 xl:p-8">
+          <div className="p-8 max-w-[1600px] mx-auto animate-fade-in">
             <Outlet />
           </div>
         </main>

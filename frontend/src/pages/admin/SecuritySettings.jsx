@@ -125,66 +125,66 @@ const SecuritySettings = () => {
   if (loading && !settings) return <div className="py-20 text-center"><div className="inline-block h-12 w-12 animate-spin rounded-full border-b-2 border-primary-600" /></div>
 
   return (
-    <div className="space-y-8 animate-fade-in pb-20">
+    <div className="space-y-6 animate-fade-in pb-20">
       {/* Stats Section with Consistent Colors */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-dark-card p-6 rounded-[1.5rem] border border-gray-100 dark:border-dark-border shadow-sm flex items-center gap-5 transition-all hover:shadow-md hover:-translate-y-1 group">
-            <div className="p-4 bg-gray-50 dark:bg-dark-bg rounded-2xl text-gray-400 group-hover:text-gray-600 transition-colors">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex items-center gap-5 transition-all hover:shadow-md group">
+            <div className="p-4 bg-gray-50 rounded-xl text-gray-400 group-hover:text-gray-600 transition-colors">
                 <Activity className="h-7 w-7" />
             </div>
             <div>
-                <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Đang hoạt động</p>
-                <h3 className="text-3xl font-black text-gray-900 dark:text-white mt-1">{sessions.length}</h3>
+                <p className="text-[12px] font-bold text-gray-400 uppercase tracking-wider">Đang hoạt động</p>
+                <h3 className="text-2xl font-bold text-gray-900 mt-0.5">{sessions.length}</h3>
             </div>
         </div>
-        <div className="bg-white dark:bg-dark-card p-6 rounded-[1.5rem] border border-gray-100 dark:border-dark-border shadow-sm flex items-center gap-5 transition-all hover:shadow-md hover:-translate-y-1 group">
-            <div className="p-4 bg-emerald-50 dark:bg-emerald-950/20 rounded-2xl text-emerald-600">
+        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex items-center gap-5 transition-all hover:shadow-md group">
+            <div className="p-4 bg-emerald-50 rounded-xl text-emerald-600">
                 <ShieldCheck className="h-7 w-7" />
             </div>
             <div>
-                <p className="text-xs font-black text-emerald-600/60 uppercase tracking-widest">Người dùng 2FA</p>
-                <h3 className="text-3xl font-black text-gray-900 dark:text-white mt-1">{twoFactorUsers.length}</h3>
+                <p className="text-[12px] font-bold text-emerald-600/70 uppercase tracking-wider">Người dùng 2FA</p>
+                <h3 className="text-2xl font-bold text-gray-900 mt-0.5">{twoFactorUsers.length}</h3>
             </div>
         </div>
-        <div className="bg-white dark:bg-dark-card p-6 rounded-[1.5rem] border border-gray-100 dark:border-dark-border shadow-sm flex items-center gap-5 transition-all hover:shadow-md hover:-translate-y-1 group">
-            <div className="p-4 bg-orange-50 dark:bg-orange-950/20 rounded-2xl text-orange-600">
+        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex items-center gap-5 transition-all hover:shadow-md group">
+            <div className="p-4 bg-admin-primary/10 rounded-xl text-admin-primary">
                 <History className="h-7 w-7" />
             </div>
             <div>
-                <p className="text-xs font-black text-orange-600/60 uppercase tracking-widest">Lịch sử hôm nay</p>
-                <h3 className="text-3xl font-black text-gray-900 dark:text-white mt-1">{history.length}+</h3>
+                <p className="text-[12px] font-bold text-admin-primary/70 uppercase tracking-wider">Lịch sử hôm nay</p>
+                <h3 className="text-2xl font-bold text-gray-900 mt-0.5">{history.length}+</h3>
             </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* 2FA Card - Enhanced UI */}
-        <div className="p-8 bg-white dark:bg-dark-card rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 dark:border-dark-border space-y-8">
+        <div className="p-6 bg-white rounded-xl shadow-sm border border-gray-100 space-y-6">
           <div className="flex items-center gap-4">
-              <div className="p-3 bg-primary-100 dark:bg-primary-950/30 rounded-xl text-primary-600">
+              <div className="p-3 bg-admin-primary/10 rounded-xl text-admin-primary">
                 <Shield className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Xác thực 2 lớp (2FA)</h3>
-                <p className="text-sm text-gray-500 font-medium">Bảo vệ tài khoản bằng lớp bảo mật thứ hai</p>
+                <h3 className="text-[16px] font-bold text-gray-900 tracking-tight">Xác thực 2 lớp (2FA)</h3>
+                <p className="text-[13px] text-gray-500 font-medium">Bảo vệ tài khoản bằng lớp bảo mật thứ hai</p>
               </div>
           </div>
 
-          <div className="flex items-center justify-between p-6 bg-gray-50 dark:bg-dark-bg rounded-2xl border border-dashed border-gray-200 dark:border-dark-border">
+          <div className="flex items-center justify-between p-5 bg-gray-50 rounded-xl border border-dashed border-gray-200">
               <div className="space-y-1">
-                <p className="font-black text-gray-900 dark:text-white">Bật 2FA toàn hệ thống</p>
-                <p className="text-xs text-gray-500 font-medium italic">Yêu cầu tất cả nhân viên phải sử dụng 2FA</p>
+                <p className="text-[14px] font-bold text-gray-900">Bật 2FA toàn hệ thống</p>
+                <p className="text-[12px] text-gray-500 font-medium">Yêu cầu tất cả nhân viên phải sử dụng 2FA</p>
               </div>
-              <label className="relative inline-flex items-center cursor-pointer scale-125 mr-2">
+              <label className="relative inline-flex items-center cursor-pointer scale-110">
                   <input type="checkbox" className="sr-only peer" checked={form.twoFactorEnabled} onChange={(e) => setForm(p=>({...p, twoFactorEnabled: e.target.checked}))} />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-admin-primary"></div>
               </label>
           </div>
 
           {form.twoFactorEnabled && (
-              <div className="space-y-4 animate-scale-up-center">
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest pl-1">Các phương thức cho phép</p>
-                  <div className="grid grid-cols-1 gap-3">
+              <div className="space-y-3 animate-fade-in">
+                  <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider pl-1">Các phương thức cho phép</p>
+                  <div className="grid grid-cols-1 gap-2">
                       {[
                         { id: 'SMS', label: 'Tin nhắn SMS', icon: Smartphone },
                         { id: 'EMAIL', label: 'Thư điện tử (Email)', icon: Mail },
@@ -193,17 +193,17 @@ const SecuritySettings = () => {
                           <button 
                             key={m.id} 
                             onClick={() => handle2FAMethodToggle(m.id)} 
-                            className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all group ${
+                            className={`flex items-center justify-between p-3.5 rounded-xl border transition-all group ${
                                 form.allowedTwoFactorMethods.includes(m.id) 
-                                ? 'border-primary-500 bg-primary-50/50 dark:bg-primary-950/10' 
-                                : 'border-gray-100 dark:border-dark-border bg-white dark:bg-dark-card hover:border-gray-200'
+                                ? 'border-admin-primary bg-admin-primary/5' 
+                                : 'border-gray-100 bg-white hover:border-gray-200'
                             }`}
                           >
                               <div className="flex items-center gap-3">
-                                  <m.icon className={`h-5 w-5 ${form.allowedTwoFactorMethods.includes(m.id) ? 'text-primary-600' : 'text-gray-400'}`} />
-                                  <span className={`text-sm font-bold ${form.allowedTwoFactorMethods.includes(m.id) ? 'text-primary-700' : 'text-gray-500'}`}>{m.label}</span>
+                                  <m.icon className={`h-4 w-4 ${form.allowedTwoFactorMethods.includes(m.id) ? 'text-admin-primary' : 'text-gray-400'}`} />
+                                  <span className={`text-[13px] font-bold ${form.allowedTwoFactorMethods.includes(m.id) ? 'text-admin-primary' : 'text-gray-500'}`}>{m.label}</span>
                               </div>
-                              {form.allowedTwoFactorMethods.includes(m.id) && <ShieldCheck className="h-5 w-5 text-primary-600" />}
+                              {form.allowedTwoFactorMethods.includes(m.id) && <ShieldCheck className="h-4 w-4 text-admin-primary" />}
                           </button>
                       ))}
                   </div>
@@ -212,33 +212,33 @@ const SecuritySettings = () => {
         </div>
 
         {/* Security Policy Card */}
-        <div className="p-8 bg-white dark:bg-dark-card rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 dark:border-dark-border space-y-8">
+        <div className="p-6 bg-white rounded-xl shadow-sm border border-gray-100 space-y-6">
           <div className="flex items-center gap-4">
-              <div className="p-3 bg-indigo-100 dark:bg-indigo-950/30 rounded-xl text-indigo-600">
+              <div className="p-3 bg-indigo-50 rounded-xl text-indigo-600">
                 <Lock className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Chính sách mật khẩu</h3>
-                <p className="text-sm text-gray-500 font-medium">Thiết lập độ phức tạp và quy tắc đăng nhập</p>
+                <h3 className="text-[16px] font-bold text-gray-900 tracking-tight">Chính sách mật khẩu</h3>
+                <p className="text-[13px] text-gray-500 font-medium">Thiết lập độ phức tạp và quy tắc đăng nhập</p>
               </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-xs font-black text-gray-400 uppercase tracking-widest pl-1">Độ dài Min</label>
+                <label className="text-[12px] font-bold text-gray-500 uppercase tracking-wider pl-1">Độ dài Min</label>
                 <input 
                     type="number" 
-                    className="w-full h-12 px-4 bg-gray-50 dark:bg-dark-bg border border-gray-100 dark:border-dark-border rounded-xl focus:ring-2 focus:ring-indigo-500 font-bold text-gray-900 dark:text-white" 
+                    className="w-full h-11 px-4 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-admin-primary/20 focus:bg-white font-medium text-[14px] outline-none" 
                     value={form.passwordMinLength} 
                     onChange={handleInputChange} 
                     name="passwordMinLength" 
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-black text-gray-400 uppercase tracking-widest pl-1">Thử sai tối đa</label>
+                <label className="text-[12px] font-bold text-gray-500 uppercase tracking-wider pl-1">Thử sai tối đa</label>
                 <input 
                     type="number" 
-                    className="w-full h-12 px-4 bg-gray-50 dark:bg-dark-bg border border-gray-100 dark:border-dark-border rounded-xl focus:ring-2 focus:ring-indigo-500 font-bold text-gray-900 dark:text-white" 
+                    className="w-full h-11 px-4 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-admin-primary/20 focus:bg-white font-medium text-[14px] outline-none" 
                     value={form.maxFailedLoginAttempts} 
                     onChange={handleInputChange} 
                     name="maxFailedLoginAttempts" 
@@ -246,17 +246,17 @@ const SecuritySettings = () => {
               </div>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2">
               {[
                   { id: 'requireUppercase', label: 'Bắt buộc Chữ in hoa' },
                   { id: 'requireNumeric', label: 'Bắt buộc Chữ số (0-9)' },
                   { id: 'requireSpecialChar', label: 'Bắt buộc Ký tự đặc biệt' }
               ].map(k => (
-                  <div key={k.id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-dark-bg border border-gray-100 dark:border-dark-border rounded-xl">
-                      <span className="text-sm font-bold text-gray-600">{k.label}</span>
+                  <div key={k.id} className="flex items-center justify-between p-3.5 bg-gray-50 rounded-xl">
+                      <span className="text-[13px] font-bold text-gray-600">{k.label}</span>
                       <label className="relative inline-flex items-center cursor-pointer">
                           <input type="checkbox" checked={form[k.id]} onChange={handleInputChange} name={k.id} className="sr-only peer" />
-                          <div className="w-10 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+                          <div className="w-10 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-admin-primary"></div>
                       </label>
                   </div>
               ))}
@@ -268,16 +268,14 @@ const SecuritySettings = () => {
 
       <LoginHistoryTable history={history} historyLoading={historyLoading} historyFilters={historyFilters} setHistoryFilters={setHistoryFilters} historyPage={historyPage} setHistoryPage={setHistoryPage} historyTotalPages={historyTotalPages} historyTotalElements={historyTotalElements} fetchHistory={fetchHistory} handleExportHistory={()=>{}} formatDate={formatDate} />
 
-      <div className="flex justify-end pt-8">
+      <div className="flex justify-end pt-6">
           <button 
             onClick={handleSave} 
             disabled={saving} 
-            className="group h-14 bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-10 rounded-2xl font-black text-lg shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-4"
+            className="h-12 bg-admin-primary text-white px-8 rounded-xl font-bold text-[14px] shadow-sm shadow-admin-primary/20 hover:bg-admin-primary/90 transition-all flex items-center gap-2 active:scale-95"
           >
-              <div className={`p-2 rounded-lg ${saving ? 'bg-transparent' : 'bg-white/10 dark:bg-gray-100'}`}>
-                {saving ? <RefreshCcw className="h-6 w-6 animate-spin" /> : <ShieldCheck className="h-6 w-6" />}
-              </div>
-              <span className="uppercase tracking-tight">{saving ? 'Đang áp dụng...' : 'Lưu cấu hình bảo mật'}</span>
+              {saving ? <RefreshCcw className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}
+              <span>{saving ? 'ĐANG ÁP DỤNG...' : 'LƯU CẤU HÌNH BẢO MẬT'}</span>
           </button>
       </div>
     </div>

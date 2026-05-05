@@ -1,6 +1,6 @@
 import { memo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Star, ShoppingCart, Heart, Eye, Store, GitCompare } from 'lucide-react'
+import { Star, ShoppingCart, Heart, Eye, Store, GitCompare, Plus } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { addToCart } from '../store/slices/cartSlice'
 import { addToCompare, removeFromCompare } from '../store/slices/comparisonSlice'
@@ -53,29 +53,30 @@ const ProductCard = ({ product, showBadge }) => {
     }
   }
 
+  // Mock sold count if 0 to make it look active, or show "Mới về"
+  const displaySoldCount = product.soldCount > 0 
+    ? `${product.soldCount} ĐÃ BÁN` 
+    : (product.isNew ? 'VỪA CẬP BẾN' : 'SẢN PHẨM MỚI')
+
   return (
     <Link to={`/${product.slug}`} className="block group h-full">
-      <div className="bg-white dark:bg-dark-card rounded-2xl sm:rounded-[2rem] overflow-hidden transition-all duration-500 hover:-translate-y-1 sm:hover:-translate-y-3 hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] border border-gray-100 dark:border-dark-border flex flex-col h-full relative sm:min-h-[100%]">
+      <div className="bg-white dark:bg-dark-card rounded-2xl sm:rounded-[2.5rem] overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_30px_60px_-15px_rgba(234,88,12,0.15)] dark:hover:shadow-[0_30px_60px_-15px_rgba(234,88,12,0.3)] border border-gray-100 dark:border-dark-border flex flex-col h-full relative group/card">
+        
         {/* Badges Overlay */}
-        <div className="absolute left-3 top-3 sm:left-4 sm:top-4 z-10 flex flex-col gap-2">
+        <div className="absolute left-3 top-3 sm:left-5 sm:top-5 z-10 flex flex-col gap-2">
             {product.discountPercentage > 0 && (
-              <div className="bg-rose-500/90 dark:bg-rose-600/20 dark:border dark:border-rose-500/30 text-white text-[9px] font-black px-2.5 py-1.5 rounded-full shadow-lg shadow-rose-500/20 uppercase tracking-widest">
+              <div className="bg-rose-500 text-white text-[10px] font-black px-3 py-1.5 rounded-xl shadow-lg shadow-rose-500/20 uppercase tracking-widest ring-2 ring-white dark:ring-dark-card">
                 -{product.discountPercentage}%
               </div>
             )}
             {showBadge === 'bestseller' && (
-              <div className="bg-amber-500/90 dark:bg-amber-600/20 dark:border dark:border-amber-500/30 text-white text-[9px] font-black px-2.5 py-1.5 rounded-full shadow-lg shadow-amber-500/20 uppercase tracking-widest flex items-center gap-1">
+              <div className="bg-amber-500 text-white text-[10px] font-black px-3 py-1.5 rounded-xl shadow-lg shadow-amber-500/20 uppercase tracking-widest flex items-center gap-1 ring-2 ring-white dark:ring-dark-card">
                 🔥 Bestseller
               </div>
             )}
             {showBadge === 'new' && (
-              <div className="bg-blue-600/90 dark:bg-blue-600/20 dark:border dark:border-blue-500/30 text-white text-[9px] font-black px-2.5 py-1.5 rounded-full shadow-lg shadow-blue-600/20 uppercase tracking-widest flex items-center gap-1">
+              <div className="bg-primary-600 text-white text-[10px] font-black px-3 py-1.5 rounded-xl shadow-lg shadow-primary-600/20 uppercase tracking-widest flex items-center gap-1 ring-2 ring-white dark:ring-dark-card">
                 ⭐ Mới
-              </div>
-            )}
-            {product.isNew && !showBadge && (
-              <div className="bg-emerald-600/90 dark:bg-emerald-600/20 dark:border dark:border-emerald-500/30 text-white text-[9px] font-black px-2.5 py-1.5 rounded-full shadow-lg shadow-emerald-600/20 uppercase tracking-widest">
-                New
               </div>
             )}
         </div>
@@ -85,68 +86,79 @@ const ProductCard = ({ product, showBadge }) => {
           <img 
             src={imageUrl || DEFAULT_PRODUCT_PLACEHOLDER} 
             alt={product.name}
-            className="h-full w-full object-contain p-3 sm:p-4 md:p-6 transition-transform duration-700 group-hover:scale-105"
+            className="h-full w-full object-contain p-4 sm:p-8 transition-transform duration-700 group-hover:scale-110"
             onError={(e) => handleProductImageError(e, fallbackImageUrl)}
           />
           
-          {/* Action Bar Overlay */}
-          <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 translate-y-0 sm:translate-y-full sm:group-hover:translate-y-0 transition-transform duration-500 z-20 sm:opacity-0 sm:group-hover:opacity-100">
-             <div className="bg-white/90 dark:bg-black/65 backdrop-blur-xl rounded-2xl p-1.5 flex items-center justify-between shadow-2xl border border-white/30 dark:border-white/10">
+          {/* Action Bar Overlay (Desktop) */}
+          <div className="absolute bottom-4 left-4 right-4 hidden sm:block translate-y-full group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 z-20">
+             <div className="bg-white/90 dark:bg-black/80 backdrop-blur-xl rounded-[1.5rem] p-1.5 flex items-center gap-1 shadow-2xl border border-white/30 dark:border-white/10">
                 <button 
                   onClick={handleCompare} 
-                  className={`flex-1 flex items-center justify-center py-3 rounded-xl transition-all gap-2 font-black text-[11px] sm:text-[10px] uppercase tracking-widest ${isComparing ? 'bg-primary-500 text-white' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-secondary-800 dark:text-gray-200'}`}
+                  className={`flex-1 flex items-center justify-center py-3.5 rounded-[1.25rem] transition-all gap-2 font-black text-[10px] uppercase tracking-widest ${isComparing ? 'bg-primary-600 text-white' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-secondary-800 dark:text-gray-200'}`}
                   title={isComparing ? "Xóa khỏi so sánh" : "So sánh"}
                 >
                    <GitCompare className="h-4 w-4" />
-                   <span className="sm:hidden">So sánh</span>
-                   <span className="hidden sm:inline">So sánh</span>
+                   <span>So sánh</span>
                 </button>
-                
-                <div className="w-[1px] h-4 bg-gray-200 dark:bg-white/10 mx-1"></div>
                 
                 <button 
                   onClick={handleAddToCart} 
                   disabled={isCartLoading}
-                  className="flex-1 flex items-center justify-center py-3 bg-secondary-900 dark:bg-primary-600 text-white rounded-xl hover:bg-black dark:hover:bg-primary-700 transition-all gap-2 font-black text-[11px] sm:text-[10px] uppercase tracking-widest disabled:opacity-50"
+                  className="flex-[1.2] flex items-center justify-center py-3.5 bg-primary-600 text-white rounded-[1.25rem] hover:bg-primary-700 transition-all gap-2 font-black text-[10px] uppercase tracking-widest disabled:opacity-50 shadow-lg shadow-primary-600/20"
                 >
                   <ShoppingCart className={`h-4 w-4 ${isCartLoading ? 'animate-spin' : ''}`} />
-                  <span className="sm:hidden">{isCartLoading ? 'Đang thêm' : 'Thêm ngay'}</span>
-                  <span className="hidden sm:inline">{isCartLoading ? 'Đang thêm' : 'Thêm ngay'}</span>
+                  <span>{isCartLoading ? 'ĐANG THÊM' : 'THÊM NGAY'}</span>
                 </button>
              </div>
+          </div>
+
+          {/* Quick Action (Mobile Only) */}
+          <div className="absolute bottom-3 right-3 sm:hidden z-20">
+              <button 
+                onClick={handleAddToCart}
+                disabled={isCartLoading}
+                className="w-12 h-12 bg-primary-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-primary-600/30 active:scale-90 transition-transform"
+              >
+                {isCartLoading ? <RefreshCw className="h-5 w-5 animate-spin" /> : <Plus className="h-6 w-6" />}
+              </button>
           </div>
         </div>
 
         {/* Info */}
-        <div className="p-4 sm:p-6 flex-1 flex flex-col">
-          <div className="flex items-center gap-2 mb-3">
+        <div className="p-5 sm:p-7 flex-1 flex flex-col">
+          <div className="flex items-center gap-3 mb-3">
              <div className="flex text-amber-400">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className={`h-3 w-3 ${i < Math.floor(product.rating || 5) ? 'fill-current' : 'text-gray-200 dark:text-dark-border'}`} />
+                   <Star key={i} className={`h-3 w-3 ${i < Math.floor(product.rating || 5) ? 'fill-current' : 'text-gray-200 dark:text-dark-border'}`} />
                 ))}
              </div>
-             <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest">{product.soldCount || 0} ĐÃ BÁN</span>
+             <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest">
+               {displaySoldCount}
+             </span>
           </div>
 
-          <h3 className="mb-3 text-sm sm:text-base font-black text-secondary-800 dark:text-[#e8e8e8] line-clamp-2 leading-tight min-h-[2.75rem] group-hover:text-primary-600 transition-colors">
+          <h3 className="mb-4 text-[15px] sm:text-[17px] font-black text-secondary-900 dark:text-white line-clamp-2 leading-tight min-h-[3rem] group-hover:text-primary-600 transition-colors">
             {product.name}
           </h3>
 
-          <div className="mt-auto flex items-end justify-between gap-3 border-t border-gray-50 dark:border-dark-border pt-3 sm:pt-4">
-            <div className="flex flex-col min-w-0">
-              <span className="inline-flex items-center rounded-xl bg-primary-50 dark:bg-primary-500/10 px-2.5 py-1.5 text-[16px] sm:text-xl font-black text-primary-700 dark:text-primary-300 tracking-tight leading-none whitespace-normal break-words shadow-sm ring-1 ring-primary-500/10">
-                {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price)}
-              </span>
-              {product.originalPrice > price && (
-                <span className="mt-1 text-[11px] sm:text-xs text-gray-400 line-through font-bold opacity-80 whitespace-normal break-words">
-                   {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.originalPrice)}
+          <div className="mt-auto flex flex-col gap-4">
+            <div className="flex items-end justify-between gap-3">
+              <div className="flex flex-col">
+                <span className="text-xl sm:text-2xl font-black text-primary-600 tracking-tight leading-none">
+                  {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price)}
                 </span>
-              )}
-            </div>
-            
-            <div className="flex items-center gap-1.5 text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-tighter shrink-0">
-                <Store className="h-3 w-3" />
-                <span>Có hàng</span>
+                {product.originalPrice > price && (
+                  <span className="mt-1 text-[11px] sm:text-xs text-gray-400 line-through font-bold opacity-70">
+                    {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.originalPrice)}
+                  </span>
+                )}
+              </div>
+              
+              <div className="flex items-center gap-1.5 text-[10px] font-black text-emerald-600 dark:text-emerald-500 uppercase tracking-tight">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                  <span>Sẵn sàng</span>
+              </div>
             </div>
           </div>
         </div>
@@ -155,5 +167,24 @@ const ProductCard = ({ product, showBadge }) => {
     </Link>
   )
 }
+
+const RefreshCw = ({ className }) => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    width="24" height="24" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round" 
+    className={className}
+  >
+    <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+    <path d="M21 3v5h-5" />
+    <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+    <path d="M3 21v-5h5" />
+  </svg>
+)
 
 export default memo(ProductCard)

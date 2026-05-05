@@ -1,19 +1,18 @@
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { usersAPI } from '../../api/users'
-import AdminTable from '../../components/admin/AdminTable'
-import AdminUsersStats from '../../components/admin/users/AdminUsersStats'
-import AdminUsersRowActions from '../../components/admin/users/AdminUsersRowActions'
-import { useDebounce } from '../../hooks/useDebounce'
 import { 
     UserCog, ShieldAlert, UserPlus, Search, 
-    UserCheck, UserX, Lock, Unlock, Eye,
-    Filter, ShieldCheck, Users as UsersIcon, ChevronLeft, ChevronRight,
-    KeyRound
+    UserX, Lock, Unlock, KeyRound, Filter, ShieldCheck, Users as UsersIcon
 } from 'lucide-react'
 import Swal from 'sweetalert2'
 import { fireError, fireSuccess } from '../../utils/swalError'
 import { getApiErrorMessage } from '../../utils/apiError'
+import { useDebounce } from '../../hooks/useDebounce'
+import AdminPageHeader from '../../components/admin/shared/AdminPageHeader'
+import AdminPagination from '../../components/admin/shared/AdminPagination'
+import AdminStatsCard from '../../components/admin/shared/AdminStatsCard'
+import AdminPill from '../../components/admin/shared/AdminPill'
 
 const AdminUsers = () => {
     const { user: currentUser } = useSelector((state) => state.auth)
@@ -37,7 +36,6 @@ const AdminUsers = () => {
         twoFactorEnabled: null
     })
     const [showFilters, setShowFilters] = useState(false)
-    const [isAdding, setIsAdding] = useState(false)
 
     const fetchUsers = useCallback(async () => {
         try {
@@ -79,30 +77,30 @@ const AdminUsers = () => {
         const isSuperAdmin = currentUser?.role === 'ROLE_SUPER_ADMIN'
         
         const { value: formValues } = await Swal.fire({
-            title: '<h2 class="text-2xl font-black text-slate-800">Thêm thành viên mới</h2>',
+            title: 'Thêm thành viên mới',
             html: `
-                <div class="space-y-4 py-4">
-                    <div class="text-left space-y-1">
-                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Họ và tên</label>
-                        <input id="swal-fullname" class="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-bold" placeholder="VD: Nguyễn Văn A">
+                <div class="space-y-4 py-4 text-left">
+                    <div class="space-y-1">
+                        <label class="text-[11px] font-black uppercase tracking-widest text-gray-400">Họ và tên</label>
+                        <input id="swal-fullname" class="w-full px-4 py-3 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-primary-600 outline-none text-sm font-bold" placeholder="VD: Nguyễn Văn A">
                     </div>
                     <div class="grid grid-cols-2 gap-3">
-                        <div class="text-left space-y-1">
-                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Email</label>
-                            <input id="swal-email" type="email" class="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-bold" placeholder="email@example.com">
+                        <div class="space-y-1">
+                            <label class="text-[11px] font-black uppercase tracking-widest text-gray-400">Email</label>
+                            <input id="swal-email" type="email" class="w-full px-4 py-3 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-primary-600 outline-none text-sm font-bold" placeholder="email@example.com">
                         </div>
-                        <div class="text-left space-y-1">
-                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Username</label>
-                            <input id="swal-username" class="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-bold" placeholder="nickname">
+                        <div class="space-y-1">
+                            <label class="text-[11px] font-black uppercase tracking-widest text-gray-400">Username</label>
+                            <input id="swal-username" class="w-full px-4 py-3 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-primary-600 outline-none text-sm font-bold" placeholder="nickname">
                         </div>
                     </div>
-                    <div class="text-left space-y-1">
-                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Mật khẩu khởi tạo</label>
-                        <input id="swal-password" type="password" class="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-bold" placeholder="••••••••">
+                    <div class="space-y-1">
+                        <label class="text-[11px] font-black uppercase tracking-widest text-gray-400">Mật khẩu khởi tạo</label>
+                        <input id="swal-password" type="password" class="w-full px-4 py-3 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-primary-600 outline-none text-sm font-bold" placeholder="••••••••">
                     </div>
-                    <div class="text-left space-y-1">
-                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Vai trò hệ thống</label>
-                        <select id="swal-role" class="w-full px-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-bold appearance-none">
+                    <div class="space-y-1">
+                        <label class="text-[11px] font-black uppercase tracking-widest text-gray-400">Vai trò hệ thống</label>
+                        <select id="swal-role" class="w-full px-4 py-3 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-primary-600 outline-none text-sm font-bold appearance-none">
                             <option value="ROLE_CUSTOMER">Khách hàng (Customer)</option>
                             <option value="ROLE_STAFF">Nhân viên (Staff)</option>
                             ${isSuperAdmin ? `
@@ -117,7 +115,11 @@ const AdminUsers = () => {
             showCancelButton: true,
             confirmButtonText: 'Tạo tài khoản',
             cancelButtonText: 'Hủy bỏ',
-            confirmButtonColor: '#4f46e5',
+            customClass: {
+                confirmButton: 'bg-primary-600 text-white font-bold px-6 py-2 rounded-lg mr-2',
+                cancelButton: 'bg-gray-100 text-gray-600 font-bold px-6 py-2 rounded-lg'
+            },
+            buttonsStyling: false,
             preConfirm: () => {
                 const fullName = document.getElementById('swal-fullname').value
                 const email = document.getElementById('swal-email').value
@@ -135,52 +137,41 @@ const AdminUsers = () => {
 
         if (formValues) {
             try {
-                setIsAdding(true)
                 await usersAPI.createUser(formValues)
-                fireSuccess('Thành công!', 'Tài khoản mới đã được khởi tạo và sẵn sàng sử dụng.', {
-                    timer: 2000,
-                    showConfirmButton: false
-                })
+                fireSuccess('Thành công!', 'Tài khoản mới đã được khởi tạo.')
                 fetchUsers()
             } catch (error) {
-                fireError(error, 'Không thể tạo tài khoản người dùng.')
-            } finally {
-                setIsAdding(false)
+                fireError(error, 'Không thể tạo tài khoản')
             }
         }
     }, [currentUser, fetchUsers])
 
     const handleLockUser = useCallback(async (user) => {
-        // Protection: Admin cannot lock Super Admin
         if (user.roles?.includes('ROLE_SUPER_ADMIN') && currentUser?.role !== 'ROLE_SUPER_ADMIN') {
             return fireError({ response: { data: { message: 'Bạn không được phép khóa tài khoản Super Admin!' } } })
         }
 
         const result = await Swal.fire({
             title: 'Khóa tài khoản?',
-            html: `
-                <div class="text-left space-y-2">
-                    <p>Người dùng <strong>${user.fullName || user.username}</strong> sẽ bị trục xuất khỏi tất cả phiên đăng nhập ngay lập tức.</p>
-                    <p class="text-xs text-rose-500 font-bold uppercase tracking-widest">⚠️ Hành động này sẽ vô hiệu hóa tất cả JWT Tokens trong Redis.</p>
-                </div>
-            `,
+            html: `Người dùng <strong>${user.fullName || user.username}</strong> sẽ bị trục xuất ngay lập tức.`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#ef4444',
             confirmButtonText: 'Xác nhận khóa',
-            cancelButtonText: 'Bỏ qua'
+            cancelButtonText: 'Bỏ qua',
+            customClass: {
+                confirmButton: 'bg-red-600 text-white font-bold px-6 py-2 rounded-lg mr-2',
+                cancelButton: 'bg-gray-100 text-gray-600 font-bold px-6 py-2 rounded-lg'
+            },
+            buttonsStyling: false
         })
 
         if (result.isConfirmed) {
             try {
                 await usersAPI.lockUser(user.id)
-                fireSuccess('Đã khóa!', 'Tài khoản và tất cả các phiên đăng nhập đã bị vô hiệu hóa.', {
-                    timer: 2000,
-                    showConfirmButton: false
-                })
+                fireSuccess('Đã khóa!', 'Tài khoản đã bị vô hiệu hóa.')
                 fetchUsers()
             } catch (error) {
-                fireError(error, 'Không thể thực hiện quy trình khóa')
+                fireError(error, 'Thao tác thất bại')
             }
         }
     }, [currentUser, fetchUsers])
@@ -188,12 +179,7 @@ const AdminUsers = () => {
     const handleUnlockUser = useCallback(async (user) => {
         try {
             await usersAPI.unlockUser(user.id)
-            fireSuccess('Đã mở khóa tài khoản', '', {
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000
-            })
+            fireSuccess('Thành công', 'Đã mở khóa tài khoản')
             fetchUsers()
         } catch (error) {
             fireError(error, 'Thao tác thất bại')
@@ -201,19 +187,15 @@ const AdminUsers = () => {
     }, [fetchUsers])
 
     const handleChangeRole = useCallback(async (user) => {
-        // Protection: Admin cannot change Super Admin role
         if (user.roles?.includes('ROLE_SUPER_ADMIN') && currentUser?.role !== 'ROLE_SUPER_ADMIN') {
-            return fireError({ response: { data: { message: 'Chỉ Super Admin mới có thể thay đổi quyền hạn của Super Admin khác!' } } })
+            return fireError({ response: { data: { message: 'Chỉ Super Admin mới có thể thay đổi quyền hạn này!' } } })
         }
 
         const currentRole = (user.roles && user.roles.length > 0) ? user.roles[0] : 'ROLE_CUSTOMER'
-        
-        // Define options based on permissions
         const inputOptions = {
             'ROLE_CUSTOMER': 'Khách hàng',
             'ROLE_STAFF': 'Nhân viên'
         }
-        
         if (currentUser?.role === 'ROLE_SUPER_ADMIN') {
             inputOptions['ROLE_ADMIN'] = 'Quản trị viên'
             inputOptions['ROLE_SUPER_ADMIN'] = 'Super Admin'
@@ -226,14 +208,19 @@ const AdminUsers = () => {
             inputOptions,
             inputValue: currentRole,
             showCancelButton: true,
-            confirmButtonText: 'Tiếp tục',
-            cancelButtonText: 'Hủy'
+            confirmButtonText: 'Cập nhật',
+            cancelButtonText: 'Hủy',
+            customClass: {
+                confirmButton: 'bg-primary-600 text-white font-bold px-6 py-2 rounded-lg mr-2',
+                cancelButton: 'bg-gray-100 text-gray-600 font-bold px-6 py-2 rounded-lg'
+            },
+            buttonsStyling: false
         })
 
         if (newRole && newRole !== currentRole) {
             try {
                 await usersAPI.updateRole(user.id, newRole)
-                fireSuccess('Thành công', 'Đã cập nhật vai trò và vô hiệu hóa phiên cũ')
+                fireSuccess('Thành công', 'Đã cập nhật vai trò')
                 fetchUsers()
             } catch (error) {
                 fireError(error, 'Cập nhật thất bại')
@@ -241,57 +228,23 @@ const AdminUsers = () => {
         }
     }, [currentUser, fetchUsers])
 
-    const handleDelete = useCallback(async (user) => {
-        // Protection: Admin cannot delete Super Admin
-        if (user.roles?.includes('ROLE_SUPER_ADMIN') && currentUser?.role !== 'ROLE_SUPER_ADMIN') {
-            return fireError({ response: { data: { message: 'Việc xóa tài khoản Super Admin là bất khả thi với quyền của bạn!' } } })
-        }
-
-        if (user.totalOrders > 0) {
-            fireSuccess('Không thể xóa!', `<p>Người dùng có <strong>${user.totalOrders} đơn hàng</strong>. Chỉ có thể khóa vĩnh viễn.</p>`, {
-                icon: 'warning'
-            })
-            return
-        }
-
-        const result = await Swal.fire({
-            title: 'Xóa vĩnh viễn?',
-            text: 'Mọi dữ liệu cá nhân của người dùng này sẽ bị hủy bỏ.',
-            icon: 'error',
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            confirmButtonText: 'Xóa ngay'
-        })
-
-        if (result.isConfirmed) {
-            try {
-                await usersAPI.deleteUser(user.id)
-                Swal.fire('Đã xóa', 'Người dùng đã rời khỏi hệ thống', 'success')
-                fetchUsers()
-            } catch (error) {
-                Swal.fire('Lỗi', 'Thao tác xóa thất bại', 'error')
-            }
-        }
-    }, [currentUser, fetchUsers])
-
     const handleResetPassword = useCallback(async (user) => {
-        // Protection: Admin cannot reset Super Admin password
         if (user.roles?.includes('ROLE_SUPER_ADMIN') && currentUser?.role !== 'ROLE_SUPER_ADMIN') {
-            return Swal.fire('Quyền hạn', 'Bạn không có quyền đặt lại mật khẩu của Super Admin!', 'error')
+            return fireError({ response: { data: { message: 'Bạn không có quyền này!' } } })
         }
 
         const { value: newPassword } = await Swal.fire({
             title: 'Reset mật khẩu',
-            text: `Đặt mật khẩu mới cho ${user.fullName || user.username}`,
             input: 'password',
             inputPlaceholder: 'Nhập mật khẩu mới...',
-            inputAttributes: {
-                autocapitalize: 'off',
-                autocorrect: 'off'
-            },
             showCancelButton: true,
             confirmButtonText: 'Xác nhận',
             cancelButtonText: 'Hủy',
+            customClass: {
+                confirmButton: 'bg-primary-600 text-white font-bold px-6 py-2 rounded-lg mr-2',
+                cancelButton: 'bg-gray-100 text-gray-600 font-bold px-6 py-2 rounded-lg'
+            },
+            buttonsStyling: false,
             inputValidator: (value) => {
                 if (!value) return 'Bạn cần nhập mật khẩu!'
                 if (value.length < 6) return 'Mật khẩu phải từ 6 ký tự trở lên!'
@@ -301,50 +254,30 @@ const AdminUsers = () => {
         if (newPassword) {
             try {
                 await usersAPI.resetPassword(user.id, newPassword)
-                Swal.fire({
-                    title: 'Thành công!',
-                    text: 'Mật khẩu đã được thay đổi. Tất cả phiên đăng nhập cũ đã được vô hiệu hóa.',
-                    icon: 'success',
-                    timer: 2000,
-                    showConfirmButton: false
-                })
+                fireSuccess('Thành công!', 'Mật khẩu đã được thay đổi.')
             } catch (error) {
-                Swal.fire('Lỗi', error.response?.data?.message || 'Không thể đặt lại mật khẩu', 'error')
+                fireError(error, 'Không thể đặt lại mật khẩu')
             }
         }
-    }, [currentUser, fetchUsers])
+    }, [currentUser])
 
-    const getRoleBadge = useCallback((roles) => {
+    const getRolePill = useCallback((roles) => {
         const role = (roles && roles.length > 0) ? roles[0] : 'ROLE_CUSTOMER'
-        const roleConfig = {
-            'ROLE_SUPER_ADMIN': { label: 'Super Admin', className: 'bg-purple-100 text-purple-700 border-purple-200' },
-            'ROLE_ADMIN': { label: 'Admin', className: 'bg-amber-100 text-amber-700 border-amber-200' },
-            'ROLE_STAFF': { label: 'Staff', className: 'bg-cyan-100 text-cyan-700 border-cyan-200' },
-            'ROLE_CUSTOMER': { label: 'Customer', className: 'bg-blue-100 text-blue-700 border-blue-200' }
+        switch (role) {
+            case 'ROLE_SUPER_ADMIN': return <AdminPill label="Super Admin" type="danger" />
+            case 'ROLE_ADMIN': return <AdminPill label="Admin" type="warning" />
+            case 'ROLE_STAFF': return <AdminPill label="Staff" type="info" />
+            default: return <AdminPill label="Customer" type="success" />
         }
-        const config = roleConfig[role] || roleConfig['ROLE_CUSTOMER']
-        return (
-            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${config.className}`}>
-                {config.label}
-            </span>
-        )
     }, [])
 
-    const currencyFormatter = useMemo(
-        () => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }),
-        []
-    )
-
-    const formatCurrency = useCallback((value) => {
-        const numericValue = Number.isFinite(Number(value)) ? Number(value) : 0
-        return currencyFormatter.format(numericValue)
-    }, [currencyFormatter])
+    const currencyFormatter = useMemo(() => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }), [])
 
     const adminStats = useMemo(() => ([
-        { label: 'Tổng số', value: pagination.totalElements, icon: UsersIcon, color: 'blue' },
-        { label: 'Vai trò Admin', value: users.filter(u => u.roles?.includes('ROLE_ADMIN')).length, icon: ShieldAlert, color: 'amber' },
-        { label: 'Đã khóa', value: users.filter(u => !u.enabled).length, icon: UserX, color: 'rose' },
-        { label: 'Đã xác minh', value: users.filter(u => u.emailVerified).length, icon: ShieldCheck, color: 'emerald' }
+        { label: 'Tổng số', value: pagination.totalElements, icon: UsersIcon, type: 'blue' },
+        { label: 'Vai trò Admin', value: users.filter(u => u.roles?.includes('ROLE_ADMIN')).length, icon: ShieldAlert, type: 'orange' },
+        { label: 'Đã khóa', value: users.filter(u => !u.enabled).length, icon: UserX, type: 'danger' },
+        { label: 'Đã xác minh', value: users.filter(u => u.emailVerified).length, icon: ShieldCheck, type: 'success' }
     ]), [pagination.totalElements, users])
 
     const maskEmail = useCallback((email) => {
@@ -355,128 +288,6 @@ const AdminUsers = () => {
         return `${user.substring(0, 3)}***@${domain}`
     }, [])
 
-    const getUserInitial = useCallback((user) => {
-        const source = user?.fullName?.trim() || user?.username?.trim() || user?.email?.trim() || '?'
-        return source.charAt(0).toUpperCase()
-    }, [])
-
-    const columns = useMemo(() => [
-        { 
-            key: 'user', 
-            label: 'Người dùng & Tài khoản',
-            render: (_, row) => (
-                <div className="flex items-center gap-4">
-                    <div className="relative group/avatar">
-                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white text-lg font-black overflow-hidden shadow-sm transition-transform duration-300 group-hover/avatar:scale-105 ${row.enabled ? 'bg-gradient-to-tr from-indigo-600 to-violet-600' : 'bg-slate-400 grayscale'}`}>
-                            {row.avatar ? <img src={row.avatar} alt="" className="w-full h-full object-cover" /> : getUserInitial(row)}
-                        </div>
-                        {row.enabled && <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full"></div>}
-                    </div>
-                    <div>
-                        <div className="flex items-center gap-2">
-                             <p className={`text-sm font-black ${row.enabled ? 'text-slate-900' : 'text-slate-400 italic'}`}>{row.fullName || 'Chưa đặt tên'}</p>
-                             {row.roles?.includes('ROLE_SUPER_ADMIN') && <ShieldCheck className="h-3 w-3 text-purple-500" />}
-                        </div>
-                    </div>
-                </div>
-            )
-        },
-        { 
-            key: 'contact', 
-            label: 'Thông tin bảo mật',
-            render: (_, row) => (
-                <div className="space-y-1.5 min-w-[180px]">
-                    <div className="flex items-center gap-2 group/email">
-                        <p className="text-sm font-bold text-slate-600 font-mono tracking-tighter" title={row.email}>
-                            {maskEmail(row.email)}
-                        </p>
-                        <button 
-                            className="p-1 opacity-0 group-hover/email:opacity-100 hover:bg-slate-50 rounded transition-all"
-                            onClick={() => Swal.fire({ title: 'Chi tiết Email', text: row.email, icon: 'info' })}
-                        >
-                            <Eye className="h-3 w-3 text-slate-400" />
-                        </button>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        {row.emailVerified ? (
-                            <span className="flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded-lg text-[9px] font-black uppercase tracking-widest border border-emerald-100">
-                                <UserCheck className="h-3 w-3" /> Đã xác minh
-                            </span>
-                        ) : (
-                            <span className="flex items-center gap-1 px-2 py-0.5 bg-amber-50 text-amber-600 rounded-lg text-[9px] font-black uppercase tracking-widest border border-amber-100">
-                                <ShieldAlert className="h-3 w-3" /> Chờ xác minh
-                            </span>
-                        )}
-                    </div>
-                </div>
-            )
-        },
-        { 
-            key: 'roles', 
-            label: 'Quyền hạn',
-            render: (value) => getRoleBadge(value)
-        },
-        { 
-            key: 'activity', 
-            label: 'Hoạt động & Doanh thu',
-            render: (_, row) => (
-                <div className="text-right pr-6">
-                    <div className="flex items-center justify-end gap-1.5">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-tight">Đơn hàng:</span>
-                        <span className="text-sm font-black text-slate-800">{row.totalOrders || 0}</span>
-                    </div>
-                    <div className="flex items-center justify-end gap-1.5 mt-0.5">
-                         <span className="text-[10px] font-black text-indigo-400 uppercase tracking-tight">Tổng chi:</span>
-                         <span className="text-sm font-black text-indigo-600 tracking-tighter">{formatCurrency(row.totalSpent)}</span>
-                    </div>
-                </div>
-            )
-        },
-        {
-            key: 'quick_actions',
-            label: 'Quản trị viên',
-            render: (_, row) => (
-                <div className="flex items-center gap-2 justify-center">
-                    {row.enabled ? (
-                        <button 
-                            onClick={() => handleLockUser(row)}
-                            className="flex flex-col items-center gap-1 p-2 hover:bg-rose-50 text-slate-400 hover:text-rose-600 rounded-xl transition-all"
-                            title="Khóa vĩnh viễn"
-                        >
-                            <Lock className="h-4 w-4" />
-                            <span className="text-[7px] font-black uppercase">Khóa</span>
-                        </button>
-                    ) : (
-                        <button 
-                            onClick={() => handleUnlockUser(row)}
-                            className="flex flex-col items-center gap-1 p-2 hover:bg-emerald-50 text-emerald-600 rounded-xl transition-all"
-                            title="Mở khóa tài khoản"
-                        >
-                            <Unlock className="h-4 w-4" />
-                            <span className="text-[7px] font-black uppercase">Gỡ</span>
-                        </button>
-                    )}
-                    <button 
-                        onClick={() => handleResetPassword(row)}
-                        className="flex flex-col items-center gap-1 p-2 hover:bg-amber-50 text-slate-400 hover:text-amber-600 rounded-xl transition-all"
-                        title="Reset mật khẩu mới"
-                    >
-                        <KeyRound className="h-4 w-4" />
-                        <span className="text-[7px] font-black uppercase">Mật khẩu</span>
-                    </button>
-                    <button 
-                        onClick={() => handleChangeRole(row)}
-                        className="flex flex-col items-center gap-1 p-2 hover:bg-indigo-50 text-slate-400 hover:text-indigo-600 rounded-xl transition-all"
-                        title="Nâng/Hạ cấp vai trò"
-                    >
-                        <UserCog className="h-4 w-4" />
-                        <span className="text-[7px] font-black uppercase">Vai trò</span>
-                    </button>
-                </div>
-            )
-        }
-    ], [formatCurrency, getRoleBadge, getUserInitial, handleChangeRole, handleLockUser, handleResetPassword, handleUnlockUser, maskEmail])
-
     const clearFilters = useCallback(() => {
         setFilters({ role: '', status: '', emailVerified: null, twoFactorEnabled: null })
         setSearchTerm('')
@@ -484,26 +295,37 @@ const AdminUsers = () => {
     }, [])
 
     return (
-        <div className="space-y-5 sm:space-y-8 pb-12 sm:pb-16 animate-fade-in">
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-                <div className="max-w-2xl">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-main/10 text-primary-main text-xs font-bold uppercase tracking-[0.2em] mb-3">
-                        Users
-                    </div>
-                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-text-primary dark:text-dark-text tracking-tight">
-                        Quản lý <span className="text-primary-main">người dùng</span>
-                    </h1>
-                    <p className="text-sm sm:text-base font-medium text-text-secondary dark:text-gray-400 mt-2 leading-relaxed">
-                        Quản lý tài khoản, phân quyền và kiểm soát hoạt động của người dùng trong hệ thống.
-                    </p>
-                </div>
+        <div className="space-y-6 animate-fade-in">
+            <AdminPageHeader 
+                title="Quản lý" 
+                accentTitle="Người dùng"
+                subtitle="Quản lý tài khoản, phân quyền và kiểm soát hoạt động hệ thống."
+                rightElement={
+                    <button 
+                        onClick={handleAddUser}
+                        className="h-[46px] px-6 bg-primary-600 text-white rounded-xl font-bold text-[13px] flex items-center justify-center gap-2 shadow-lg shadow-primary-600/20 hover:bg-primary-700 transition-all active:scale-95 whitespace-nowrap"
+                    >
+                        <UserPlus className="h-5 w-5" /> 
+                        THÊM THÀNH VIÊN
+                    </button>
+                }
+            />
+
+            {/* Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                {adminStats.map((stat, i) => (
+                    <AdminStatsCard 
+                        key={i}
+                        title={stat.label}
+                        value={stat.value}
+                        icon={stat.icon}
+                        type={stat.type}
+                    />
+                ))}
             </div>
 
-            {/* Stats Header */}
-            <AdminUsersStats stats={adminStats} />
-
             {/* Filter Bar */}
-            <div className="bg-white dark:bg-dark-card p-4 sm:p-5 rounded-[1.75rem] shadow-sm border border-border dark:border-dark-border">
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-6">
                 <div className="flex flex-col xl:flex-row gap-4">
                     <div className="relative flex-1">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -512,89 +334,156 @@ const AdminUsers = () => {
                             placeholder="Tìm người dùng (Tên, Email, Username)..."
                             value={searchTerm}
                             onChange={(e) => { setSearchTerm(e.target.value); setPagination(p => ({...p, page: 0})); }}
-                            className="w-full h-12 pl-12 pr-4 rounded-2xl border border-border dark:border-dark-border bg-white dark:bg-dark-bg focus:ring-4 focus:ring-primary-main/10 focus:border-primary-main outline-none text-sm font-medium text-text-primary dark:text-dark-text"
+                            className="w-full h-[46px] pl-12 pr-4 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-primary-600/20 focus:bg-white transition-all outline-none text-[14px] font-medium"
                         />
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-2">
-                        <button 
-                            onClick={() => setShowFilters(!showFilters)}
-                            className={`h-12 px-5 rounded-2xl border flex items-center justify-center gap-2 font-semibold text-sm transition-all ${showFilters ? 'bg-primary-main text-white border-primary-main' : 'bg-white dark:bg-dark-bg text-text-primary dark:text-dark-text border-border dark:border-dark-border hover:bg-gray-50 dark:hover:bg-dark-card'}`}
-                        >
-                            <Filter className="h-5 w-5" /> Bộ lọc
-                        </button>
-                        <button 
-                            onClick={handleAddUser}
-                            className="h-12 px-5 bg-primary-main hover:opacity-95 text-white rounded-2xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-primary-main/20 transition-all active:scale-95"
-                        >
-                            <UserPlus className="h-5 w-5" /> Thêm mới
-                        </button>
-                    </div>
+                    <button 
+                        onClick={() => setShowFilters(!showFilters)}
+                        className={`h-[46px] px-5 rounded-xl border flex items-center justify-center gap-2 font-bold text-[13px] transition-all ${showFilters ? 'bg-primary-600 text-white border-primary-600 shadow-lg shadow-primary-600/20' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'}`}
+                    >
+                        <Filter className="h-4 w-4" /> 
+                        BỘ LỌC
+                    </button>
                 </div>
 
                 {showFilters && (
-                    <div className="mt-4 pt-4 border-t border-border dark:border-dark-border grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 animate-slide-down">
-                        <select 
-                            className="h-12 bg-white dark:bg-dark-bg border border-border dark:border-dark-border rounded-2xl px-4 text-sm font-medium text-text-primary dark:text-dark-text outline-none focus:ring-4 focus:ring-primary-main/10 focus:border-primary-main"
-                            value={filters.role}
-                            onChange={(e) => { setFilters({...filters, role: e.target.value}); setPagination(p => ({...p, page: 0})); }}
-                        >
-                            <option value="">Tất cả vai trò</option>
-                            <option value="ROLE_ADMIN">Quản trị viên</option>
-                            <option value="ROLE_STAFF">Nhân viên</option>
-                            <option value="ROLE_CUSTOMER">Khách hàng</option>
-                        </select>
-                        <select 
-                            className="h-12 bg-white dark:bg-dark-bg border border-border dark:border-dark-border rounded-2xl px-4 text-sm font-medium text-text-primary dark:text-dark-text outline-none focus:ring-4 focus:ring-primary-main/10 focus:border-primary-main"
-                            value={filters.status}
-                            onChange={(e) => { setFilters({...filters, status: e.target.value}); setPagination(p => ({...p, page: 0})); }}
-                        >
-                            <option value="">Trạng thái</option>
-                            <option value="ACTIVE">Hoạt động</option>
-                            <option value="LOCKED">Đã khóa</option>
-                        </select>
-                        <button onClick={clearFilters} className="h-12 rounded-2xl border border-dashed border-rose-300 text-rose-600 hover:bg-rose-50 font-bold text-sm transition-all">
-                            Xóa tất cả bộ lọc
-                        </button>
+                    <div className="pt-6 border-t border-gray-100 grid grid-cols-1 md:grid-cols-4 gap-6 animate-fade-in">
+                        <div>
+                            <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Vai trò</label>
+                            <select 
+                                className="w-full h-11 bg-gray-50 border-none rounded-xl px-4 text-[14px] font-bold text-gray-700 outline-none focus:ring-2 focus:ring-primary-600/20 transition-all"
+                                value={filters.role}
+                                onChange={(e) => { setFilters({...filters, role: e.target.value}); setPagination(p => ({...p, page: 0})); }}
+                            >
+                                <option value="">Tất cả vai trò</option>
+                                <option value="ROLE_ADMIN">Quản trị viên</option>
+                                <option value="ROLE_STAFF">Nhân viên</option>
+                                <option value="ROLE_CUSTOMER">Khách hàng</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2">Trạng thái</label>
+                            <select 
+                                className="w-full h-11 bg-gray-50 border-none rounded-xl px-4 text-[14px] font-bold text-gray-700 outline-none focus:ring-2 focus:ring-primary-600/20 transition-all"
+                                value={filters.status}
+                                onChange={(e) => { setFilters({...filters, status: e.target.value}); setPagination(p => ({...p, page: 0})); }}
+                            >
+                                <option value="">Tất cả trạng thái</option>
+                                <option value="ACTIVE">Hoạt động</option>
+                                <option value="LOCKED">Đã khóa</option>
+                            </select>
+                        </div>
+                        <div className="flex items-end">
+                            <button onClick={clearFilters} className="h-11 px-6 rounded-xl border border-gray-200 text-gray-500 font-bold text-[13px] hover:bg-gray-50 transition-all uppercase tracking-wider">
+                                Xóa bộ lọc
+                            </button>
+                        </div>
                     </div>
                 )}
             </div>
 
             {/* User Table */}
-            <div className="bg-white dark:bg-dark-card rounded-[1.75rem] shadow-sm border border-border dark:border-dark-border overflow-hidden">
-                <AdminTable
-                    columns={columns}
-                    data={users}
-                    isLoading={isLoading}
-                    showIndex={true}
-                    currentPage={pagination.page}
-                    pageSize={pagination.size}
-                    rowClassName={(row) => !row.enabled ? 'bg-gray-50/40 dark:bg-white/[0.02]' : ''}
-                    actions={(user) => <AdminUsersRowActions user={user} onDelete={handleDelete} />}
-                />
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left">
+                        <thead>
+                            <tr className="bg-gray-50/50">
+                                <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Người dùng</th>
+                                <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Liên hệ</th>
+                                <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Vai trò</th>
+                                <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Chi tiêu</th>
+                                <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-right">Quản trị</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-50">
+                            {isLoading ? (
+                                <tr>
+                                    <td colSpan={5} className="px-8 py-20 text-center">
+                                        <div className="w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                                    </td>
+                                </tr>
+                            ) : users.length === 0 ? (
+                                <tr>
+                                    <td colSpan={5} className="px-8 py-20 text-center text-gray-400 font-bold italic">
+                                        Không tìm thấy người dùng phù hợp
+                                    </td>
+                                </tr>
+                            ) : users.map((row) => (
+                                <tr key={row.id} className={`hover:bg-gray-50 transition-colors ${!row.enabled ? 'bg-gray-50/50' : ''}`}>
+                                    <td className="px-8 py-5">
+                                        <div className="flex items-center gap-3">
+                                            <div className="relative">
+                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white text-[15px] font-bold overflow-hidden shadow-sm ${row.enabled ? 'bg-primary-600' : 'bg-gray-300'}`}>
+                                                    {row.avatar ? <img src={row.avatar} alt="" className="w-full h-full object-cover" /> : (row.fullName?.[0] || row.username?.[0] || '?').toUpperCase()}
+                                                </div>
+                                                {row.enabled && <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>}
+                                            </div>
+                                            <div>
+                                                <p className={`text-[14px] font-bold ${row.enabled ? 'text-gray-900' : 'text-gray-400 italic'}`}>{row.fullName || 'Chưa đặt tên'}</p>
+                                                <p className="text-[12px] text-gray-400 font-medium">@{row.username}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="px-8 py-5">
+                                        <p className="text-[13px] font-bold text-gray-700">{maskEmail(row.email)}</p>
+                                        <p className={`text-[11px] font-black uppercase tracking-widest ${row.emailVerified ? 'text-green-600' : 'text-orange-500'}`}>
+                                            {row.emailVerified ? 'Đã xác minh' : 'Chờ xác minh'}
+                                        </p>
+                                    </td>
+                                    <td className="px-8 py-5">
+                                        {getRolePill(row.roles)}
+                                    </td>
+                                    <td className="px-8 py-5">
+                                        <p className="text-[14px] font-black text-gray-900">{currencyFormatter.format(row.totalSpent || 0)}</p>
+                                        <p className="text-[11px] text-gray-400 font-black uppercase tracking-tighter">{row.totalOrders || 0} ĐƠN HÀNG</p>
+                                    </td>
+                                    <td className="px-8 py-5">
+                                        <div className="flex items-center justify-end gap-1">
+                                            {row.enabled ? (
+                                                <button 
+                                                    onClick={() => handleLockUser(row)}
+                                                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                                    title="Khóa tài khoản"
+                                                >
+                                                    <Lock className="h-4 w-4" />
+                                                </button>
+                                            ) : (
+                                                <button 
+                                                    onClick={() => handleUnlockUser(row)}
+                                                    className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all"
+                                                    title="Mở khóa tài khoản"
+                                                >
+                                                    <Unlock className="h-4 w-4" />
+                                                </button>
+                                            )}
+                                            <button 
+                                                onClick={() => handleResetPassword(row)}
+                                                className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all"
+                                                title="Reset mật khẩu"
+                                            >
+                                                <KeyRound className="h-4 w-4" />
+                                            </button>
+                                            <button 
+                                                onClick={() => handleChangeRole(row)}
+                                                className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                                                title="Thay đổi vai trò"
+                                            >
+                                                <UserCog className="h-4 w-4" />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
 
-                {/* Pagination */}
                 {!isLoading && pagination.totalPages > 1 && (
-                    <div className="p-8 border-t border-slate-100 flex items-center justify-between bg-slate-50/20">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                            Trang <span className="text-indigo-600">{pagination.page + 1}</span> của {pagination.totalPages}
-                        </p>
-                        <div className="flex items-center gap-2">
-                            <button 
-                                onClick={() => setPagination(prev => ({...prev, page: Math.max(0, prev.page - 1)}))}
-                                disabled={pagination.page === 0}
-                                className="h-10 w-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white disabled:opacity-20 hover:shadow-md transition-all"
-                            >
-                                <ChevronLeft className="h-5 w-5" />
-                            </button>
-                            <button 
-                                onClick={() => setPagination(prev => ({...prev, page: Math.min(prev.totalPages - 1, prev.page + 1)}))}
-                                disabled={pagination.page === pagination.totalPages - 1}
-                                className="h-10 w-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white disabled:opacity-20 hover:shadow-md transition-all"
-                            >
-                                <ChevronRight className="h-5 w-5" />
-                            </button>
-                        </div>
-                    </div>
+                    <AdminPagination 
+                        currentPage={pagination.page}
+                        totalPages={pagination.totalPages}
+                        onPageChange={(p) => setPagination(prev => ({...prev, page: p}))}
+                    />
                 )}
             </div>
         </div>

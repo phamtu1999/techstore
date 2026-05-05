@@ -18,13 +18,22 @@ export default {
           100: '#ffedd5',
           200: '#fed7aa',
           300: '#fdba74',
-          400: '#ff8c42',
-          500: '#ff6a00',
-          600: '#ff4d00', // Updated to hover color requested
-          MAIN: '#ff6a00', // Tech Store primary color
-          700: '#cc4d00',
-          800: '#b34000',
-          900: '#993300',
+          400: '#fb923c',
+          500: '#f97316',
+          600: '#ea580c', // Primary Admin Color
+          MAIN: '#ea580c', // Tech Store primary color
+          700: '#c2410c',
+          800: '#9a3412',
+          900: '#7c2d12',
+        },
+        admin: {
+          sidebar: '#1a1a2e',
+          bg: '#f8fafc',
+          success: '#16a34a',
+          warning: '#ca8a04',
+          info: '#2563eb',
+          danger: '#dc2626',
+          purple: '#7c3aed',
         },
         secondary: {
           MAIN: '#1e293b', // Dark navy

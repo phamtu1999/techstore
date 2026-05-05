@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { fetchProducts } from '../store/slices/productsSlice'
 import { fetchPersonalizedRecommendations, fetchTrendingProducts } from '../store/slices/recommendationsSlice'
-import { Smartphone, Laptop, Headphones, Watch, Tablet, LayoutGrid, ChevronRight, Zap } from 'lucide-react'
+import { Smartphone, Laptop, Headphones, Watch, Tablet, LayoutGrid, ChevronRight, Zap, Star, ShieldCheck, Award } from 'lucide-react'
 import { categoriesAPI } from '../api/categories'
 import { productsAPI } from '../api/products'
 import HeroBanner from '../components/home/HeroBanner'
@@ -27,7 +27,6 @@ const Home = () => {
       if (apiCats.length > 0) {
         setCategories(apiCats.slice(0, 10))
       } else {
-        // Fallback hardcoded categories if API is empty
         setCategories([
           { id: 'f1', name: 'Điện thoại', slug: 'dien-thoai', active: true },
           { id: 'f2', name: 'Laptop', slug: 'laptop', active: true },
@@ -38,7 +37,6 @@ const Home = () => {
         ])
       }
     }).catch(() => {
-      // Fallback on error
       setCategories([
         { id: 'f1', name: 'Điện thoại', slug: 'dien-thoai', active: true },
         { id: 'f2', name: 'Laptop', slug: 'laptop', active: true },
@@ -79,27 +77,67 @@ const Home = () => {
   }
 
   return (
-    <div className="space-y-8 sm:space-y-16 pb-12 sm:pb-16 bg-[#F8F9FA] dark:bg-dark-bg transition-colors duration-500">
-      {/* Hero Section - Bản Premium */}
-      <div className="max-w-[1440px] mx-auto px-3 sm:px-4 lg:px-8">
+    <div className="space-y-12 sm:space-y-24 pb-12 sm:pb-24 bg-[#F8F9FA] dark:bg-dark-bg transition-colors duration-500">
+      {/* Hero Section */}
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <HeroBanner />
       </div>
 
-      {/* Categories Grid - High-end E-commerce Style */}
-      <section className="max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="flex items-end justify-between mb-5 sm:mb-10 gap-3">
-          <div className="min-w-0">
-            <h2 className="text-xl sm:text-2xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
-              Danh mục <span className="text-primary-MAIN">nổi bật</span>
-            </h2>
-            <div className="h-1.5 w-12 bg-primary-MAIN rounded-full mt-3" />
+      {/* Trust Indicators */}
+      <section className="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="flex items-center gap-4 p-6 bg-white dark:bg-dark-card rounded-3xl border border-gray-100 dark:border-dark-border shadow-sm">
+             <div className="w-12 h-12 rounded-2xl bg-primary-600/10 flex items-center justify-center text-primary-600">
+                <ShieldCheck className="w-6 h-6" />
+             </div>
+             <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Cam kết</p>
+                <p className="text-sm font-black dark:text-white uppercase tracking-tight">Chính hãng 100%</p>
+             </div>
           </div>
-          <Link to="/products" className="group flex items-center gap-2 text-sm sm:text-base text-slate-500 dark:text-dark-textSecondary font-bold hover:text-primary-MAIN transition-colors shrink-0">
-            Xem tất cả <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
+          <div className="flex items-center gap-4 p-6 bg-white dark:bg-dark-card rounded-3xl border border-gray-100 dark:border-dark-border shadow-sm">
+             <div className="w-12 h-12 rounded-2xl bg-blue-600/10 flex items-center justify-center text-blue-600">
+                <Zap className="w-6 h-6" />
+             </div>
+             <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Vận chuyển</p>
+                <p className="text-sm font-black dark:text-white uppercase tracking-tight">Giao nhanh 2h</p>
+             </div>
+          </div>
+          <div className="flex items-center gap-4 p-6 bg-white dark:bg-dark-card rounded-3xl border border-gray-100 dark:border-dark-border shadow-sm">
+             <div className="w-12 h-12 rounded-2xl bg-emerald-600/10 flex items-center justify-center text-emerald-600">
+                <Award className="w-6 h-6" />
+             </div>
+             <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Bảo hành</p>
+                <p className="text-sm font-black dark:text-white uppercase tracking-tight">Lỗi 1 đổi 1</p>
+             </div>
+          </div>
+          <div className="flex items-center gap-4 p-6 bg-white dark:bg-dark-card rounded-3xl border border-gray-100 dark:border-dark-border shadow-sm">
+             <div className="w-12 h-12 rounded-2xl bg-amber-600/10 flex items-center justify-center text-amber-600">
+                <Star className="w-6 h-6" />
+             </div>
+             <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Đánh giá</p>
+                <p className="text-sm font-black dark:text-white uppercase tracking-tight">4.9/5 Sao</p>
+             </div>
+          </div>
+      </section>
+
+      {/* Categories Grid */}
+      <section className="max-w-7xl mx-auto px-4">
+        <div className="flex items-end justify-between mb-8 sm:mb-12">
+          <div>
+            <h2 className="text-3xl sm:text-5xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
+              DANH <span className="text-primary-600">MỤC</span>
+            </h2>
+            <p className="text-xs font-black text-gray-400 uppercase tracking-[0.3em] mt-2 italic">Tech Store Collection</p>
+          </div>
+          <Link to="/products" className="group flex items-center gap-2 text-xs font-black text-gray-400 uppercase tracking-widest hover:text-primary-600 transition-all">
+            XEM TẤT CẢ <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-6 lg:gap-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 sm:gap-8">
           {categories.map((cat) => {
             const Icon = getCategoryIcon(cat.slug)
             const catImg = cat.imageUrl || getCategoryImage(cat.slug)
@@ -107,30 +145,27 @@ const Home = () => {
               <Link
                 key={cat.id}
                 to={`/products?category=${cat.slug}`}
-                className="group relative h-40 sm:h-72 rounded-[1.5rem] sm:rounded-[2.5rem] overflow-hidden bg-slate-200 dark:bg-dark-card shadow-lg hover:shadow-primary-500/10 hover:scale-[1.03] hover:ring-2 hover:ring-primary-500 transition-all duration-500"
+                className="group relative h-48 sm:h-80 rounded-[2.5rem] overflow-hidden shadow-lg hover:shadow-primary-600/20 hover:scale-[1.03] transition-all duration-500"
               >
-                {/* Background Image with Fallback Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-900 dark:from-dark-card dark:to-dark-bg" />
+                <div className="absolute inset-0 bg-gray-900" />
                 <img 
                   src={catImg} 
                   alt={cat.name} 
-                  className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:scale-110 group-hover:opacity-100 transition-all duration-700" 
-                  onError={(e) => e.target.style.display = 'none'}
+                  className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-110 group-hover:opacity-100 transition-all duration-700" 
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
                 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent dark:from-dark-bg/95 dark:via-transparent transition-all duration-500" />
-                
-                <div className="absolute top-4 right-4 sm:top-5 sm:right-5 flex flex-col items-end">
-                   <div className="p-2.5 sm:p-3 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 text-white group-hover:bg-primary-500 group-hover:border-primary-400 group-hover:scale-110 transition-all duration-300">
-                     <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
+                <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
+                   <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 text-white group-hover:bg-primary-600 group-hover:border-primary-500 transition-all">
+                     <Icon className="h-5 w-5" />
                    </div>
                 </div>
 
-                <div className="absolute bottom-5 left-4 right-4 sm:bottom-8 sm:left-8 sm:right-8">
-                  <span className="font-black text-white text-base sm:text-xl uppercase tracking-wider leading-none block mb-2 drop-shadow-lg line-clamp-2">
+                <div className="absolute bottom-6 left-6 right-6 sm:bottom-8 sm:left-8 sm:right-8 text-center sm:text-left">
+                  <span className="font-black text-white text-lg sm:text-xl uppercase tracking-wider leading-none block mb-2 drop-shadow-lg">
                     {cat.name}
                   </span>
-                  <div className="h-1 w-0 bg-primary-500 rounded-full group-hover:w-16 transition-all duration-500" />
+                  <div className="h-1.5 w-0 bg-primary-600 rounded-full group-hover:w-full transition-all duration-500" />
                 </div>
               </Link>
             )
@@ -138,44 +173,45 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Flash Sale - Bản Premium với Countdown */}
-      <section className="max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="bg-white dark:bg-dark-card rounded-[1.5rem] sm:rounded-[3rem] p-4 sm:p-8 md:p-12 shadow-2xl shadow-primary-500/5 border border-gray-100 dark:border-white/5 relative overflow-hidden">
-          {/* Decorative blur */}
-          <div className="absolute top-0 right-0 w-32 h-32 sm:w-64 sm:h-64 bg-primary-500/10 rounded-full blur-3xl -mr-16 -mt-16 sm:-mr-32 sm:-mt-32"></div>
+      {/* Flash Sale */}
+      <section className="max-w-7xl mx-auto px-4">
+        <div className="bg-white dark:bg-dark-card rounded-[3rem] p-8 sm:p-16 shadow-2xl shadow-primary-600/10 border border-gray-100 dark:border-dark-border relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-primary-600/5 rounded-full blur-[100px] -mr-32 -mt-32"></div>
           
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 sm:gap-6 lg:gap-12 relative z-10">
-            <div className="text-center lg:text-left space-y-3 sm:space-y-4 w-full lg:w-auto">
-              <div className="inline-flex items-center gap-2 px-3 py-2 bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-400 rounded-full text-[10px] font-black uppercase tracking-widest mx-auto lg:mx-0">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-12 relative z-10">
+            <div className="text-center lg:text-left space-y-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-full text-[10px] font-black uppercase tracking-widest animate-pulse shadow-lg shadow-primary-600/30">
                 <Zap className="h-4 w-4 fill-current" />
-                Sự kiện đang diễn ra
+                FLASH SALE ĐANG CHÁY
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tighter uppercase leading-none">
-                FLASH <span className="text-primary-600 italic">SALE</span>
+              <h2 className="text-5xl sm:text-7xl font-black text-gray-900 dark:text-white tracking-tighter uppercase leading-[0.8] italic">
+                SIÊU <span className="text-primary-600 not-italic">ƯU ĐÃI</span>
               </h2>
-              <p className="text-slate-500 dark:text-dark-textSecondary font-bold uppercase tracking-widest text-[10px] sm:text-sm">Kết thúc sau:</p>
               
-              {/* Countdown Timer */}
-              <div className="flex gap-2 sm:gap-4 justify-center lg:justify-start flex-wrap sm:flex-nowrap">
-                <div className="flex flex-col items-center min-w-[56px] sm:min-w-0">
-                   <div className="w-11 h-11 sm:w-16 sm:h-16 bg-slate-900 dark:bg-dark-border text-white rounded-2xl flex items-center justify-center text-base sm:text-2xl font-black shadow-xl">02</div>
-                   <span className="text-[9px] sm:text-[10px] font-black text-gray-400 mt-2 uppercase">Giờ</span>
-                </div>
-                <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white pt-2 sm:pt-3 hidden sm:block">:</div>
-                <div className="flex flex-col items-center min-w-[56px] sm:min-w-0">
-                   <div className="w-11 h-11 sm:w-16 sm:h-16 bg-slate-900 dark:bg-dark-border text-white rounded-2xl flex items-center justify-center text-base sm:text-2xl font-black shadow-xl">45</div>
-                   <span className="text-[9px] sm:text-[10px] font-black text-gray-400 mt-2 uppercase">Phút</span>
-                </div>
-                <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white pt-2 sm:pt-3 hidden sm:block">:</div>
-                <div className="flex flex-col items-center min-w-[56px] sm:min-w-0">
-                   <div className="w-11 h-11 sm:w-16 sm:h-16 bg-primary-600 text-white rounded-2xl flex items-center justify-center text-base sm:text-2xl font-black shadow-xl animate-pulse">12</div>
-                   <span className="text-[9px] sm:text-[10px] font-black text-gray-400 mt-2 uppercase">Giây</span>
-                </div>
+              <div className="flex gap-4 justify-center lg:justify-start">
+                {[
+                  { v: '02', l: 'GIỜ' },
+                  { v: '45', l: 'PHÚT' },
+                  { v: '12', l: 'GIÂY' }
+                ].map((t, i) => (
+                  <div key={i} className="flex flex-col items-center">
+                    <div className="w-16 h-16 bg-gray-900 dark:bg-dark-bg text-white rounded-2xl flex items-center justify-center text-2xl font-black shadow-xl">
+                      {t.v}
+                    </div>
+                    <span className="text-[10px] font-black text-gray-400 mt-2 tracking-widest">{t.l}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="pt-4">
+                <Link to="/products?filter=flash-sale" className="group inline-flex items-center gap-3 text-xs font-black text-primary-600 uppercase tracking-widest hover:gap-5 transition-all">
+                  XEM TẤT CẢ SẢN PHẨM FLASH SALE
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
               </div>
             </div>
 
-            {/* Flash Sale Products - Mini Slider or Grid */}
-            <div className="w-full lg:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
+            <div className="w-full lg:w-3/5 grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {(bestSellers.slice(0, 2)).map(product => {
                   const price = product.price || product.variants?.[0]?.price || 0;
                   const { primary: imageUrl } = getProductImageSources(product);
@@ -183,28 +219,27 @@ const Home = () => {
                     <Link 
                       key={product.id} 
                       to={`/${product.slug}`}
-                      className="bg-gray-50 dark:bg-white/5 rounded-[1.5rem] sm:rounded-[2.5rem] p-3 sm:p-6 flex gap-3 sm:gap-6 items-center hover:bg-white dark:hover:bg-white/10 transition-all border border-transparent hover:border-primary-500 shadow-sm hover:shadow-xl group min-w-0"
+                      className="bg-gray-50 dark:bg-black/20 rounded-[2.5rem] p-6 flex gap-6 items-center hover:bg-white dark:hover:bg-white/5 transition-all border border-transparent hover:border-primary-500 shadow-sm hover:shadow-2xl group"
                     >
-                       <div className="w-16 h-16 sm:w-24 sm:h-24 lg:w-32 lg:h-32 flex-shrink-0 relative bg-white dark:bg-dark-bg rounded-2xl overflow-hidden p-2 border border-gray-100 dark:border-white/5">
+                       <div className="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 relative bg-white dark:bg-dark-bg rounded-3xl overflow-hidden p-4 border border-gray-100 dark:border-white/5">
                           <img 
                             src={imageUrl || DEFAULT_PRODUCT_PLACEHOLDER} 
                             alt={product.name} 
                             className="w-full h-full object-contain group-hover:scale-110 transition-transform"
-                            onError={(e) => handleProductImageError(e)}
                           />
-                          <div className="absolute top-2 left-2 bg-primary-600 text-white text-[8px] font-black px-2 py-1 rounded-full uppercase tracking-tighter shadow-lg">
+                          <div className="absolute top-2 left-2 bg-red-600 text-white text-[8px] font-black px-2 py-1 rounded-full uppercase tracking-tighter">
                              -35%
                           </div>
                        </div>
-                       <div className="flex-1 min-w-0 flex flex-col justify-center">
-                          <h3 className="font-black text-sm sm:text-base text-slate-900 dark:text-white line-clamp-2 leading-tight mb-1.5 sm:mb-2 group-hover:text-primary-600 transition-colors">
+                       <div className="flex-1 min-w-0">
+                          <h3 className="font-black text-sm sm:text-base text-gray-900 dark:text-white line-clamp-2 leading-tight mb-2 uppercase tracking-tight">
                              {product.name}
                           </h3>
-                          <div className="flex flex-col gap-0.5">
-                             <span className="text-lg sm:text-xl font-black text-primary-600 tracking-tighter">
+                          <div className="flex flex-col">
+                             <span className="text-xl font-black text-primary-600 tracking-tighter">
                                 {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price * 0.65)}
                              </span>
-                             <span className="text-xs text-gray-400 line-through font-bold opacity-60">
+                             <span className="text-[10px] text-gray-400 line-through font-bold opacity-60">
                                 {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price)}
                              </span>
                           </div>
@@ -217,60 +252,71 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Best Sellers - Optimized Product Cards */}
-      <section className="max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="flex items-end justify-between mb-6 sm:mb-10 gap-3">
-          <div className="min-w-0">
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white leading-tight">Sản phẩm <span className="text-primary-MAIN">bán chạy</span></h2>
-            <p className="text-slate-500 dark:text-dark-textSecondary font-medium mt-1 text-sm sm:text-base">Sự lựa chọn của hàng nghìn khách hàng</p>
+      {/* Best Sellers */}
+      <section className="max-w-7xl mx-auto px-4">
+        <div className="flex items-end justify-between mb-12">
+          <div>
+            <h2 className="text-3xl sm:text-5xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
+              BÁN <span className="text-primary-600">CHẠY</span>
+            </h2>
+            <p className="text-xs font-black text-gray-400 uppercase tracking-[0.3em] mt-2 italic">Những lựa chọn hàng đầu</p>
           </div>
+          <Link to="/products?sort=soldCount,desc" className="group flex items-center gap-2 text-xs font-black text-gray-400 uppercase tracking-widest hover:text-primary-600 transition-all">
+            XEM TẤT CẢ <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+          </Link>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {bestSellers.map((product) => (
-            <div key={product.id} className="hover:-translate-y-2 transition-transform duration-300">
-              <ProductCard product={product} />
-            </div>
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </section>
 
-      {/* Khuyến mãi - Banner phụ sạch sẽ */}
-      <section className="max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="bg-primary-MAIN rounded-[1.75rem] sm:rounded-[2rem] p-5 sm:p-8 md:p-12 text-white relative overflow-hidden group shadow-2xl shadow-primary-MAIN/20">
-          <div className="relative z-10 max-w-xl">
-            <span className="text-primary-100 font-bold tracking-widest uppercase text-[11px] sm:text-sm">Chương trình đặc biệt</span>
-            <h2 className="text-2xl sm:text-4xl md:text-5xl font-black mt-3 sm:mt-4 mb-5 sm:mb-6 leading-tight">Nâng cấp đời máy <br/> Trợ giá tới 2 triệu</h2>
-            <button className="bg-white text-primary-MAIN px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-bold hover:bg-gray-100 transition-colors shadow-xl text-[11px] sm:text-xs uppercase tracking-widest w-full sm:w-auto">
-              Đăng ký ngay
-            </button>
+      {/* Promo Banner */}
+      <section className="max-w-7xl mx-auto px-4">
+        <div className="bg-primary-600 rounded-[3rem] p-8 sm:p-20 text-white relative overflow-hidden group shadow-2xl shadow-primary-600/30">
+          <div className="relative z-10 max-w-2xl text-center sm:text-left">
+            <span className="text-primary-100 font-black tracking-[0.3em] uppercase text-xs sm:text-sm italic">Sự kiện đặc biệt tháng 5</span>
+            <h2 className="text-4xl sm:text-7xl font-black mt-6 mb-8 leading-[0.9] tracking-tighter uppercase">NÂNG CẤP ĐỜI MÁY <br/><span className="text-white/40">TRỢ GIÁ 2 TRIỆU</span></h2>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button className="bg-white text-primary-600 px-10 py-5 rounded-2xl font-black hover:bg-gray-100 transition-all shadow-xl text-xs uppercase tracking-widest active:scale-95">
+                Đăng ký thu cũ đổi mới
+              </button>
+              <Link to="/products" className="inline-flex items-center justify-center gap-2 px-10 py-5 border-2 border-white/30 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-all">
+                Xem bảng giá
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
           </div>
-          <div className="absolute top-0 right-0 w-1/2 h-full hidden lg:block">
-             <div className="absolute inset-0 bg-gradient-to-l from-primary-MAIN to-transparent z-10" />
+          <div className="absolute top-0 right-0 w-1/2 h-full hidden lg:block pointer-events-none">
+             <div className="absolute inset-0 bg-gradient-to-l from-primary-600 to-transparent z-10" />
              <img 
                src="https://images.unsplash.com/photo-1616348436168-de43ad0db179?auto=format&fit=crop&q=80&w=800" 
                alt="Promotion"
-               className="w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-700"
+               className="w-full h-full object-cover opacity-40 group-hover:scale-105 transition-all duration-[2000ms]"
              />
           </div>
         </div>
       </section>
 
-      {/* All Products */}
-      <section className="max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="flex items-end justify-between mb-5 sm:mb-8 gap-3">
-          <h2 className="text-xl sm:text-2xl font-bold text-text-primary dark:text-white leading-tight">Dành cho bạn</h2>
+      {/* Recommended Section */}
+      <section className="max-w-7xl mx-auto px-4">
+        <div className="flex items-center gap-4 mb-12">
+          <h2 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-widest">DÀNH RIÊNG CHO BẠN</h2>
+          <div className="h-[2px] flex-1 bg-gray-100 dark:bg-white/5"></div>
         </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-8">
           {products.slice(0, 8).map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
         
-        <div className="mt-8 sm:mt-12 text-center">
-          <Link to="/products" className="inline-flex items-center justify-center w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 border-2 border-primary-MAIN text-primary-MAIN font-bold rounded-xl hover:bg-primary-MAIN hover:text-white transition-all">
-            Xem tất cả sản phẩm
+        <div className="mt-16 text-center">
+          <Link to="/products" className="inline-flex items-center justify-center gap-3 px-12 py-5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-black rounded-2xl hover:bg-black dark:hover:bg-gray-200 transition-all shadow-2xl text-[11px] uppercase tracking-[0.2em]">
+            KHÁM PHÁ TOÀN BỘ SẢN PHẨM
+            <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
       </section>

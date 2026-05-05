@@ -157,7 +157,52 @@
   }
 
   .glow-primary {
-    box-shadow: 0 0 20px rgba(255, 106, 0, 0.4);
+    box-shadow: 0 0 20px rgba(234, 88, 12, 0.4);
+  }
+
+  /* Admin Specific UI System */
+  .admin-h1 {
+    @apply text-[28px] font-bold text-gray-900;
+  }
+
+  .admin-section-title {
+    @apply text-[22px] font-bold text-gray-800;
+  }
+
+  .admin-table-header {
+    @apply text-[12px] font-semibold uppercase tracking-[0.05em] text-gray-500 py-4 px-6;
+  }
+
+  .admin-badge {
+    @apply px-2.5 py-1 rounded-full text-[12px] font-bold uppercase tracking-wider;
+  }
+
+  .admin-badge-success {
+    @apply bg-green-100 text-admin-success;
+  }
+
+  .admin-badge-warning {
+    @apply bg-yellow-100 text-admin-warning;
+  }
+
+  .admin-badge-info {
+    @apply bg-blue-100 text-admin-info;
+  }
+
+  .admin-badge-danger {
+    @apply bg-red-100 text-admin-danger;
+  }
+
+  .admin-badge-orange {
+    @apply bg-orange-100 text-orange-600;
+  }
+
+  .admin-card {
+    @apply bg-white rounded-xl shadow-sm border border-gray-100 p-6;
+  }
+
+  .admin-btn-primary {
+    @apply bg-primary-600 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-primary-700 transition-all active:scale-95 shadow-sm;
   }
 /* Dark Mode Core Styles - Premium Overhaul */
 .dark body {

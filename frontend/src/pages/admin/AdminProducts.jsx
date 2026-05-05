@@ -11,6 +11,9 @@ import { getApiErrorMessage } from '../../utils/apiError'
 
 // Sub-components
 import ProductFilters from '../../components/admin/products/ProductFilters'
+import AdminPageHeader from '../../components/admin/shared/AdminPageHeader'
+import AdminPagination from '../../components/admin/shared/AdminPagination'
+import AdminPill from '../../components/admin/shared/AdminPill'
 
 const AdminProducts = () => {
   const dispatch = useDispatch()
@@ -19,14 +22,13 @@ const AdminProducts = () => {
 
   const [searchParams, setSearchParams] = useSearchParams()
   const page = parseInt(searchParams.get('page') || '0')
-  const setPage = (valOrFn) => {
+  const setPage = (nextPage) => {
     setSearchParams(prev => {
-      const current = parseInt(prev.get('page') || '0')
-      const next = typeof valOrFn === 'function' ? valOrFn(current) : valOrFn
-      prev.set('page', next)
+      prev.set('page', nextPage)
       return prev
     })
   }
+  
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
   const [selectedStatus, setSelectedStatus] = useState('')
@@ -39,6 +41,7 @@ const AdminProducts = () => {
   }, [dispatch, page, searchTerm])
 
   useEffect(() => { loadProducts(page) }, [loadProducts, page])
+  
   useEffect(() => {
     let mounted = true
     categoriesAPI.getAll().then(res => {
@@ -272,8 +275,8 @@ const AdminProducts = () => {
       sortable: true,
       render: (name, row) => (
         <div className="max-w-xs">
-          <p className="font-semibold text-gray-900 truncate">{name}</p>
-          <p className="text-xs text-gray-500 truncate">{row.brand?.name || '---'}</p>
+          <p className="font-bold text-gray-900 truncate text-[14px]">{name}</p>
+          <p className="text-[12px] text-gray-400 font-bold uppercase tracking-wider mt-0.5">{row.brand?.name || '---'}</p>
         </div>
       )
     },
@@ -281,7 +284,7 @@ const AdminProducts = () => {
       key: 'category',
       label: 'Danh mục',
       render: (cat) => (
-        <span className="px-2 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-md">
+        <span className="px-2.5 py-1 bg-blue-50 text-blue-700 text-[11px] font-bold uppercase rounded-lg border border-blue-100 tracking-wider">
           {cat?.name || '---'}
         </span>
       )
@@ -291,7 +294,7 @@ const AdminProducts = () => {
       label: 'Giá', 
       sortable: true,
       render: (v) => (
-        <span className="font-semibold text-gray-900">
+        <span className="font-black text-gray-900 text-[14px]">
           {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(v?.[0]?.price || 0)}
         </span>
       )
@@ -300,19 +303,14 @@ const AdminProducts = () => {
       key: 'variants', 
       label: 'Tồn kho', 
       sortable: true,
-      render: (v, row) => {
+      render: (v) => {
         const stock = v?.[0]?.stockQuantity || 0
         const isOutOfStock = stock === 0
         return (
           <div className="flex items-center gap-2">
-            <span className={`font-semibold ${isOutOfStock ? 'text-red-600' : 'text-gray-900'}`}>
+            <span className={`font-black text-[14px] ${isOutOfStock ? 'text-red-600' : 'text-gray-900'}`}>
               {stock}
             </span>
-            {isOutOfStock && (
-              <span className="px-2 py-0.5 bg-red-100 text-red-700 text-[10px] font-bold uppercase rounded">
-                Hết hàng
-              </span>
-            )}
           </div>
         )
       }
@@ -324,61 +322,45 @@ const AdminProducts = () => {
         const stock = row.variants?.[0]?.stockQuantity || 0
         const isOutOfStock = stock === 0
         
-        if (isOutOfStock) {
-          return (
-            <span className="px-2 py-1 rounded-full text-[10px] font-bold uppercase bg-red-100 text-red-700">
-              Hết hàng
-            </span>
-          )
-        }
-        
+        if (isOutOfStock) return <AdminPill label="Hết hàng" type="danger" />
         return (
-          <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${v ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
-            {v ? 'Hoạt động' : 'Đã ẩn'}
-          </span>
+          <AdminPill label={v ? 'Hoạt động' : 'Đã ẩn'} type={v ? 'success' : 'gray'} />
         )
       }
     },
   ], [])
 
-  return (
-    <div className="space-y-5 sm:space-y-8 pb-12 sm:pb-16">
-      {/* Header with Bulk Actions */}
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-50 text-primary-700 text-xs font-bold uppercase tracking-[0.2em] mb-3">
-            Catalog
-          </div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-text-primary dark:text-dark-text tracking-tight">
-            Quản lý sản phẩm
-          </h1>
-          <p className="text-sm sm:text-base text-text-secondary dark:text-gray-400 mt-2 leading-relaxed">
-            Tổng số <span className="font-bold text-text-primary dark:text-dark-text">{products.length}</span> sản phẩm trong danh mục hiện tại.
-          </p>
-        </div>
-        
-        {selectedRows.length > 0 && (
-          <div className="flex flex-wrap items-center gap-2 bg-white dark:bg-dark-card border border-border dark:border-dark-border rounded-2xl px-4 py-3 shadow-sm">
-            <span className="text-sm font-semibold text-text-primary dark:text-dark-text">
-              Đã chọn {selectedRows.length} sản phẩm
-            </span>
-            <button
-              onClick={handleBulkDelete}
-              className="px-3.5 py-2 bg-red-600 text-white text-sm font-semibold rounded-xl hover:bg-red-700 transition-colors"
-            >
-              Xóa tất cả
-            </button>
-            <button
-              onClick={() => setSelectedRows([])}
-              className="px-3.5 py-2 bg-gray-100 text-gray-700 text-sm font-semibold rounded-xl hover:bg-gray-200 transition-colors"
-            >
-              Bỏ chọn
-            </button>
-          </div>
-        )}
-      </div>
+  const headerRight = selectedRows.length > 0 ? (
+    <div className="flex items-center gap-3 bg-white border border-red-100 rounded-xl px-4 py-2 shadow-sm animate-scale-up">
+      <span className="text-[13px] font-bold text-gray-700">
+        Đã chọn <span className="text-red-600 font-black">{selectedRows.length}</span>
+      </span>
+      <div className="w-[1px] h-4 bg-gray-200"></div>
+      <button
+        onClick={handleBulkDelete}
+        className="text-[13px] font-bold text-red-600 hover:underline"
+      >
+        Xóa tất cả
+      </button>
+      <button
+        onClick={() => setSelectedRows([])}
+        className="text-[13px] font-bold text-gray-400 hover:text-gray-600"
+      >
+        Hủy
+      </button>
+    </div>
+  ) : null
 
-      <div className="bg-white dark:bg-dark-card rounded-[1.5rem] sm:rounded-[2rem] shadow-sm border border-border dark:border-dark-border p-4 sm:p-6">
+  return (
+    <div className="space-y-6 animate-fade-in">
+      <AdminPageHeader 
+        title="Quản lý" 
+        accentTitle="Sản phẩm"
+        subtitle={`Tổng số ${products.length} sản phẩm trong hệ thống.`}
+        rightContent={headerRight}
+      />
+
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <ProductFilters 
             searchTerm={searchTerm} 
             setSearchTerm={setSearchTerm} 
@@ -397,8 +379,8 @@ const AdminProducts = () => {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         {isLoading ? (
             <div className="py-20 text-center">
-              <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-primary-100 border-t-primary-600" />
-              <p className="text-sm text-gray-500 mt-4">Đang tải dữ liệu...</p>
+              <div className="inline-block h-10 w-10 animate-spin rounded-full border-[3px] border-primary-100 border-t-primary-600" />
+              <p className="text-gray-500 font-medium mt-4">Đang tải dữ liệu...</p>
             </div>
         ) : (
             <div>
@@ -418,29 +400,12 @@ const AdminProducts = () => {
                   sortConfig={sortConfig}
                   onSort={handleSort}
                 />
-                {totalPages > 1 && (
-                    <div className="flex justify-between items-center px-6 py-4 border-t border-gray-100">
-                        <span className="text-sm text-gray-600">
-                          Trang <span className="font-semibold">{currentPage + 1}</span> / <span className="font-semibold">{totalPages}</span>
-                        </span>
-                        <div className="flex gap-2">
-                            <button 
-                              disabled={page === 0} 
-                              onClick={() => setPage(p => p - 1)} 
-                              className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                            >
-                              ← Trước
-                            </button>
-                            <button 
-                              disabled={page >= totalPages - 1} 
-                              onClick={() => setPage(p => p + 1)} 
-                              className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                            >
-                              Sau →
-                            </button>
-                        </div>
-                    </div>
-                )}
+                
+                <AdminPagination 
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setPage}
+                />
             </div>
         )}
       </div>

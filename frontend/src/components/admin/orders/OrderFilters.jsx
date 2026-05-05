@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react'
+import { Search, RotateCcw, Filter } from 'lucide-react'
 
 const OrderFilters = ({ 
   searchTerm, setSearchTerm, 
@@ -10,93 +10,99 @@ const OrderFilters = ({
   filteredCount,
   onReset
 }) => {
+  const hasActiveFilters = searchTerm || statusFilter || dateFrom || dateTo || minAmount || maxAmount
+
   return (
-    <div className="bg-white dark:bg-dark-card rounded-[1.5rem] p-4 sm:p-6 border border-border dark:border-dark-border shadow-sm">
-      <div className="space-y-4">
-        <div className="relative">
+    <div className="space-y-6">
+      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+        <div className="relative flex-1 xl:max-w-xl">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
           <input
             type="text"
             placeholder="Tìm theo mã đơn, tên khách hàng, số điện thoại..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full h-12 pl-11 pr-4 rounded-2xl border border-border dark:border-dark-border bg-white dark:bg-dark-bg text-text-primary dark:text-dark-text focus:ring-4 focus:ring-primary-main/10 focus:border-primary-main outline-none text-sm font-medium"
+            className="w-full h-[46px] pl-12 pr-4 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-primary-600/20 focus:bg-white transition-all outline-none text-[14px] font-medium placeholder:text-gray-400"
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Trạng thái</label>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="input w-full"
-            >
-              <option value="">Tất cả</option>
-              <option value="PENDING">Chờ xác nhận</option>
-              <option value="CONFIRMED">Đã xác nhận</option>
-              <option value="SHIPPING">Đang giao</option>
-              <option value="DELIVERED">Đã giao</option>
-              <option value="CANCELLED">Đã hủy</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Từ ngày</label>
-            <input
-              type="date"
-              value={dateFrom}
-              onChange={(e) => setDateFrom(e.target.value)}
-              className="input w-full"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Đến ngày</label>
-            <input
-              type="date"
-              value={dateTo}
-              onChange={(e) => setDateTo(e.target.value)}
-              className="input w-full"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Khoảng giá</label>
-            <div className="flex gap-2">
-              <input
-                type="number"
-                placeholder="Từ"
-                value={minAmount}
-                onChange={(e) => setMinAmount(e.target.value)}
-                className="input w-full"
-              />
-              <input
-                type="number"
-                placeholder="Đến"
-                value={maxAmount}
-                onChange={(e) => setMaxAmount(e.target.value)}
-                className="input w-full"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Filter Actions */}
-        {(searchTerm || statusFilter || dateFrom || dateTo || minAmount || maxAmount) && (
-          <div className="flex justify-between items-center pt-2 border-t">
-            <p className="text-sm text-gray-600">
-              Tìm thấy <span className="font-bold">{filteredCount}</span> đơn hàng
-            </p>
-            <button
-              onClick={onReset}
-              className="text-sm text-primary-600 hover:text-primary-800 font-medium transition-colors"
-            >
-              Xóa bộ lọc
-            </button>
-          </div>
+        {hasActiveFilters && (
+          <button
+            onClick={onReset}
+            className="inline-flex items-center h-[46px] px-5 rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-all font-bold text-[13px] group"
+          >
+            <RotateCcw className="mr-2 h-4 w-4 group-hover:rotate-180 transition-transform duration-500" />
+            Xóa bộ lọc
+          </button>
         )}
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 animate-fade-in">
+        <div>
+          <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">Trạng thái</label>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="w-full h-11 px-4 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600 outline-none text-[14px] font-bold text-gray-700"
+          >
+            <option value="">Tất cả trạng thái</option>
+            <option value="PENDING">Chờ xác nhận</option>
+            <option value="CONFIRMED">Đã xác nhận</option>
+            <option value="SHIPPING">Đang giao</option>
+            <option value="DELIVERED">Đã giao</option>
+            <option value="CANCELLED">Đã hủy</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">Từ ngày</label>
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={(e) => setDateFrom(e.target.value)}
+            className="w-full h-11 px-4 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600 outline-none text-[14px] font-bold text-gray-700"
+          />
+        </div>
+
+        <div>
+          <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">Đến ngày</label>
+          <input
+            type="date"
+            value={dateTo}
+            onChange={(e) => setDateTo(e.target.value)}
+            className="w-full h-11 px-4 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600 outline-none text-[14px] font-bold text-gray-700"
+          />
+        </div>
+
+        <div>
+          <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">Khoảng giá (VND)</label>
+          <div className="flex gap-2">
+            <input
+              type="number"
+              placeholder="Min"
+              value={minAmount}
+              onChange={(e) => setMinAmount(e.target.value)}
+              className="w-full h-11 px-4 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600 outline-none text-[14px] font-bold text-gray-700 placeholder:text-gray-300"
+            />
+            <input
+              type="number"
+              placeholder="Max"
+              value={maxAmount}
+              onChange={(e) => setMaxAmount(e.target.value)}
+              className="w-full h-11 px-4 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600 outline-none text-[14px] font-bold text-gray-700 placeholder:text-gray-300"
+            />
+          </div>
+        </div>
+      </div>
+
+      {hasActiveFilters && (
+        <div className="flex items-center gap-2 pt-4 border-t border-gray-50">
+          <div className="h-2 w-2 rounded-full bg-primary-600 animate-pulse"></div>
+          <p className="text-[13px] font-bold text-gray-600">
+            Tìm thấy <span className="text-primary-600 font-black">{filteredCount}</span> kết quả phù hợp
+          </p>
+        </div>
+      )}
     </div>
   )
 }

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { fetchAllOrders, updateOrderStatus } from '../../store/slices/ordersSlice'
 import { ordersAPI } from '../../api/orders'
 import AdminTable from '../../components/admin/AdminTable'
-import { Eye, Printer, X, Clock, CheckCircle, Truck, Package, XCircle, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Eye, Printer, X, Clock, CheckCircle, Truck, Package, XCircle } from 'lucide-react'
 import Swal from 'sweetalert2'
 import { fireError, fireSuccess } from '../../utils/swalError'
 import { getApiErrorMessage } from '../../utils/apiError'
@@ -13,6 +13,9 @@ import OrderStats from '../../components/admin/orders/OrderStats'
 import OrderFilters from '../../components/admin/orders/OrderFilters'
 import OrderDetailModal from '../../components/admin/orders/OrderDetailModal'
 import PrintInvoice from '../../components/admin/orders/PrintInvoice'
+import AdminPageHeader from '../../components/admin/shared/AdminPageHeader'
+import AdminPagination from '../../components/admin/shared/AdminPagination'
+import AdminPill from '../../components/admin/shared/AdminPill'
 
 const AdminOrders = () => {
   const dispatch = useDispatch()
@@ -32,7 +35,6 @@ const AdminOrders = () => {
   const [isUpdating, setIsUpdating] = useState(false)
   const [isFetching, setIsFetching] = useState(false)
   const [printOrder, setPrintOrder] = useState(null)
-  const [totalElements, setTotalElements] = useState(0)
   const [currentPage, setCurrentPage] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
   const pageSize = 10
@@ -96,7 +98,6 @@ const AdminOrders = () => {
       const pageData = response.data.result
       dispatch({ type: 'orders/fetchAllOrders/fulfilled', payload: response.data })
       setTotalPages(pageData.totalPages || 0)
-      setTotalElements(pageData.totalElements || 0)
     } catch (error) {
       console.error(getApiErrorMessage(error))
     } finally {
@@ -104,7 +105,6 @@ const AdminOrders = () => {
     }
   }
 
-  // --- Utility Functions (Could be moved to a shared file later) ---
   const canTransitionTo = (currentStatus, newStatus) => {
     const transitions = {
       'PENDING': ['CONFIRMED', 'CANCELLED'],
@@ -128,6 +128,18 @@ const AdminOrders = () => {
     return labels[status] || status
   }
 
+  const getStatusType = (status) => {
+    const map = {
+      'DELIVERED': 'success',
+      'PENDING': 'warning',
+      'CANCELLED': 'danger',
+      'CONFIRMED': 'info',
+      'SHIPPING': 'info',
+      'REVIEWED': 'success'
+    }
+    return map[status] || 'info'
+  }
+
   const getStatusIcon = (status) => {
     const icons = {
       'PENDING': <Clock className="w-4 h-4" />,
@@ -140,7 +152,6 @@ const AdminOrders = () => {
     return icons[status]
   }
 
-  // --- Handlers ---
   const handleViewDetail = (order) => {
     setSelectedOrder(order)
     setShowDetailModal(true)
@@ -150,7 +161,6 @@ const AdminOrders = () => {
     setIsUpdating(true);
     let orderToPrint = order;
     
-    // Safety check: if items are missing, fetch full details
     if (!order.items || order.items.length === 0) {
       try {
         const response = await ordersAPI.getOrderById(order.id);
@@ -225,7 +235,6 @@ const AdminOrders = () => {
     }
   }
 
-  // --- Filtering Logic ---
   const filteredOrders = orders.filter(order => {
     if (statusFilter && order.status !== statusFilter) return false
     if (searchTerm) {
@@ -256,115 +265,105 @@ const AdminOrders = () => {
   const orderColumns = [
     { 
       key: 'orderNumber', 
-      label: 'Đơn hàng',
+      label: 'Mã đơn',
       render: (val, row) => (
-        <button onClick={() => handleViewDetail(row)} className="font-black text-primary-600 hover:scale-105 transition-transform">
+        <button onClick={() => handleViewDetail(row)} className="font-black text-primary-600 hover:underline text-[14px]">
           #{val}
         </button>
       )
     },
-    { key: 'receiverName', label: 'Khách hàng', render: (val) => <span className="font-bold text-gray-900">{val}</span> },
+    { key: 'receiverName', label: 'Khách hàng', render: (val) => <span className="font-bold text-gray-900 text-[14px]">{val}</span> },
     { 
       key: 'totalAmount', 
       label: 'Tổng tiền', 
-      render: (val) => <span className="font-black text-gray-900">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val)}</span>
+      render: (val) => <span className="font-black text-gray-900 text-[14px]">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val)}</span>
     },
     { 
       key: 'status', 
       label: 'Trạng thái', 
       render: (val) => (
-        <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider ${
-          val === 'DELIVERED' ? 'bg-green-100 text-green-700' :
-          val === 'PENDING' ? 'bg-yellow-100 text-yellow-700' :
-          val === 'CONFIRMED' ? 'bg-blue-100 text-blue-700' :
-          val === 'SHIPPING' ? 'bg-indigo-100 text-indigo-700' :
-          val === 'CANCELLED' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'
-        }`}>
-          {getStatusIcon(val)} {getStatusLabel(val)}
-        </span>
+        <AdminPill label={getStatusLabel(val)} type={getStatusType(val)} />
       )
     },
     {
       key: 'actions',
       label: 'Thao tác',
       render: (_, row) => (
-        <div className="flex gap-2">
-          <button onClick={() => handleViewDetail(row)} className="p-2.5 bg-slate-50 hover:bg-primary-50 text-primary-600 rounded-xl transition-all" title="Chi tiết"><Eye className="w-4 h-4" /></button>
-          <button onClick={() => handlePrintInvoice(row)} className="p-2.5 bg-slate-50 hover:bg-green-50 text-green-600 rounded-xl transition-all" title="In"><Printer className="w-4 h-4" /></button>
+        <div className="flex gap-1 justify-center">
+          <button onClick={() => handleViewDetail(row)} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all" title="Chi tiết"><Eye className="w-5 h-5" /></button>
+          <button onClick={() => handlePrintInvoice(row)} className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-xl transition-all" title="In"><Printer className="w-5 h-5" /></button>
           {['PENDING', 'CONFIRMED', 'SHIPPING'].includes(row.status) && (
-            <button onClick={() => handleCancelOrder(row)} className="p-2.5 bg-slate-50 hover:bg-red-50 text-red-600 rounded-xl transition-all" title="Hủy"><X className="w-4 h-4" /></button>
+            <button onClick={() => handleCancelOrder(row)} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all" title="Hủy"><X className="w-5 h-5" /></button>
           )}
         </div>
       )
     }
   ]
 
+  const bulkActionBar = selectedOrders.length > 0 && (
+    <div className="flex items-center gap-3 bg-gray-900 text-white rounded-xl px-4 py-2 shadow-lg animate-scale-up">
+      <span className="text-[13px] font-bold">
+        Đã chọn <span className="text-primary-500 font-black">{selectedOrders.length}</span>
+      </span>
+      <div className="w-[1px] h-4 bg-gray-700"></div>
+      <button 
+        onClick={() => handleBulkStatusUpdate('CONFIRMED')}
+        className="text-[13px] font-bold hover:text-primary-400 transition-colors"
+      >
+        Xác nhận
+      </button>
+      <button 
+        onClick={() => handleBulkStatusUpdate('CANCELLED')}
+        className="text-[13px] font-bold text-red-400 hover:text-red-300 transition-colors"
+      >
+        Hủy
+      </button>
+      <div className="w-[1px] h-4 bg-gray-700"></div>
+      <button onClick={() => setSelectedOrders([])} className="text-gray-400 hover:text-white">
+        <X className="w-4 h-4" />
+      </button>
+    </div>
+  )
+
   return (
-    <div className="space-y-5 sm:space-y-8 pb-16 sm:pb-20 animate-in fade-in duration-500">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-        <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-main/10 text-primary-main text-xs font-bold uppercase tracking-[0.2em] mb-3">
-            Orders
-          </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-text-primary dark:text-dark-text tracking-tight">
-            Quản lý <span className="text-primary-main">đơn hàng</span>
-          </h2>
-          <p className="text-sm sm:text-base font-medium text-text-secondary dark:text-gray-400 mt-2 leading-relaxed">
-            Theo dõi, xử lý và cập nhật trạng thái đơn hàng theo thời gian thực.
-          </p>
-        </div>
-      </div>
+    <div className="space-y-6 animate-fade-in">
+      <AdminPageHeader 
+        title="Quản lý" 
+        accentTitle="Đơn hàng"
+        subtitle="Theo dõi, xử lý và cập nhật trạng thái đơn hàng theo thời gian thực."
+        rightContent={bulkActionBar}
+      />
 
       <OrderStats stats={stats} statusFilter={statusFilter} setStatusFilter={setStatusFilter} />
 
-      <OrderFilters 
-        searchTerm={searchTerm} setSearchTerm={setSearchTerm}
-        statusFilter={statusFilter} setStatusFilter={setStatusFilter}
-        dateFrom={dateFrom} setDateFrom={setDateFrom}
-        dateTo={dateTo} setDateTo={setDateTo}
-        minAmount={minAmount} setMinAmount={setMinAmount}
-        maxAmount={maxAmount} setMaxAmount={setMaxAmount}
-        filteredCount={filteredOrders.length}
-        onReset={() => {
-            setSearchTerm(''); setStatusFilter(''); setDateFrom(''); setDateTo(''); setMinAmount(''); setMaxAmount('');
-        }}
-      />
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <OrderFilters 
+          searchTerm={searchTerm} setSearchTerm={setSearchTerm}
+          statusFilter={statusFilter} setStatusFilter={setStatusFilter}
+          dateFrom={dateFrom} setDateFrom={setDateFrom}
+          dateTo={dateTo} setDateTo={setDateTo}
+          minAmount={minAmount} setMinAmount={setMinAmount}
+          maxAmount={maxAmount} setMaxAmount={setMaxAmount}
+          filteredCount={filteredOrders.length}
+          onReset={() => {
+              setSearchTerm(''); setStatusFilter(''); setDateFrom(''); setDateTo(''); setMinAmount(''); setMaxAmount('');
+          }}
+        />
+      </div>
 
-      <div className="bg-white rounded-3xl sm:rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden relative">
-        {/* Bulk Action Bar */}
-        {selectedOrders.length > 0 && (
-          <div className="absolute top-0 left-0 right-0 z-10 bg-black text-white p-4 flex items-center justify-between animate-in slide-in-from-top duration-300">
-            <div className="flex items-center gap-4">
-              <span className="text-xs font-black uppercase tracking-widest ml-4">Đã chọn {selectedOrders.length} đơn hàng</span>
-              <div className="h-4 w-[1px] bg-gray-700"></div>
-              <button 
-                onClick={() => handleBulkStatusUpdate('CONFIRMED')}
-                className="px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
-              >
-                Xác nhận hàng loạt
-              </button>
-              <button 
-                onClick={() => handleBulkStatusUpdate('CANCELLED')}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
-              >
-                Hủy hàng loạt
-              </button>
-            </div>
-            <button onClick={() => setSelectedOrders([])} className="p-2 hover:bg-white/10 rounded-full">
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-        )}
-
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden relative">
         {isFetching ? (
-          <div className="py-20 text-center space-y-4">
-             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-             <p className="font-black text-gray-400 uppercase text-[10px] tracking-widest">Đang tải dữ liệu...</p>
+          <div className="py-20 text-center">
+             <div className="inline-block h-10 w-10 animate-spin rounded-full border-[3px] border-primary-100 border-t-primary-600"></div>
+             <p className="text-gray-500 font-medium mt-4">Đang tải dữ liệu...</p>
           </div>
         ) : filteredOrders.length === 0 ? (
           <div className="py-20 text-center">
-            <Package className="w-16 h-16 text-gray-200 mx-auto mb-4" />
-            <p className="font-bold text-gray-400">Không tìm thấy đơn hàng nào khớp với bộ lọc.</p>
+            <div className="h-16 w-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Package className="w-8 h-8 text-gray-300" />
+            </div>
+            <p className="text-[14px] font-bold text-gray-900">Không tìm thấy đơn hàng</p>
+            <p className="text-gray-500 font-medium mt-1">Hãy thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm</p>
           </div>
         ) : (
           <>
@@ -379,16 +378,11 @@ const AdminOrders = () => {
               pageSize={pageSize}
             />
             
-            {/* Pagination UI - Simplified */}
-            {totalPages > 1 && (
-              <div className="p-8 border-t border-gray-50 flex justify-between items-center bg-gray-50/30">
-                <span className="text-[10px] font-black uppercase text-gray-400">Trang {currentPage + 1} của {totalPages}</span>
-                <div className="flex gap-2">
-                   <button onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))} className="p-3 bg-white rounded-xl border border-gray-100 shadow-sm hover:bg-primary-600 hover:text-white transition-all"><ChevronLeft className="w-4 h-4" /></button>
-                   <button onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))} className="p-3 bg-white rounded-xl border border-gray-100 shadow-sm hover:bg-primary-600 hover:text-white transition-all"><ChevronRight className="w-4 h-4" /></button>
-                </div>
-              </div>
-            )}
+            <AdminPagination 
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
           </>
         )}
       </div>
@@ -405,7 +399,6 @@ const AdminOrders = () => {
         />
       )}
 
-      {/* Hidden Print Content */}
       <PrintInvoice order={printOrder} />
     </div>
   )
