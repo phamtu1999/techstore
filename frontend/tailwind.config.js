@@ -27,6 +27,7 @@ export default {
           900: '#7c2d12',
         },
         admin: {
+          primary: '#ea580c', // Matches primary.600
           sidebar: '#1a1a2e',
           bg: '#f8fafc',
           success: '#16a34a',

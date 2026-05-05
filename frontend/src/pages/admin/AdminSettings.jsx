@@ -223,11 +223,11 @@ const AdminSettings = () => {
                 </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
                 {hasChanges && (
                     <button 
                         onClick={handleDiscard} 
-                        className="h-[42px] px-5 bg-white border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 transition-all text-[13px] flex items-center gap-2"
+                        className="h-[42px] px-5 bg-white border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all text-[13px] flex items-center gap-2 shadow-sm"
                     >
                         <RefreshCcw className="h-4 w-4" />
                         Hoàn tác
@@ -236,7 +236,11 @@ const AdminSettings = () => {
                 <button 
                     onClick={handleSave} 
                     disabled={!hasChanges || saving || loading} 
-                    className="h-[42px] px-6 bg-admin-primary text-white rounded-xl font-bold text-[13px] flex items-center gap-2 shadow-sm shadow-admin-primary/20 hover:bg-admin-primary/90 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className={`h-[42px] px-6 rounded-xl font-bold text-[13px] flex items-center gap-2 shadow-lg transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${
+                        hasChanges 
+                            ? 'bg-admin-primary text-white shadow-admin-primary/25 hover:bg-admin-primary/90 hover:-translate-y-0.5' 
+                            : 'bg-gray-100 text-gray-400 shadow-none'
+                    }`}
                 >
                     {saving ? (
                         <div className="h-4 w-4 border-2 border-white border-t-transparent animate-spin rounded-full"></div>
@@ -249,26 +253,21 @@ const AdminSettings = () => {
         </div>
 
         {/* Tab Navigation */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="flex overflow-x-auto scrollbar-hide">
-                {tabs.map(tab => (
-                    <button
-                        key={tab.id}
-                        onClick={() => setActiveTab(tab.id)}
-                        className={`flex items-center gap-2.5 px-6 py-4 transition-all relative whitespace-nowrap ${
-                            activeTab === tab.id 
-                                ? 'text-admin-primary font-bold' 
-                                : 'text-gray-500 hover:text-gray-900 font-medium'
-                        }`}
-                    >
-                        <tab.icon className="h-4 w-4" />
-                        <span className="text-[14px]">{tab.label}</span>
-                        {activeTab === tab.id && (
-                            <div className="absolute bottom-0 left-0 w-full h-[3px] bg-admin-primary rounded-t-full"></div>
-                        )}
-                    </button>
-                ))}
-            </div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-1.5 flex items-center gap-1 overflow-x-auto scrollbar-hide">
+            {tabs.map(tab => (
+                <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex items-center gap-2.5 px-5 py-2.5 rounded-lg transition-all whitespace-nowrap ${
+                        activeTab === tab.id 
+                            ? 'bg-admin-primary/10 text-admin-primary font-bold shadow-sm' 
+                            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50 font-medium'
+                    }`}
+                >
+                    <tab.icon className={`h-4 w-4 ${activeTab === tab.id ? 'text-admin-primary' : 'text-gray-400'}`} />
+                    <span className="text-[14px]">{tab.label}</span>
+                </button>
+            ))}
         </div>
         
             <div className="max-w-6xl mx-auto">

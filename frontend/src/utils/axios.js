@@ -55,8 +55,9 @@ api.interceptors.response.use(
       '/coupons/validate'
     ]
     const isPublicPath = publicPaths.some(path => error.config?.url?.includes(path))
+    const isMutation = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(error.config?.method?.toUpperCase())
 
-    if (error.response?.status === 401 && !isPublicPath) {
+    if (error.response?.status === 401 && (!isPublicPath || isMutation)) {
       localStorage.removeItem('token')
       localStorage.removeItem('user')
       window.location.href = '/login'
