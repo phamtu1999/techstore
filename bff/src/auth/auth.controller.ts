@@ -30,7 +30,7 @@ export class AuthController {
 
   @Post('authenticate')
   async login(@Body() loginDto: any, @Res() res: Response) {
-    const { sessionId, user } = await this.authService.authenticate(loginDto);
+    const { sessionId, token, refreshToken, user } = await this.authService.authenticate(loginDto);
 
     res.cookie('sessionId', sessionId, {
       httpOnly: true,
@@ -43,7 +43,7 @@ export class AuthController {
 
     return res.status(HttpStatus.OK).json({
       message: 'Login successful',
-      result: user,
+      result: { token, refreshToken, user },
     });
   }
 

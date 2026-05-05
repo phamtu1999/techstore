@@ -45,7 +45,7 @@ export class AuthService {
     }
 
     // Return user with tokens for frontend Redux/LocalStorage compatibility
-    return { sessionId, user: { ...user, token, refreshToken } };
+    return { sessionId, token, refreshToken, user };
   }
 
   async logout(sessionId: string) {
@@ -81,7 +81,7 @@ export class AuthService {
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
     const redirectUrl = `${frontendUrl}/login?googleLogin=success`;
 
-    return { sessionId, redirectUrl, user };
+    return { sessionId, token, refreshToken, user, redirectUrl };
   }
 
   async getSession(sessionId: string) {
