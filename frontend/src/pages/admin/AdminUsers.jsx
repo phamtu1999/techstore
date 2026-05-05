@@ -484,12 +484,26 @@ const AdminUsers = () => {
     }, [])
 
     return (
-        <div className="space-y-6 animate-fade-in pb-10">
+        <div className="space-y-5 sm:space-y-8 pb-12 animate-fade-in">
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+                <div className="max-w-2xl">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-main/10 text-primary-main text-xs font-bold uppercase tracking-[0.2em] mb-3">
+                        Users
+                    </div>
+                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-text-primary dark:text-dark-text tracking-tight">
+                        Quản lý <span className="text-primary-main">người dùng</span>
+                    </h1>
+                    <p className="text-sm sm:text-base font-medium text-text-secondary dark:text-gray-400 mt-2 leading-relaxed">
+                        Quản lý tài khoản, phân quyền và kiểm soát hoạt động của người dùng trong hệ thống.
+                    </p>
+                </div>
+            </div>
+
             {/* Stats Header */}
             <AdminUsersStats stats={adminStats} />
 
             {/* Filter Bar */}
-            <div className="bg-white p-4 rounded-[2rem] shadow-xl border border-slate-100">
+            <div className="bg-white dark:bg-dark-card p-4 sm:p-5 rounded-[1.75rem] shadow-sm border border-border dark:border-dark-border">
                 <div className="flex flex-col md:flex-row gap-4">
                     <div className="relative flex-1">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
