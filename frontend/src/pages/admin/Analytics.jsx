@@ -87,23 +87,25 @@ const Analytics = () => {
   const abandonedCarts = data.abandonedCartInsights || []
 
   return (
-    <div className="space-y-8 animate-fade-in">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-black text-secondary-900 tracking-tight flex items-center gap-3">
-            PHÂN TÍCH <span className="text-primary-MAIN">THÔNG MINH</span>
-            <span className="bg-primary-50 text-primary-600 text-[10px] font-black px-2 py-1 rounded-md uppercase tracking-widest border border-primary-100">AI Powered</span>
+    <div className="space-y-5 sm:space-y-8 pb-12 sm:pb-16 animate-fade-in">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+        <div className="max-w-2xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-main/10 text-primary-main text-xs font-bold uppercase tracking-[0.2em] mb-3">
+            Analytics
+          </div>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-text-primary dark:text-dark-text tracking-tight">
+            Phân tích <span className="text-primary-main">thông minh</span>
           </h1>
-          <p className="mt-1 text-sm font-bold text-gray-400">Dữ liệu phân tích và dự báo từ hệ thống Tech Store v2</p>
+          <p className="mt-2 text-sm sm:text-base font-medium text-text-secondary dark:text-gray-400 leading-relaxed">Dữ liệu phân tích và dự báo từ hệ thống Tech Store v2.</p>
         </div>
-        <div className="flex gap-2">
-            <button className="bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border px-4 py-2 rounded-xl text-sm font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-50 transition-all flex items-center gap-2">
+        <div className="flex flex-wrap gap-2">
+            <button className="h-12 bg-white dark:bg-dark-card border border-border dark:border-dark-border px-4 rounded-2xl text-sm font-semibold text-text-primary dark:text-dark-text hover:bg-gray-50 dark:hover:bg-dark-bg transition-all flex items-center gap-2">
                 7 Ngày qua
             </button>
             <button 
                 onClick={handleExport}
                 disabled={exporting}
-                className="bg-primary-MAIN text-white px-6 py-2.5 rounded-xl text-sm font-black hover:bg-primary-600 transition-all shadow-lg shadow-primary-500/20 flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed group"
+                className="h-12 bg-primary-main text-white px-5 rounded-2xl text-sm font-bold hover:opacity-95 transition-all shadow-lg shadow-primary-main/20 flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed group"
             >
                 {exporting ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -116,8 +118,8 @@ const Analytics = () => {
       </div>
 
       {/* Overview Stats */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <div className="card border-l-4 border-primary-500">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="bg-white dark:bg-dark-card rounded-[1.5rem] border border-border dark:border-dark-border p-5 shadow-sm border-l-4 border-l-primary-main">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Doanh thu tháng này</p>
@@ -133,7 +135,7 @@ const Analytics = () => {
           </div>
         </div>
 
-        <div className="card border-l-4 border-blue-500">
+        <div className="bg-white dark:bg-dark-card rounded-[1.5rem] border border-border dark:border-dark-border p-5 shadow-sm border-l-4 border-l-blue-500">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Dự báo tháng tới (AI)</p>
@@ -149,7 +151,7 @@ const Analytics = () => {
           </div>
         </div>
 
-        <div className="card border-l-4 border-orange-500">
+        <div className="bg-white dark:bg-dark-card rounded-[1.5rem] border border-border dark:border-dark-border p-5 shadow-sm border-l-4 border-l-orange-500">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Tỉ lệ bỏ giỏ hàng</p>
@@ -162,7 +164,7 @@ const Analytics = () => {
           </div>
         </div>
 
-        <div className="card border-l-4 border-red-500">
+        <div className="bg-white dark:bg-dark-card rounded-[1.5rem] border border-border dark:border-dark-border p-5 shadow-sm border-l-4 border-l-red-500">
           <div className="flex items-center justify-between">
             <div>
                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Cảnh báo kho</p>
@@ -178,7 +180,7 @@ const Analytics = () => {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Revenue Chart */}
-        <div className="card overflow-hidden">
+        <div className="bg-white dark:bg-dark-card rounded-[1.75rem] border border-border dark:border-dark-border p-5 sm:p-6 shadow-sm overflow-hidden">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-black text-secondary-800">Xu hướng doanh thu</h3>
             <div className="flex items-center gap-2">
@@ -217,7 +219,7 @@ const Analytics = () => {
         </div>
 
         {/* Low Stock AI Insights */}
-        <div className="card">
+        <div className="bg-white dark:bg-dark-card rounded-[1.75rem] border border-border dark:border-dark-border p-5 sm:p-6 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-black text-secondary-800">Cảnh báo kho hàng</h3>
             <span className="bg-red-50 text-red-500 text-[10px] font-black px-3 py-1 rounded-full uppercase">AI Detected</span>
@@ -251,7 +253,7 @@ const Analytics = () => {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Abandoned Cart Table */}
-        <div className="card lg:col-span-2">
+        <div className="bg-white dark:bg-dark-card rounded-[1.75rem] border border-border dark:border-dark-border p-5 sm:p-6 shadow-sm lg:col-span-2">
             <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-black text-secondary-800">Thất thoát giỏ hàng</h3>
                 <span className="text-gray-400 text-xs font-bold italic">Top 5 sản phẩm đang chờ chốt đơn</span>
@@ -285,7 +287,7 @@ const Analytics = () => {
         </div>
 
         {/* Order Status Distribution */}
-        <div className="card">
+        <div className="bg-white dark:bg-dark-card rounded-[1.75rem] border border-border dark:border-dark-border p-5 sm:p-6 shadow-sm">
             <h3 className="text-lg font-black text-secondary-800 mb-6 uppercase tracking-widest text-center">Trạng thái đơn hàng</h3>
             <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
