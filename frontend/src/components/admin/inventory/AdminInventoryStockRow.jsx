@@ -15,7 +15,7 @@ const AdminInventoryStockRow = ({
 
   return (
     <tr className="hover:bg-gray-50/50 dark:hover:bg-white/5 even:bg-gray-50/20 dark:even:bg-white/[0.02] transition-colors group">
-      <td className="px-8 py-5 text-xs font-black text-gray-400">
+      <td className="px-4 sm:px-8 py-5 text-xs font-black text-gray-400">
         {pagination.page * pagination.size + index + 1}
       </td>
       <td className="px-8 py-5">

@@ -242,12 +242,22 @@ const AdminInventory = () => {
   }, [])
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Kho <span className="text-primary-600">Hàng</span></h2>
+    <div className="space-y-5 sm:space-y-8 animate-in fade-in duration-500 pb-12 sm:pb-16">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+        <div className="max-w-2xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-main/10 text-primary-main text-xs font-bold uppercase tracking-[0.2em] mb-3">
+            Inventory
+          </div>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-text-primary dark:text-dark-text tracking-tight">
+            Kho <span className="text-primary-main">hàng</span>
+          </h2>
+          <p className="text-sm sm:text-base font-medium text-text-secondary dark:text-gray-400 mt-2 leading-relaxed">
+            Theo dõi tồn kho, biến động và giá trị hàng hóa theo thời gian thực.
+          </p>
+        </div>
       </div>
       {/* Header Summary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
         {isFinanceVisible && (
           <div className="bg-white dark:bg-dark-card p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-dark-border flex items-center gap-5 group hover:shadow-xl hover:shadow-primary-500/5 transition-all">
             <div className="bg-primary-50 dark:bg-primary-900/20 p-4 rounded-2xl group-hover:scale-110 transition-transform">
