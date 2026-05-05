@@ -88,14 +88,14 @@ const AdminSettings = () => {
                 setVatRate(data.vatRate.toString())
                 setStoreStatus(data.storeStatus)
                 
-                // Default states for non-backend settings yet
-                const defaultPayment = { vnpay: true, momo: true, cod: true, bankTransfer: true };
-                setPaymentMethods(defaultPayment);
-                setCodFee('0');
-                setMinOrder('0');
-                setMetaTitle('Tech Store');
-                setMetaKeywords('điện thoại, laptop');
-                setMetaDescription('Hệ thống bán lẻ điện thoại, laptop chính hãng');
+                // Load additional settings from backend
+                const paymentMethodsData = settings.paymentMethods || { vnpay: true, momo: true, cod: true, bankTransfer: true };
+                setPaymentMethods(paymentMethodsData);
+                setCodFee((settings.codFee || 0).toString());
+                setMinOrder((settings.minOrder || 0).toString());
+                setMetaTitle(settings.metaTitle || 'Tech Store');
+                setMetaKeywords(settings.metaKeywords || 'điện thoại, laptop');
+                setMetaDescription(settings.metaDescription || 'Hệ thống bán lẻ điện thoại, laptop chính hãng');
 
                 // Save original for comparison
                 setOriginalData({
@@ -108,12 +108,12 @@ const AdminSettings = () => {
                     timezone: data.timezone,
                     vatRate: data.vatRate,
                     storeStatus: data.storeStatus,
-                    paymentMethods: defaultPayment,
-                    codFee: 0,
-                    minOrder: 0,
-                    metaTitle: 'Tech Store',
-                    metaKeywords: 'điện thoại, laptop',
-                    metaDescription: 'Hệ thống bán lẻ điện thoại, laptop chính hãng'
+                    paymentMethods: paymentMethodsData,
+                    codFee: settings.codFee || 0,
+                    minOrder: settings.minOrder || 0,
+                    metaTitle: settings.metaTitle || 'Tech Store',
+                    metaKeywords: settings.metaKeywords || 'điện thoại, laptop',
+                    metaDescription: settings.metaDescription || 'Hệ thống bán lẻ điện thoại, laptop chính hãng'
                 })
             }
         } catch (error) {
@@ -148,7 +148,21 @@ const AdminSettings = () => {
         setSaving(true)
         try {
             await settingsAPI.updateSettings({
-                storeName, logoUrl: logo, supportEmail, hotlinePhone, address, currency, timezone, vatRate: parseFloat(vatRate), storeStatus
+                storeName, 
+                logoUrl: logo, 
+                supportEmail, 
+                hotlinePhone, 
+                address, 
+                currency, 
+                timezone, 
+                vatRate: parseFloat(vatRate), 
+                storeStatus,
+                paymentMethods,
+                codFee: parseFloat(codFee),
+                minOrder: parseFloat(minOrder),
+                metaTitle,
+                metaKeywords,
+                metaDescription
             })
             fireSuccess('Đã lưu cài đặt thành công!', '<div class="text-sm text-gray-600 mt-2">✓ Thông tin cửa hàng<br/>✓ Cấu hình thương mại<br/>✓ Logo & trạng thái</div>', { toast: true, position: 'top-end', showConfirmButton: false, timer: 2000, timerProgressBar: true }).then(() => {
                 window.location.reload()

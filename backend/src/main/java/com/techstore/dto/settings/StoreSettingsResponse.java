@@ -18,5 +18,15 @@ public class StoreSettingsResponse {
     private String supportEmail;
     private String hotlinePhone;
     private String address;
+    private String currency;
+    private String timezone;
+    private Double vatRate;
+    private Boolean storeStatus;
+    private Object paymentMethods;
+    private Double codFee;
+    private Double minOrder;
+    private String metaTitle;
+    private String metaKeywords;
+    private String metaDescription;
     private LocalDateTime updatedAt;
 }
