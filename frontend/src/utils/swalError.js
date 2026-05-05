@@ -9,10 +9,10 @@ export const fireError = (error, fallback = 'Có lỗi xảy ra. Vui lòng thử
   })
 }
 
-export const fireSuccess = (title, text, options = {}) => {
+export const fireSuccess = (title, content, options = {}) => {
   return Swal.fire({
     title,
-    text,
+    html: content,
     icon: 'success',
     ...options,
   })
