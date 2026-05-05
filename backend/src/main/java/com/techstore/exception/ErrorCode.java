@@ -34,7 +34,9 @@ public enum ErrorCode {
     TOO_MANY_REQUESTS(1025, "Bạn đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau.", HttpStatus.TOO_MANY_REQUESTS),
     SLUG_ALREADY_EXISTS(1026, "Đường dẫn sản phẩm (Slug) đã tồn tại", HttpStatus.BAD_REQUEST),
     PAYMENT_ALREADY_CONFIRMED(1027, "Đơn hàng đã được xác nhận thanh toán trước đó", HttpStatus.OK),
-    INVALID_PAYMENT_AMOUNT(1028, "Số tiền thanh toán không khớp với đơn hàng", HttpStatus.BAD_REQUEST);
+    INVALID_PAYMENT_AMOUNT(1028, "Số tiền thanh toán không khớp với đơn hàng", HttpStatus.BAD_REQUEST),
+    BACKUP_FAILED(1029, "Sao lưu dữ liệu thất bại", HttpStatus.INTERNAL_SERVER_ERROR),
+    RESTORE_FAILED(1030, "Phục hồi dữ liệu thất bại", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final int code;
     private final String message;

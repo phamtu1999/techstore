@@ -81,7 +81,9 @@ public class BackupCommandService {
             stderrThread.join();
             if (exitCode != 0) {
                 Files.deleteIfExists(tempPath);
-                throw new RuntimeException("Backup failed: " + stderr.toString().trim());
+                String errorMsg = stderr.toString().trim();
+                log.error("pg_dump failed with exit code {}: {}", exitCode, errorMsg);
+                throw new AppException(ErrorCode.BACKUP_FAILED, "Sao lưu thất bại: " + errorMsg);
             }
 
             File file = tempPath.toFile();
@@ -96,9 +98,11 @@ public class BackupCommandService {
                     .build());
 
             return mapToResponse(backup);
+        } catch (AppException e) {
+            throw e;
         } catch (Exception exception) {
-            log.error("Error creating backup", exception);
-            throw new RuntimeException("Failed to create backup: " + exception.getMessage());
+            log.error("Error creating backup. PATH={}", System.getenv("PATH"), exception);
+            throw new AppException(ErrorCode.BACKUP_FAILED, "Lỗi hệ thống khi sao lưu: " + exception.getMessage());
         } finally {
             if (tempPath != null) {
                 try { Files.deleteIfExists(tempPath); } catch (IOException ignored) {}
@@ -141,7 +145,7 @@ public class BackupCommandService {
             backupRepository.delete(backup);
         } catch (Exception exception) {
             log.error("Error deleting backup", exception);
-            throw new RuntimeException("Could not delete backup: " + exception.getMessage());
+            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION, "Không thể xóa bản sao lưu: " + exception.getMessage());
         }
     }
 
@@ -180,11 +184,15 @@ public class BackupCommandService {
             int exitCode = process.waitFor();
             outputThread.join();
             if (exitCode != 0) {
-                throw new RuntimeException("Restore failed: " + processOutput.toString().trim());
+                String errorMsg = processOutput.toString().trim();
+                log.error("psql restore failed with exit code {}: {}", exitCode, errorMsg);
+                throw new AppException(ErrorCode.RESTORE_FAILED, "Phục hồi thất bại: " + errorMsg);
             }
+        } catch (AppException e) {
+            throw e;
         } catch (Exception exception) {
             log.error("Restore error", exception);
-            throw new RuntimeException("Restore failed: " + exception.getMessage());
+            throw new AppException(ErrorCode.RESTORE_FAILED, "Lỗi hệ thống khi phục hồi: " + exception.getMessage());
         } finally {
             if (tempPath != null) {
                 try { Files.deleteIfExists(tempPath); } catch (IOException ignored) {}
