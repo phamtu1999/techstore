@@ -8,6 +8,11 @@ export const login = createAsyncThunk(
     try {
       const response = await authAPI.login(credentials)
       const authData = response.data?.result ?? response.data
+
+      if (!authData?.token || !authData?.user) {
+        return rejectWithValue('Phản hồi đăng nhập không hợp lệ. Vui lòng thử lại.')
+      }
+
       localStorage.setItem('token', authData.token)
       localStorage.setItem('user', JSON.stringify(authData))
       return authData

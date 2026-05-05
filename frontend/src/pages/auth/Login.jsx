@@ -34,8 +34,10 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      await dispatch(login(formData)).unwrap()
-      navigate(redirectPath, { replace: true })
+      const result = await dispatch(login(formData)).unwrap()
+      if (result?.token) {
+        navigate(redirectPath, { replace: true })
+      }
     } catch (error) {
       console.error(getApiErrorMessage(error))
     }
