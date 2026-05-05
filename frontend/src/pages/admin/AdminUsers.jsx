@@ -484,7 +484,7 @@ const AdminUsers = () => {
     }, [])
 
     return (
-        <div className="space-y-5 sm:space-y-8 pb-12 animate-fade-in">
+        <div className="space-y-5 sm:space-y-8 pb-12 sm:pb-16 animate-fade-in">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
                 <div className="max-w-2xl">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-main/10 text-primary-main text-xs font-bold uppercase tracking-[0.2em] mb-3">
@@ -504,27 +504,27 @@ const AdminUsers = () => {
 
             {/* Filter Bar */}
             <div className="bg-white dark:bg-dark-card p-4 sm:p-5 rounded-[1.75rem] shadow-sm border border-border dark:border-dark-border">
-                <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex flex-col xl:flex-row gap-4">
                     <div className="relative flex-1">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                         <input
                             type="text"
-                            placeholder="Tìm khách hàng (Tên, Email, Username)..."
+                            placeholder="Tìm người dùng (Tên, Email, Username)..."
                             value={searchTerm}
                             onChange={(e) => { setSearchTerm(e.target.value); setPagination(p => ({...p, page: 0})); }}
-                            className="w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-medium"
+                            className="w-full h-12 pl-12 pr-4 rounded-2xl border border-border dark:border-dark-border bg-white dark:bg-dark-bg focus:ring-4 focus:ring-primary-main/10 focus:border-primary-main outline-none text-sm font-medium text-text-primary dark:text-dark-text"
                         />
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                         <button 
                             onClick={() => setShowFilters(!showFilters)}
-                            className={`px-6 rounded-2xl border flex items-center gap-2 font-bold text-sm transition-all ${showFilters ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-600 border-slate-200'}`}
+                            className={`h-12 px-5 rounded-2xl border flex items-center justify-center gap-2 font-semibold text-sm transition-all ${showFilters ? 'bg-primary-main text-white border-primary-main' : 'bg-white dark:bg-dark-bg text-text-primary dark:text-dark-text border-border dark:border-dark-border hover:bg-gray-50 dark:hover:bg-dark-card'}`}
                         >
                             <Filter className="h-5 w-5" /> Bộ lọc
                         </button>
                         <button 
                             onClick={handleAddUser}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 rounded-2xl font-bold text-sm flex items-center gap-2 shadow-lg shadow-indigo-100 transition-all active:scale-95"
+                            className="h-12 px-5 bg-primary-main hover:opacity-95 text-white rounded-2xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-primary-main/20 transition-all active:scale-95"
                         >
                             <UserPlus className="h-5 w-5" /> Thêm mới
                         </button>
@@ -532,9 +532,9 @@ const AdminUsers = () => {
                 </div>
 
                 {showFilters && (
-                    <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-2 md:grid-cols-4 gap-4 animate-slide-down">
+                    <div className="mt-4 pt-4 border-t border-border dark:border-dark-border grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 animate-slide-down">
                         <select 
-                            className="bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold outline-none"
+                            className="h-12 bg-white dark:bg-dark-bg border border-border dark:border-dark-border rounded-2xl px-4 text-sm font-medium text-text-primary dark:text-dark-text outline-none focus:ring-4 focus:ring-primary-main/10 focus:border-primary-main"
                             value={filters.role}
                             onChange={(e) => { setFilters({...filters, role: e.target.value}); setPagination(p => ({...p, page: 0})); }}
                         >
@@ -544,7 +544,7 @@ const AdminUsers = () => {
                             <option value="ROLE_CUSTOMER">Khách hàng</option>
                         </select>
                         <select 
-                            className="bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-bold outline-none"
+                            className="h-12 bg-white dark:bg-dark-bg border border-border dark:border-dark-border rounded-2xl px-4 text-sm font-medium text-text-primary dark:text-dark-text outline-none focus:ring-4 focus:ring-primary-main/10 focus:border-primary-main"
                             value={filters.status}
                             onChange={(e) => { setFilters({...filters, status: e.target.value}); setPagination(p => ({...p, page: 0})); }}
                         >
@@ -552,13 +552,15 @@ const AdminUsers = () => {
                             <option value="ACTIVE">Hoạt động</option>
                             <option value="LOCKED">Đã khóa</option>
                         </select>
-                        <button onClick={clearFilters} className="text-xs font-black uppercase text-rose-500 hover:bg-rose-50 rounded-xl px-4 transition-all">Xóa tất cả bộ lọc</button>
+                        <button onClick={clearFilters} className="h-12 rounded-2xl border border-dashed border-rose-300 text-rose-600 hover:bg-rose-50 font-bold text-sm transition-all">
+                            Xóa tất cả bộ lọc
+                        </button>
                     </div>
                 )}
             </div>
 
             {/* User Table */}
-            <div className="bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden">
+            <div className="bg-white dark:bg-dark-card rounded-[1.75rem] shadow-sm border border-border dark:border-dark-border overflow-hidden">
                 <AdminTable
                     columns={columns}
                     data={users}
@@ -566,7 +568,7 @@ const AdminUsers = () => {
                     showIndex={true}
                     currentPage={pagination.page}
                     pageSize={pagination.size}
-                    rowClassName={(row) => !row.enabled ? 'bg-slate-50/50' : ''}
+                    rowClassName={(row) => !row.enabled ? 'bg-gray-50/40 dark:bg-white/[0.02]' : ''}
                     actions={(user) => <AdminUsersRowActions user={user} onDelete={handleDelete} />}
                 />
 
