@@ -31,14 +31,15 @@ import { AuthModule } from './auth/auth.module';
             return Math.min(times * 200, 1000);
           },
         };
-        
-        try {
-          if (!redisUrl) {
-            throw new Error('REDIS_URL (or REDIS_URI) is required');
-          }
 
+        if (!redisUrl) {
+          console.warn('[Redis] REDIS_URL/REDIS_URI is missing. Falling back to in-memory cache.');
+          return { ttl: 3600000 };
+        }
+
+        try {
           console.log('[Redis] Re-enabling Redis from REDIS_URL...');
-          
+
           const client = new Redis(redisUrl, {
             ...redisOptions,
           });
@@ -55,9 +56,8 @@ import { AuthModule } from './auth/auth.module';
           return { store };
         } catch (e: any) {
           console.error('[Redis] Re-enable failed, using In-memory:', e.message);
+          return { ttl: 3600000 };
         }
-
-        return { ttl: 3600000 };
       },
       inject: [ConfigService],
     }),
