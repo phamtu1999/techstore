@@ -129,10 +129,16 @@ public class GlobalExceptionHandler {
         String message = "Lỗi ràng buộc dữ liệu hoặc trùng lặp mã (SKU/Slug)";
         
         String detail = exception.getRootCause() != null ? exception.getRootCause().getMessage() : exception.getMessage();
-        if (detail != null && detail.contains("idx_variant_sku")) {
-            message = "Mã SKU này đã tồn tại ở một sản phẩm khác. Vui lòng kiểm tra lại.";
-        } else if (detail != null && detail.contains("slug")) {
-            message = "Đường dẫn (Slug) này đã tồn tại. Vui lòng đổi tên hoặc chỉnh sửa slug.";
+        if (detail != null) {
+            String detailLower = detail.toLowerCase();
+            if (detailLower.contains("sku") || detailLower.contains("idx_variant_sku") || detailLower.contains("uk_variant_sku")) {
+                message = "Mã SKU này đã tồn tại ở một sản phẩm khác. Vui lòng kiểm tra lại.";
+            } else if (detailLower.contains("slug") || detailLower.contains("idx_product_slug") || detailLower.contains("uk_product_slug")) {
+                message = "Đường dẫn (Slug) này đã tồn tại. Vui lòng đổi tên sản phẩm hoặc chỉnh sửa slug.";
+            } else {
+                // Nếu không khớp các từ khóa trên, hiện thị một phần lỗi gốc để debug
+                message += " (Chi tiết: " + detail + ")";
+            }
         }
 
         return ResponseEntity.status(org.springframework.http.HttpStatus.CONFLICT)
