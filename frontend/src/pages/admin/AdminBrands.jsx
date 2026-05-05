@@ -127,10 +127,20 @@ const AdminBrands = () => {
   )
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      {/* Header with Search */}
-      <div className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
-        <div className="relative flex-1 w-full md:max-w-md">
+    <div className="space-y-5 sm:space-y-8 pb-12 sm:pb-16 animate-fade-in">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+        <div className="max-w-2xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-main/10 text-primary-main text-xs font-bold uppercase tracking-[0.2em] mb-3">
+            Brands
+          </div>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-text-primary dark:text-dark-text tracking-tight">
+            Quản lý thương hiệu
+          </h1>
+          <p className="text-sm sm:text-base font-medium text-text-secondary dark:text-gray-400 mt-2 leading-relaxed">
+            Tổ chức và tối ưu danh sách thương hiệu hiển thị trên cửa hàng.
+          </p>
+        </div>
+        <div className="flex w-full lg:w-auto">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
           <input
             type="text"

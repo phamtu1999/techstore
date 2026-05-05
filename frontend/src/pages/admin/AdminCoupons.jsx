@@ -186,15 +186,22 @@ const AdminCoupons = () => {
     ], [handleOpenModal, handleDelete])
 
     return (
-        <div className="space-y-8 animate-fade-in">
-            <div className="flex justify-between items-center">
-                <div>
-                    <h2 className="text-3xl font-black text-secondary-900 uppercase tracking-tight">Quản lý <span className="text-primary-600">Voucher</span></h2>
-                    <p className="text-xs text-gray-400 font-bold uppercase mt-1">Tạo và quản lý các chương trình khuyến mãi</p>
+        <div className="space-y-5 sm:space-y-8 pb-12 sm:pb-16 animate-fade-in">
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+                <div className="max-w-2xl">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-main/10 text-primary-main text-xs font-bold uppercase tracking-[0.2em] mb-3">
+                        Coupons
+                    </div>
+                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-text-primary dark:text-dark-text tracking-tight">
+                        Quản lý <span className="text-primary-main">voucher</span>
+                    </h1>
+                    <p className="text-sm sm:text-base font-medium text-text-secondary dark:text-gray-400 mt-2 leading-relaxed">
+                        Tạo và quản lý các chương trình khuyến mãi, mã giảm giá cho khách hàng.
+                    </p>
                 </div>
                 <button
                     onClick={() => handleOpenModal()}
-                    className="flex items-center gap-2 bg-secondary-900 text-white px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-primary-600 transition-all shadow-xl shadow-secondary-900/10"
+                    className="h-12 px-5 rounded-2xl bg-primary-main text-white font-bold text-sm shadow-lg shadow-primary-main/20 hover:opacity-95 transition-all flex items-center justify-center gap-2"
                 >
                     <Plus className="h-4 w-4" />
                     Thêm mã mới
