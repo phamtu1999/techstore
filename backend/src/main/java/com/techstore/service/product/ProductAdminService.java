@@ -261,8 +261,7 @@ public class ProductAdminService {
         }
 
         // Chỉ xóa những Variant không nằm trong danh sách xử lý (processedIds)
-        // Lưu ý: Nếu variant đã có trong Order, DB vẫn sẽ chặn xóa ở bước save() nếu processedIds thiếu nó.
-        product.getVariants().removeIf(v -> v.getId() != null && !processedIds.contains(v.getId()));
+        // product.getVariants().removeIf(v -> v.getId() != null && !processedIds.contains(v.getId()));
     }
 
     private void syncAttributes(Product product, List<ProductRequest.AttributeRequest> attributeRequests) {

@@ -135,9 +135,6 @@ public class GlobalExceptionHandler {
                 message = "Mã SKU này đã tồn tại ở một sản phẩm khác. Vui lòng kiểm tra lại.";
             } else if (detailLower.contains("slug") || detailLower.contains("idx_product_slug") || detailLower.contains("uk_product_slug")) {
                 message = "Đường dẫn (Slug) này đã tồn tại. Vui lòng đổi tên sản phẩm hoặc chỉnh sửa slug.";
-            } else {
-                // Nếu không khớp các từ khóa trên, hiện thị một phần lỗi gốc để debug
-                message += " (Chi tiết: " + detail + ")";
             }
         }
 
