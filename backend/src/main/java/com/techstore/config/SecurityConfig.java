@@ -117,8 +117,9 @@ public class SecurityConfig {
     public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
         org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
         
+        String sanitizedUrl = frontendUrl != null ? frontendUrl.replace("\"", "").trim() : "http://localhost:5173";
         configuration.setAllowedOrigins(java.util.List.of(
-            frontendUrl, 
+            sanitizedUrl, 
             "http://localhost:5173", 
             "https://frontend-production-a6e71.up.railway.app"
         ));
