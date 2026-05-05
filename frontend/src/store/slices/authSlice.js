@@ -14,7 +14,7 @@ export const login = createAsyncThunk(
       }
 
       localStorage.setItem('token', authData.token)
-      localStorage.setItem('user', JSON.stringify(authData))
+      localStorage.setItem('user', JSON.stringify(authData.user || authData))
       return authData
     } catch (error) {
       console.error('Login error:', error)
@@ -30,7 +30,7 @@ export const register = createAsyncThunk(
       const response = await authAPI.register(userData)
       const authData = response.data?.result ?? response.data
       localStorage.setItem('token', authData.token)
-      localStorage.setItem('user', JSON.stringify(authData))
+      localStorage.setItem('user', JSON.stringify(authData.user || authData))
       return authData
     } catch (error) {
       return rejectWithValue(getApiErrorMessage(error))
@@ -65,7 +65,7 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.isLoading = false
-        state.user = action.payload
+        state.user = action.payload.user || action.payload
         state.token = action.payload.token
       })
       .addCase(login.rejected, (state, action) => {
@@ -78,7 +78,7 @@ const authSlice = createSlice({
       })
       .addCase(register.fulfilled, (state, action) => {
         state.isLoading = false
-        state.user = action.payload
+        state.user = action.payload.user || action.payload
         state.token = action.payload.token
       })
       .addCase(register.rejected, (state, action) => {
