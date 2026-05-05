@@ -61,8 +61,9 @@ public class BackupCommandService {
             Files.createDirectories(getBackupRootPath());
             tempPath = Files.createTempFile("backup_", ".sql.gz");
 
+            log.info("Starting backup process for database: {} on {}:{}", dbName, dbHost, dbPort);
             ProcessBuilder processBuilder = new ProcessBuilder(
-                    "pg_dump", "-h", dbHost, "-p", dbPort, "-U", dbUser, dbName
+                    "pg_dump", "-h", dbHost, "-p", dbPort, "-U", dbUser, "--no-owner", "--no-privileges", dbName
             );
             configureDatabaseProcess(processBuilder);
 
@@ -160,6 +161,7 @@ public class BackupCommandService {
                 remoteInput.transferTo(localOutput);
             }
 
+            log.info("Starting restore process from file: {}", fileName);
             ProcessBuilder processBuilder = new ProcessBuilder(
                     "psql", "-h", dbHost, "-p", dbPort, "-U", dbUser, dbName
             );

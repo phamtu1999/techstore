@@ -1,6 +1,6 @@
 # Nixpacks configuration for Spring Boot Backend
 [phases.setup]
-nixPkgs = ["...", "maven", "jdk17"]
+nixPkgs = ["...", "maven", "jdk17", "postgresql"]
 
 [phases.build]
 cmds = ["mvn clean package -DskipTests"]
