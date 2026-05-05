@@ -45,10 +45,10 @@ const AdminTable = ({
   }
 
   return (
-    <div className="overflow-hidden">
-      <div className="overflow-x-auto touch-pan-x -mx-3 sm:mx-0 px-3 sm:px-0">
+    <div className="overflow-hidden rounded-[1.5rem] border border-border dark:border-dark-border bg-white dark:bg-dark-card shadow-sm">
+      <div className="overflow-x-auto touch-pan-x">
         <table className="w-full">
-          <thead className="bg-gray-50 dark:bg-dark-card border-b border-gray-200">
+          <thead className="bg-gray-50/80 dark:bg-dark-bg/80 border-b border-border dark:border-dark-border">
             <tr>
               {hasSelection && (
                 <th className="px-2 sm:px-4 py-3 w-10 sm:w-12">
@@ -61,14 +61,14 @@ const AdminTable = ({
                 </th>
               )}
               {showIndex && (
-                <th className="px-2 sm:px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-12 sm:w-16">
+                <th className="px-3 sm:px-4 py-4 text-left text-[11px] font-bold text-text-secondary uppercase tracking-[0.2em] w-12 sm:w-16">
                   STT
                 </th>
               )}
               {columns.map((column) => (
                 <th
                   key={column.key}
-                  className={`px-2 sm:px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider ${column.sortable ? 'cursor-pointer hover:bg-gray-100 select-none' : ''}`}
+                  className={`px-3 sm:px-4 py-4 text-left text-[11px] font-bold text-text-secondary uppercase tracking-[0.2em] ${column.sortable ? 'cursor-pointer hover:bg-gray-100/70 dark:hover:bg-dark-card select-none' : ''}`}
                   onClick={() => column.sortable && handleSort(column.key)}
                 >
                   <div className="flex items-center gap-2">
@@ -86,7 +86,7 @@ const AdminTable = ({
               )}
             </tr>
           </thead>
-          <tbody className="bg-white dark:bg-dark-card divide-y divide-gray-100">
+          <tbody className="bg-white dark:bg-dark-card divide-y divide-border dark:divide-dark-border">
             {data.length === 0 ? (
               <tr>
                 <td
@@ -104,7 +104,7 @@ const AdminTable = ({
               data.map((row, index) => (
                 <tr
                   key={index}
-                  className={`hover:bg-gray-50 dark:hover:bg-dark-bg transition-colors duration-150 ${rowClassName ? rowClassName(row) : ''}`}
+                  className={`hover:bg-gray-50/70 dark:hover:bg-dark-bg transition-colors duration-150 ${rowClassName ? rowClassName(row) : ''}`}
                 >
                   {hasSelection && (
                     <td className="px-4 py-3">
@@ -124,7 +124,7 @@ const AdminTable = ({
                   {columns.map((column) => (
                     <td
                       key={column.key}
-                      className="px-4 py-3 text-sm text-gray-900"
+                      className="px-3 sm:px-4 py-4 text-sm text-text-primary dark:text-dark-text"
                     >
                       {column.render ? column.render(row[column.key], row, index) : row[column.key]}
                     </td>
