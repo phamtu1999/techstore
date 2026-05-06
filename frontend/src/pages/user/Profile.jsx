@@ -7,7 +7,7 @@ import { profileAPI } from '../../api/profile'
 import Orders from './Orders'
 import Wishlist from './Wishlist'
 import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../../store/slices/authSlice'
 
 // Sub-components
@@ -19,6 +19,8 @@ import ProfileSecurity from '../../components/profile/ProfileSecurity'
 const Profile = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const { user } = useSelector((state) => state.auth)
+  const isAdmin = user?.role === 'ROLE_ADMIN' || user?.role === 'ROLE_SUPER_ADMIN' || user?.role === 'ROLE_STAFF'
   const [activeTab, setActiveTab] = useState('info')
   const [profile, setProfile] = useState(null)
   const [addresses, setAddresses] = useState([])
@@ -479,6 +481,7 @@ const Profile = () => {
             activeTab={activeTab} 
             setActiveTab={setActiveTab} 
             handleLogout={handleLogout} 
+            isAdmin={isAdmin}
           />
 
           <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-[2rem] p-6 text-white shadow-xl shadow-indigo-100">

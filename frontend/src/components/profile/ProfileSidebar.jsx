@@ -1,6 +1,8 @@
-import { User, Package, MapPin, Heart, Lock, LogOut, ChevronRight, Camera, CreditCard, Bell } from 'lucide-react'
+import { User, Package, MapPin, Heart, Lock, LogOut, ChevronRight, Camera, CreditCard, Bell, LayoutDashboard } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
-const ProfileSidebar = ({ profile, activeTab, setActiveTab, handleLogout }) => {
+const ProfileSidebar = ({ profile, activeTab, setActiveTab, handleLogout, isAdmin }) => {
+  const navigate = useNavigate()
   const menuItems = [
     { 
       id: 'info', 
@@ -93,6 +95,23 @@ const ProfileSidebar = ({ profile, activeTab, setActiveTab, handleLogout }) => {
             </button>
           )
         })}
+        
+        {isAdmin && (
+          <button
+            onClick={() => navigate('/admin')}
+            className="w-full flex items-center justify-between p-4 rounded-2xl text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-300 group"
+          >
+            <div className="flex items-center gap-4 min-w-0">
+              <div className="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-500/10 text-primary-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <LayoutDashboard className="h-5 w-5" />
+              </div>
+              <span className="font-black text-xs uppercase tracking-widest text-left truncate text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white">
+                Trang Quản trị
+              </span>
+            </div>
+            <ChevronRight className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+          </button>
+        )}
         
         <div className="h-[1px] bg-gray-100 dark:bg-white/5 my-4 mx-4" />
         
