@@ -215,9 +215,26 @@ const Layout = () => {
                    </button>
                 )}
 
+                {/* Trending Keywords (Desktop only) */}
+                <div className="hidden lg:flex items-center gap-4 mt-2 px-1">
+                   <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest whitespace-nowrap">Gợi ý cho bạn:</span>
+                   <div className="flex gap-3 overflow-x-auto scrollbar-none">
+                      {['iPhone 15', 'MacBook M3', 'S24 Ultra', 'Bàn phím cơ', 'Tai nghe Sony'].map(kw => (
+                        <button 
+                          key={kw}
+                          type="button"
+                          onClick={() => { setSearchQuery(kw); navigate(`/products?search=${kw}`); }}
+                          className="text-[10px] font-bold text-gray-500 hover:text-primary-MAIN transition-colors whitespace-nowrap"
+                        >
+                          #{kw}
+                        </button>
+                      ))}
+                   </div>
+                </div>
+
                 {/* Search Results Dropdown */}
                 {showResults && (
-                  <div className="absolute top-full left-0 right-0 mt-2 sm:mt-4 glass backdrop-blur-3xl rounded-2xl sm:rounded-[2rem] border border-gray-100 dark:border-white/5 shadow-[0_30px_70px_rgba(0,0,0,0.15)] overflow-hidden animate-scale-up z-[60]">
+                  <div className="absolute top-full left-0 right-0 mt-3 sm:mt-5 glass backdrop-blur-3xl rounded-[2rem] border border-gray-100 dark:border-white/5 shadow-[0_40px_80px_rgba(0,0,0,0.2)] overflow-hidden animate-scale-up z-[60]">
                     <div className="max-h-[500px] overflow-y-auto scrollbar-hide">
                       {isSearching ? (
                         <div className="p-16 text-center">

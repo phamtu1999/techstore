@@ -114,108 +114,190 @@ const Products = () => {
 
   const activeFiltersCount = [currentCategory, currentBrand, currentMinPrice, currentMaxPrice].filter(Boolean).length
 
-  const FilterSidebar = () => (
-    <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between mb-8">
-        <h3 className="text-xl font-black uppercase tracking-widest text-gray-900 dark:text-white">Bộ lọc</h3>
-        <button onClick={() => setIsMobileFilterOpen(false)} className="lg:hidden p-2 text-gray-400 hover:text-gray-900">
-           <X className="w-6 h-6" />
-        </button>
-      </div>
+  const FilterSidebar = () => {
+    const [openSections, setOpenSections] = useState({ category: true, brand: true, price: true })
+    const [brandSearch, setBrandSearch] = useState('')
+    const [tempPrice, setTempPrice] = useState({ min: currentMinPrice, max: currentMaxPrice })
 
-      <div className="flex-1 space-y-10 overflow-y-auto pr-2 scrollbar-none">
-        {/* Categories */}
-        <div className="space-y-4">
-          <h4 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em]">Danh mục</h4>
-          <div className="flex flex-col gap-3">
-            <label className="flex items-center gap-3 cursor-pointer group">
-              <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${!currentCategory ? 'bg-primary-600 border-primary-600 text-white' : 'border-gray-200 dark:border-gray-700 text-transparent group-hover:border-primary-400'}`}>
-                <Check className="w-3 h-3 stroke-[4]" />
-              </div>
-              <span className={`text-sm font-bold ${!currentCategory ? 'text-primary-600' : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'}`}>Tất cả</span>
-              <input type="radio" name="category" className="hidden" checked={!currentCategory} onChange={() => updateParams({ category: '' })} />
-            </label>
-            {categories.map(cat => (
-              <label key={cat.id} className="flex items-center gap-3 cursor-pointer group">
-                <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${currentCategory === cat.slug ? 'bg-primary-600 border-primary-600 text-white' : 'border-gray-200 dark:border-gray-700 text-transparent group-hover:border-primary-400'}`}>
-                  <Check className="w-3 h-3 stroke-[4]" />
-                </div>
-                <span className={`text-sm font-bold ${currentCategory === cat.slug ? 'text-primary-600' : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'}`}>{cat.name}</span>
-                <input type="radio" name="category" className="hidden" checked={currentCategory === cat.slug} onChange={() => updateParams({ category: cat.slug })} />
-              </label>
-            ))}
+    const toggleSection = (section) => {
+      setOpenSections(prev => ({ ...prev, [section]: !prev[section] }))
+    }
+
+    const filteredBrands = brands.filter(b => 
+      b.name.toLowerCase().includes(brandSearch.toLowerCase())
+    )
+
+    return (
+      <div className="flex flex-col h-full">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-2">
+            <SlidersHorizontal className="w-5 h-5 text-primary-600" />
+            <h3 className="text-xl font-black uppercase tracking-widest text-gray-900 dark:text-white">Bộ lọc</h3>
           </div>
+          <button onClick={() => setIsMobileFilterOpen(false)} className="lg:hidden p-2 text-gray-400 hover:text-gray-900">
+             <X className="w-6 h-6" />
+          </button>
         </div>
 
-        {/* Brands */}
-        <div className="space-y-4">
-          <h4 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em]">Thương hiệu</h4>
-          <div className="flex flex-col gap-3 max-h-60 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800">
-            <label className="flex items-center gap-3 cursor-pointer group">
-              <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${!currentBrand ? 'bg-primary-600 border-primary-600 text-white' : 'border-gray-200 dark:border-gray-700 text-transparent group-hover:border-primary-400'}`}>
-                <Check className="w-3 h-3 stroke-[4]" />
-              </div>
-              <span className={`text-sm font-bold ${!currentBrand ? 'text-primary-600' : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'}`}>Tất cả</span>
-              <input type="radio" name="brand" className="hidden" checked={!currentBrand} onChange={() => updateParams({ brand: '' })} />
-            </label>
-            {brands.map(brand => (
-              <label key={brand.id} className="flex items-center gap-3 cursor-pointer group">
-                <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${currentBrand === brand.slug ? 'bg-primary-600 border-primary-600 text-white' : 'border-gray-200 dark:border-gray-700 text-transparent group-hover:border-primary-400'}`}>
+        <div className="flex-1 space-y-2 overflow-y-auto pr-2 scrollbar-none pb-20">
+          {/* Categories Accordion */}
+          <div className="border-b border-gray-100 dark:border-dark-border last:border-0 pb-4 mb-4">
+            <button 
+              onClick={() => toggleSection('category')}
+              className="flex items-center justify-between w-full py-2 mb-2 group"
+            >
+              <h4 className="text-[12px] font-black text-gray-900 dark:text-white uppercase tracking-widest">Danh mục</h4>
+              <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${openSections.category ? 'rotate-180' : ''}`} />
+            </button>
+            
+            <div className={`space-y-3 overflow-hidden transition-all duration-300 ${openSections.category ? 'max-h-[500px] opacity-100 mt-4' : 'max-h-0 opacity-0'}`}>
+              <label className="flex items-center gap-3 cursor-pointer group">
+                <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${!currentCategory ? 'bg-primary-600 border-primary-600 text-white' : 'border-gray-200 dark:border-gray-700 text-transparent group-hover:border-primary-400'}`}>
                   <Check className="w-3 h-3 stroke-[4]" />
                 </div>
-                <span className={`text-sm font-bold ${currentBrand === brand.slug ? 'text-primary-600' : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'}`}>{brand.name}</span>
-                <input type="radio" name="brand" className="hidden" checked={currentBrand === brand.slug} onChange={() => updateParams({ brand: brand.slug })} />
+                <span className={`text-sm font-bold ${!currentCategory ? 'text-primary-600' : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'}`}>Tất cả danh mục</span>
+                <input type="radio" name="category" className="hidden" checked={!currentCategory} onChange={() => updateParams({ category: '' })} />
               </label>
-            ))}
-          </div>
-        </div>
-
-        {/* Price */}
-        <div className="space-y-4 pb-10">
-          <h4 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em]">Mức giá</h4>
-          <div className="flex flex-col gap-4">
-            <label className="flex items-center gap-3 cursor-pointer group">
-              <div className={`w-5 h-5 rounded-full border-2 p-1 transition-all ${!currentMinPrice && !currentMaxPrice ? 'border-primary-600' : 'border-gray-200 dark:border-gray-700 group-hover:border-primary-400'}`}>
-                <div className={`w-full h-full rounded-full ${!currentMinPrice && !currentMaxPrice ? 'bg-primary-600' : 'bg-transparent'}`} />
-              </div>
-              <span className={`text-sm font-bold ${!currentMinPrice && !currentMaxPrice ? 'text-primary-600' : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'}`}>Tất cả mức giá</span>
-              <input type="radio" name="price" className="hidden" checked={!currentMinPrice && !currentMaxPrice} onChange={() => handlePriceChange('', '')} />
-            </label>
-            {PRICE_OPTIONS.map((opt, idx) => {
-               const isActive = currentMinPrice === opt.min && currentMaxPrice === opt.max;
-               return (
-                <label key={idx} className="flex items-center gap-3 cursor-pointer group">
-                  <div className={`w-5 h-5 rounded-full border-2 p-1 transition-all ${isActive ? 'border-primary-600' : 'border-gray-200 dark:border-gray-700 group-hover:border-primary-400'}`}>
-                    <div className={`w-full h-full rounded-full ${isActive ? 'bg-primary-600' : 'bg-transparent'}`} />
+              {categories.map(cat => (
+                <label key={cat.id} className="flex items-center gap-3 cursor-pointer group">
+                  <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${currentCategory === cat.slug ? 'bg-primary-600 border-primary-600 text-white' : 'border-gray-200 dark:border-gray-700 text-transparent group-hover:border-primary-400'}`}>
+                    <Check className="w-3 h-3 stroke-[4]" />
                   </div>
-                  <span className={`text-sm font-bold ${isActive ? 'text-primary-600' : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'}`}>{opt.label}</span>
-                  <input type="radio" name="price" className="hidden" checked={isActive} onChange={() => handlePriceChange(opt.min, opt.max)} />
+                  <span className={`text-sm font-bold ${currentCategory === cat.slug ? 'text-primary-600' : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'}`}>{cat.name}</span>
+                  <input type="radio" name="category" className="hidden" checked={currentCategory === cat.slug} onChange={() => updateParams({ category: cat.slug })} />
                 </label>
-               )
-            })}
+              ))}
+            </div>
+          </div>
+
+          {/* Brands Accordion */}
+          <div className="border-b border-gray-100 dark:border-dark-border last:border-0 pb-4 mb-4">
+            <button 
+              onClick={() => toggleSection('brand')}
+              className="flex items-center justify-between w-full py-2 mb-2 group"
+            >
+              <h4 className="text-[12px] font-black text-gray-900 dark:text-white uppercase tracking-widest">Thương hiệu</h4>
+              <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${openSections.brand ? 'rotate-180' : ''}`} />
+            </button>
+            
+            <div className={`space-y-4 overflow-hidden transition-all duration-300 ${openSections.brand ? 'max-h-[500px] opacity-100 mt-4' : 'max-h-0 opacity-0'}`}>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                <input 
+                  type="text" 
+                  placeholder="Tìm thương hiệu..."
+                  value={brandSearch}
+                  onChange={(e) => setBrandSearch(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-dark-border rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-primary-500/20"
+                />
+              </div>
+
+              <div className="flex flex-col gap-3 max-h-48 overflow-y-auto pr-2 scrollbar-thin">
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${!currentBrand ? 'bg-primary-600 border-primary-600 text-white' : 'border-gray-200 dark:border-gray-700 text-transparent group-hover:border-primary-400'}`}>
+                    <Check className="w-3 h-3 stroke-[4]" />
+                  </div>
+                  <span className={`text-sm font-bold ${!currentBrand ? 'text-primary-600' : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'}`}>Tất cả</span>
+                  <input type="radio" name="brand" className="hidden" checked={!currentBrand} onChange={() => updateParams({ brand: '' })} />
+                </label>
+                {filteredBrands.map(brand => (
+                  <label key={brand.id} className="flex items-center gap-3 cursor-pointer group">
+                    <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${currentBrand === brand.slug ? 'bg-primary-600 border-primary-600 text-white' : 'border-gray-200 dark:border-gray-700 text-transparent group-hover:border-primary-400'}`}>
+                      <Check className="w-3 h-3 stroke-[4]" />
+                    </div>
+                    <span className={`text-sm font-bold ${currentBrand === brand.slug ? 'text-primary-600' : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'}`}>{brand.name}</span>
+                    <input type="radio" name="brand" className="hidden" checked={currentBrand === brand.slug} onChange={() => updateParams({ brand: brand.slug })} />
+                  </label>
+                ))}
+                {filteredBrands.length === 0 && <p className="text-[11px] text-gray-400 italic py-2">Không tìm thấy thương hiệu</p>}
+              </div>
+            </div>
+          </div>
+
+          {/* Price Range Accordion */}
+          <div className="border-b border-gray-100 dark:border-dark-border last:border-0 pb-4">
+            <button 
+              onClick={() => toggleSection('price')}
+              className="flex items-center justify-between w-full py-2 mb-2 group"
+            >
+              <h4 className="text-[12px] font-black text-gray-900 dark:text-white uppercase tracking-widest">Khoảng giá</h4>
+              <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${openSections.price ? 'rotate-180' : ''}`} />
+            </button>
+            
+            <div className={`space-y-5 overflow-hidden transition-all duration-300 ${openSections.price ? 'max-h-[500px] opacity-100 mt-4' : 'max-h-0 opacity-0'}`}>
+              {/* Quick Select Prices */}
+              <div className="flex flex-wrap gap-2">
+                {PRICE_OPTIONS.map((opt, idx) => {
+                   const isActive = currentMinPrice === opt.min && currentMaxPrice === opt.max;
+                   return (
+                    <button 
+                      key={idx} 
+                      onClick={() => handlePriceChange(opt.min, opt.max)}
+                      className={`px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all border ${isActive ? 'bg-primary-600 border-primary-600 text-white' : 'bg-white dark:bg-white/5 border-gray-200 dark:border-dark-border text-gray-600 dark:text-gray-400 hover:border-primary-400'}`}
+                    >
+                      {opt.label}
+                    </button>
+                   )
+                })}
+              </div>
+
+              {/* Manual Entry */}
+              <div className="space-y-3">
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tự nhập khoảng giá</p>
+                <div className="flex items-center gap-2">
+                   <div className="flex-1 relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-gray-400">Từ</span>
+                      <input 
+                        type="number" 
+                        value={tempPrice.min}
+                        onChange={(e) => setTempPrice(prev => ({ ...prev, min: e.target.value }))}
+                        className="w-full pl-8 pr-2 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-dark-border rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-primary-500/20"
+                        placeholder="0"
+                      />
+                   </div>
+                   <div className="w-2 h-[2px] bg-gray-300"></div>
+                   <div className="flex-1 relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-gray-400">Đến</span>
+                      <input 
+                        type="number" 
+                        value={tempPrice.max}
+                        onChange={(e) => setTempPrice(prev => ({ ...prev, max: e.target.value }))}
+                        className="w-full pl-9 pr-2 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-dark-border rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-primary-500/20"
+                        placeholder="MAX"
+                      />
+                   </div>
+                </div>
+                <button 
+                  onClick={() => updateParams({ minPrice: tempPrice.min, maxPrice: tempPrice.max })}
+                  className="w-full py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-black dark:hover:bg-gray-100 transition-all active:scale-95 shadow-lg shadow-black/5"
+                >
+                  ÁP DỤNG KHOẢNG GIÁ
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Action Buttons */}
-      <div className="pt-6 mt-6 border-t border-gray-100 dark:border-dark-border grid grid-cols-2 gap-3">
-          <button 
-            onClick={clearFilters}
-            className="flex items-center justify-center gap-2 py-3.5 px-4 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-red-50 hover:text-red-600 transition-all"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            XÓA LỌC
-          </button>
-          <button 
-            onClick={() => setIsMobileFilterOpen(false)}
-            className="flex items-center justify-center gap-2 py-3.5 px-4 bg-primary-600 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-primary-700 shadow-lg shadow-primary-600/20 transition-all active:scale-95"
-          >
-            <Check className="w-3.5 h-3.5 stroke-[4]" />
-            ÁP DỤNG
-          </button>
+        {/* Action Buttons */}
+        <div className="absolute bottom-0 left-0 right-0 pt-6 pb-2 bg-gradient-to-t from-white via-white dark:from-dark-card dark:via-dark-card to-transparent grid grid-cols-2 gap-3 px-1">
+            <button 
+              onClick={clearFilters}
+              className="flex items-center justify-center gap-2 py-3.5 px-4 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-red-50 hover:text-red-600 transition-all"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              XÓA LỌC
+            </button>
+            <button 
+              onClick={() => setIsMobileFilterOpen(false)}
+              className="flex items-center justify-center gap-2 py-3.5 px-4 bg-primary-600 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-primary-700 shadow-lg shadow-primary-600/20 transition-all active:scale-95"
+            >
+              <Check className="w-3.5 h-3.5 stroke-[4]" />
+              XONG
+            </button>
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gray-50/50 dark:bg-dark-bg">
