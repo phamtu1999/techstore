@@ -14,7 +14,7 @@ const BrandsTable = ({ brands, loading, handleDelete, handleToggleStatus }) => {
             render: (_, row) => (
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 border border-gray-100 shrink-0 overflow-hidden">
-                  {row.image ? <img src={row.image} alt={row.name} className="w-full h-full object-contain" /> : <Tag className="w-5 h-5" />}
+                  {row.logoUrl ? <img src={row.logoUrl} alt={row.name} className="w-full h-full object-contain" /> : <Tag className="w-5 h-5" />}
                 </div>
                 <div className="flex flex-col">
                   <span className="font-bold text-gray-900 text-[14px]">{row.name}</span>
@@ -68,7 +68,7 @@ const BrandsTable = ({ brands, loading, handleDelete, handleToggleStatus }) => {
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 <div className="w-12 h-12 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center border border-gray-100 dark:border-white/5 shrink-0 overflow-hidden">
-                   {row.image ? <img src={row.image} alt={row.name} className="w-full h-full object-contain" /> : <Tag className="w-5 h-5 text-gray-400" />}
+                   {row.logoUrl ? <img src={row.logoUrl} alt={row.name} className="w-full h-full object-contain" /> : <Tag className="w-5 h-5 text-gray-400" />}
                 </div>
                 <div className="min-w-0 flex-1">
                   <h4 className="text-[14px] font-black text-gray-900 dark:text-white tracking-tight truncate">{row.name}</h4>

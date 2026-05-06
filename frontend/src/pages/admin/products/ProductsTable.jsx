@@ -65,8 +65,8 @@ const ProductsTable = ({
             render: (_, row) => (
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-xl bg-gray-50 p-1 border border-gray-100 flex items-center justify-center shrink-0 overflow-hidden">
-                  {row.image ? (
-                    <img src={row.image} alt={row.name} className="w-full h-full object-contain" />
+                  {row.imageUrls?.[0] ? (
+                    <img src={row.imageUrls[0]} alt={row.name} className="w-full h-full object-contain" />
                   ) : (
                     <Box className="w-6 h-6 text-gray-300" />
                   )}
@@ -74,8 +74,8 @@ const ProductsTable = ({
                 <div className="flex flex-col min-w-0">
                   <span className="font-bold text-gray-900 text-[14px] truncate max-w-[200px]">{row.name}</span>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-[11px] text-gray-400 flex items-center gap-1"><Tag className="w-3 h-3" /> {row.brandName}</span>
-                    <span className="text-[11px] text-gray-400 flex items-center gap-1"><Layers className="w-3 h-3" /> {row.categoryName}</span>
+                    <span className="text-[11px] text-gray-400 flex items-center gap-1"><Tag className="w-3 h-3" /> {row.brand?.name}</span>
+                    <span className="text-[11px] text-gray-400 flex items-center gap-1"><Layers className="w-3 h-3" /> {row.category?.name}</span>
                   </div>
                 </div>
               </div>
@@ -147,8 +147,8 @@ const ProductsTable = ({
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <div className="w-14 h-14 rounded-xl bg-gray-50 dark:bg-white/5 p-1 border border-gray-100 dark:border-white/5 flex items-center justify-center shrink-0 overflow-hidden">
-                    {row.image ? (
-                      <img src={row.image} alt={row.name} className="w-full h-full object-contain" />
+                    {row.imageUrls?.[0] ? (
+                      <img src={row.imageUrls[0]} alt={row.name} className="w-full h-full object-contain" />
                     ) : (
                       <Box className="w-6 h-6 text-gray-300" />
                     )}
@@ -171,11 +171,11 @@ const ProductsTable = ({
               <div className="grid grid-cols-3 gap-2 py-2 px-3 bg-gray-50/50 dark:bg-white/5 rounded-xl border border-gray-100/50 dark:border-white/5">
                  <div className="flex flex-col items-center justify-center border-r border-gray-200/50 dark:border-white/5 last:border-0">
                     <span className="text-[7px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Thương hiệu</span>
-                    <span className="text-[11px] font-black text-gray-900 dark:text-white truncate max-w-full px-1">{row.brandName}</span>
+                    <span className="text-[11px] font-black text-gray-900 dark:text-white truncate max-w-full px-1">{row.brand?.name}</span>
                  </div>
                  <div className="flex flex-col items-center justify-center border-r border-gray-200/50 dark:border-white/5 last:border-0">
                     <span className="text-[7px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Danh mục</span>
-                    <span className="text-[11px] font-black text-gray-900 dark:text-white truncate max-w-full px-1">{row.categoryName}</span>
+                    <span className="text-[11px] font-black text-gray-900 dark:text-white truncate max-w-full px-1">{row.category?.name}</span>
                  </div>
                  <div className="flex flex-col items-center justify-center last:border-0">
                     <span className="text-[7px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Tồn kho</span>

@@ -107,7 +107,7 @@ const OrdersTable = ({
             )
           },
           {
-            key: 'date',
+            key: 'createdAt',
             label: 'Ngày đặt',
             render: (date) => (
               <div className="flex flex-col text-right md:text-left">
