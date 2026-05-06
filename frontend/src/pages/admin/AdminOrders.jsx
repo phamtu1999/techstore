@@ -395,19 +395,16 @@ const AdminOrders = () => {
                 <div key={row.id || index} className="p-3 border-b border-gray-50 dark:border-white/5 animate-fade-in hover:bg-gray-50/50 transition-colors">
                   <div className="flex flex-col gap-2.5">
                     <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                        <div className="w-10 h-10 bg-gray-50 dark:bg-white/5 rounded-xl flex flex-col items-center justify-center border border-gray-100 dark:border-white/5 shadow-sm shrink-0">
-                          <span className="text-[7px] font-black text-gray-400 uppercase leading-none mb-0.5">Mã đơn</span>
-                          <button onClick={() => handleViewDetail(row)} className="text-[12px] font-black text-primary-600 hover:underline">
-                            #{row.orderNumber}
-                          </button>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                           <span className="text-[11px] font-black text-primary-600 bg-primary-50 dark:bg-primary-500/5 px-1.5 py-0.5 rounded uppercase tracking-tighter shrink-0">
+                             #{row.orderNumber}
+                           </span>
+                           <h4 className="text-[14px] font-black text-gray-900 dark:text-white tracking-tight truncate flex-1">{row.receiverName}</h4>
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <h4 className="text-[14px] font-black text-gray-900 dark:text-white tracking-tight truncate">{row.receiverName}</h4>
-                          <div className="flex items-center gap-2 mt-0.5">
-                            <AdminPill label={getStatusLabel(row.status)} type={getStatusType(row.status)} size="xs" />
-                            <span className="text-[9px] font-bold text-gray-400">{new Date(row.createdAt).toLocaleDateString('vi-VN')}</span>
-                          </div>
+                        <div className="flex items-center gap-2 mt-1.5">
+                          <AdminPill label={getStatusLabel(row.status)} type={getStatusType(row.status)} size="xs" />
+                          <span className="text-[9px] font-bold text-gray-400">{new Date(row.createdAt).toLocaleDateString('vi-VN')}</span>
                         </div>
                       </div>
                       {renderActions(row, index)}
