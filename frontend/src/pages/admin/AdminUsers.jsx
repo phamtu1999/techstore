@@ -531,12 +531,12 @@ const AdminUsers = () => {
                         </div>
                     )}
                     renderMobileCard={(row, index, renderActions) => (
-                        <div key={row.id || index} className="p-4 border-b border-gray-50 dark:border-white/5 animate-fade-in hover:bg-gray-50/50 transition-colors">
-                            <div className="flex flex-col gap-4">
-                                <div className="flex items-start justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <div className="relative">
-                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white text-[16px] font-black overflow-hidden shadow-sm border-2 ${row.enabled ? 'bg-primary-600 border-primary-100' : 'bg-gray-300 border-gray-200'}`}>
+                        <div key={row.id || index} className="p-3 border-b border-gray-50 dark:border-white/5 animate-fade-in hover:bg-gray-50/50 transition-colors">
+                            <div className="flex flex-col gap-2.5">
+                                <div className="flex items-start justify-between gap-3">
+                                    <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                                        <div className="relative shrink-0">
+                                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white text-[14px] font-black overflow-hidden shadow-sm border ${row.enabled ? 'bg-primary-600 border-primary-100' : 'bg-gray-300 border-gray-200'}`}>
                                                 {row.avatar ? (
                                                     <img src={row.avatar} alt="" className="w-full h-full object-cover" />
                                                 ) : (
@@ -544,18 +544,20 @@ const AdminUsers = () => {
                                                 )}
                                             </div>
                                             {row.enabled && (
-                                                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full shadow-sm animate-pulse"></div>
+                                                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full shadow-sm"></div>
                                             )}
                                         </div>
-                                        <div className="min-w-0">
-                                            <h4 className={`text-[15px] font-black tracking-tight truncate ${row.enabled ? 'text-gray-900' : 'text-gray-400 italic'}`}>
-                                                {row.fullName || 'Chưa đặt tên'}
-                                            </h4>
+                                        <div className="min-w-0 flex-1">
+                                            <div className="flex items-center gap-1.5">
+                                                <h4 className={`text-[14px] font-black tracking-tight truncate ${row.enabled ? 'text-gray-900 dark:text-white' : 'text-gray-400 italic'}`}>
+                                                    {row.fullName || 'Chưa đặt tên'}
+                                                </h4>
+                                                <div className="scale-75 origin-left shrink-0">{getRolePill(row.roles)}</div>
+                                            </div>
                                             <div className="flex items-center gap-2 mt-0.5">
-                                                <span className="text-[11px] font-bold text-gray-400">@{row.username}</span>
-                                                <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-                                                <span className="text-[10px] font-black text-primary-600 bg-primary-50 px-1.5 py-0.5 rounded uppercase tracking-tighter">
-                                                    ID: {row.id.substring(0, 8)}
+                                                <span className="text-[10px] font-bold text-gray-400 truncate">@{row.username}</span>
+                                                <span className="text-[9px] font-black text-primary-500/60 bg-primary-50 dark:bg-primary-500/5 px-1 rounded uppercase tracking-tighter shrink-0">
+                                                    ID: {row.id.substring(0, 6)}
                                                 </span>
                                             </div>
                                         </div>
@@ -563,51 +565,48 @@ const AdminUsers = () => {
                                     {renderActions(row, index)}
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-3 py-2 px-3 bg-gray-50/50 rounded-xl border border-gray-100/50">
+                                <div className="grid grid-cols-3 gap-2 py-2 px-3 bg-gray-50/50 dark:bg-white/5 rounded-xl border border-gray-100/50 dark:border-white/5">
                                     <div className="flex flex-col">
-                                        <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Quyền hạn</span>
-                                        <div className="flex mt-0.5 scale-90 origin-left">{getRolePill(row.roles)}</div>
-                                    </div>
-                                    <div className="flex flex-col text-right">
-                                        <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Chi tiêu</span>
-                                        <span className="text-[13px] font-black text-secondary-900">
-                                            {currencyFormatter.format(row.totalSpent || 0)}
+                                        <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-none">Chi tiêu</span>
+                                        <span className="text-[12px] font-black text-gray-900 dark:text-white mt-1">
+                                            {currencyFormatter.format(row.totalSpent || 0).replace('₫', '')}
                                         </span>
                                     </div>
-                                </div>
-
-                                <div className="flex items-center justify-between px-1">
-                                    <div className="flex flex-col gap-1">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-[13px] font-bold text-gray-700">{maskEmail(row.email)}</span>
-                                            {row.emailVerified && (
-                                                <ShieldCheck className="w-3.5 h-3.5 text-green-500" />
-                                            )}
-                                        </div>
-                                        <span className={`text-[9px] font-black uppercase tracking-widest ${row.emailVerified ? 'text-green-600' : 'text-orange-500'}`}>
-                                            {row.emailVerified ? 'ĐÃ XÁC MINH' : 'CHỜ XÁC MINH'}
-                                        </span>
-                                    </div>
-                                    <div className="text-right flex flex-col gap-0.5">
-                                        <span className="text-[14px] font-black text-gray-900">
+                                    <div className="flex flex-col text-center border-x border-gray-100 dark:border-white/5">
+                                        <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-none">Đơn hàng</span>
+                                        <span className="text-[12px] font-black text-gray-900 dark:text-white mt-1">
                                             {row.totalOrders || 0}
                                         </span>
-                                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">ĐƠN HÀNG</span>
+                                    </div>
+                                    <div className="flex flex-col text-right">
+                                        <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-none">Email</span>
+                                        <div className="flex items-center justify-end gap-1 mt-1">
+                                            <span className={`text-[9px] font-black ${row.emailVerified ? 'text-green-600' : 'text-orange-500'}`}>
+                                                {row.emailVerified ? 'VERIFIED' : 'PENDING'}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div className="flex gap-2 pt-1">
+                                <div className="flex gap-2">
                                     <button 
-                                        onClick={() => handleChangeRole(row)}
-                                        className="flex-1 py-2.5 bg-white border border-gray-100 rounded-xl text-[11px] font-black text-gray-600 uppercase tracking-wider shadow-sm active:scale-95 transition-all"
+                                        onClick={() => { handleResetPassword(row) }}
+                                        className="flex-1 flex items-center justify-center gap-1.5 text-[10px] font-black text-orange-600 bg-orange-50 dark:bg-orange-500/5 px-2 py-2 rounded-lg active:scale-95 transition-all uppercase tracking-wider"
                                     >
-                                        Phân quyền
+                                        <KeyRound className="w-3 h-3" /> PW
                                     </button>
                                     <button 
-                                        onClick={() => handleResetPassword(row)}
-                                        className="flex-1 py-2.5 bg-white border border-gray-100 rounded-xl text-[11px] font-black text-gray-600 uppercase tracking-wider shadow-sm active:scale-95 transition-all"
+                                        onClick={() => { handleChangeRole(row) }}
+                                        className="flex-1 flex items-center justify-center gap-1.5 text-[10px] font-black text-blue-600 bg-blue-50 dark:bg-blue-500/5 px-2 py-2 rounded-lg active:scale-95 transition-all uppercase tracking-wider"
                                     >
-                                        Đổi mật khẩu
+                                        <UserCog className="w-3 h-3" /> ROLE
+                                    </button>
+                                    <button 
+                                        onClick={() => { row.enabled ? handleLockUser(row) : handleUnlockUser(row) }}
+                                        className={`flex-1 flex items-center justify-center gap-1.5 text-[10px] font-black px-2 py-2 rounded-lg active:scale-95 transition-all uppercase tracking-wider ${row.enabled ? 'text-red-600 bg-red-50 dark:bg-red-500/5' : 'text-emerald-600 bg-emerald-50 dark:bg-emerald-500/5'}`}
+                                    >
+                                        {row.enabled ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
+                                        {row.enabled ? 'LOCK' : 'OPEN'}
                                     </button>
                                 </div>
                             </div>

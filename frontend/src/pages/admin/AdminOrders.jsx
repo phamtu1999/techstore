@@ -390,40 +390,40 @@ const AdminOrders = () => {
                     )}
                 </div>
               )}
+              itemTitle="đơn hàng"
               renderMobileCard={(row, index, renderActions) => (
-                <div key={row.id || index} className="p-4 border-b border-gray-50 animate-fade-in hover:bg-gray-50/50 transition-colors">
-                  <div className="flex flex-col gap-4">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-14 h-14 bg-gray-50 rounded-2xl flex flex-col items-center justify-center border border-gray-100 shadow-sm shrink-0">
-                          <span className="text-[9px] font-black text-gray-400 uppercase leading-none mb-1">Mã đơn</span>
-                          <button onClick={() => handleViewDetail(row)} className="text-[14px] font-black text-primary-600 hover:underline">
+                <div key={row.id || index} className="p-3 border-b border-gray-50 dark:border-white/5 animate-fade-in hover:bg-gray-50/50 transition-colors">
+                  <div className="flex flex-col gap-2.5">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                        <div className="w-10 h-10 bg-gray-50 dark:bg-white/5 rounded-xl flex flex-col items-center justify-center border border-gray-100 dark:border-white/5 shadow-sm shrink-0">
+                          <span className="text-[7px] font-black text-gray-400 uppercase leading-none mb-0.5">Mã đơn</span>
+                          <button onClick={() => handleViewDetail(row)} className="text-[12px] font-black text-primary-600 hover:underline">
                             #{row.orderNumber}
                           </button>
                         </div>
-                        <div className="min-w-0">
-                          <h4 className="text-[16px] font-black text-gray-900 tracking-tight truncate">{row.receiverName}</h4>
-                          <div className="flex items-center gap-2 mt-1">
+                        <div className="min-w-0 flex-1">
+                          <h4 className="text-[14px] font-black text-gray-900 dark:text-white tracking-tight truncate">{row.receiverName}</h4>
+                          <div className="flex items-center gap-2 mt-0.5">
                             <AdminPill label={getStatusLabel(row.status)} type={getStatusType(row.status)} size="xs" />
-                            <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-                            <span className="text-[10px] font-bold text-gray-400">{new Date(row.createdAt).toLocaleDateString('vi-VN')}</span>
+                            <span className="text-[9px] font-bold text-gray-400">{new Date(row.createdAt).toLocaleDateString('vi-VN')}</span>
                           </div>
                         </div>
                       </div>
                       {renderActions(row, index)}
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-3 py-3 px-4 bg-gray-50 rounded-2xl border border-gray-100">
-                      <div className="flex flex-col gap-0.5">
-                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Giá trị đơn hàng</span>
-                        <span className="text-[16px] font-black text-secondary-900 leading-tight">
-                          {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(row.totalAmount)}
+                    <div className="grid grid-cols-2 gap-3 py-2 px-3 bg-gray-50/50 dark:bg-white/5 rounded-xl border border-gray-100/50 dark:border-white/5">
+                      <div className="flex flex-col">
+                        <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-none">Giá trị đơn</span>
+                        <span className="text-[14px] font-black text-gray-900 dark:text-white mt-0.5">
+                          {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(row.totalAmount).replace('₫', '')}₫
                         </span>
                       </div>
-                      <div className="flex flex-col gap-0.5 text-right">
-                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Thanh toán</span>
-                        <div className="mt-1 flex justify-end">
-                           <span className={`text-[10px] font-black px-2 py-0.5 rounded-md border uppercase tracking-tighter ${
+                      <div className="flex flex-col text-right">
+                        <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-none">Thanh toán</span>
+                        <div className="mt-0.5 flex justify-end">
+                           <span className={`text-[9px] font-black px-1.5 py-0.5 rounded border uppercase tracking-tighter ${
                              row.paymentMethod === 'CASH_ON_DELIVERY' 
                              ? 'bg-amber-50 text-amber-600 border-amber-100' 
                              : 'bg-blue-50 text-blue-600 border-blue-100'
@@ -434,23 +434,21 @@ const AdminOrders = () => {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between px-1">
+                    <div className="flex gap-2">
                        <button 
                         onClick={() => handleViewDetail(row)}
-                        className="text-[12px] font-black text-primary-600 hover:text-primary-700 flex items-center gap-1.5 uppercase tracking-wider active:scale-95 transition-all"
+                        className="flex-1 flex items-center justify-center gap-1.5 text-[10px] font-black text-primary-600 bg-primary-50 dark:bg-primary-500/5 px-3 py-2 rounded-lg active:scale-95 transition-all uppercase tracking-wider"
                        >
-                         <Eye className="w-4 h-4" />
-                         Chi tiết đơn
+                         <Eye className="w-3.5 h-3.5" />
+                         CHI TIẾT
                        </button>
-                       <div className="flex gap-2">
-                         <button 
-                          onClick={() => handlePrintInvoice(row)}
-                          className="flex items-center gap-1.5 text-[11px] font-black text-gray-600 bg-white border border-gray-100 px-4 py-2 rounded-xl shadow-sm active:scale-95 transition-all uppercase tracking-wider"
-                         >
-                           <Printer className="w-3.5 h-3.5" />
-                           IN HÓA ĐƠN
-                         </button>
-                       </div>
+                       <button 
+                        onClick={() => handlePrintInvoice(row)}
+                        className="flex-1 flex items-center justify-center gap-1.5 text-[10px] font-black text-gray-500 bg-gray-100 dark:bg-white/5 px-3 py-2 rounded-lg active:scale-95 transition-all uppercase tracking-wider"
+                       >
+                         <Printer className="w-3.5 h-3.5" />
+                         HÓA ĐƠN
+                       </button>
                     </div>
                   </div>
                 </div>
