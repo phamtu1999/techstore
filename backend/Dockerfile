@@ -20,4 +20,4 @@ RUN apt-get update \
 COPY --from=build /app/target/backend-0.0.1-SNAPSHOT.jar /app/backend.jar
 
 EXPOSE 8080
-ENTRYPOINT ["java", "-Dserver.port=8080", "-jar", "/app/backend.jar"]
+ENTRYPOINT ["sh", "-c", "exec java ${JAVA_OPTS:-} -Dserver.port=${PORT:-8080} -jar /app/backend.jar"]

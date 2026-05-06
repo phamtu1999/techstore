@@ -7,4 +7,4 @@ aptPkgs = ["postgresql-client"]
 cmds = ["mvn clean package -DskipTests"]
 
 [start]
-cmd = "java -Dserver.port=$PORT -jar target/backend-0.0.1-SNAPSHOT.jar"
+cmd = "sh -c 'exec java ${JAVA_OPTS:-} -Dserver.port=${PORT:-8080} -jar target/backend-0.0.1-SNAPSHOT.jar'"
