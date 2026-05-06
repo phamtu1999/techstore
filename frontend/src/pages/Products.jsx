@@ -286,7 +286,7 @@ const Products = () => {
         </div>
       )}
 
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+      <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 lg:py-12">
         
         {/* Premium Breadcrumbs */}
         <nav className="flex items-center gap-2 mb-8 text-[11px] font-black uppercase tracking-[0.2em] text-gray-400">
@@ -374,7 +374,7 @@ const Products = () => {
 
             {/* Product Grid */}
             {isLoading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-10">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-10">
                 {[...Array(9)].map((_, i) => (
                   <ProductSkeleton key={i} />
                 ))}

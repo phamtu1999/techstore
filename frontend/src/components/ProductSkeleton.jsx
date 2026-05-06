@@ -2,7 +2,7 @@ const ProductSkeleton = () => {
   return (
     <div className="bg-white dark:bg-dark-card rounded-[1.5rem] overflow-hidden border border-gray-100 dark:border-dark-border h-full flex flex-col shadow-sm">
       {/* Image skeleton with shimmer effect */}
-      <div className="h-[180px] sm:h-[220px] w-full relative overflow-hidden bg-gray-50 dark:bg-white/5">
+      <div className="aspect-square w-full relative overflow-hidden bg-gray-50 dark:bg-white/5">
         <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent dark:via-white/5" />
       </div>
       
