@@ -116,6 +116,54 @@ const SystemLogs = () => {
         }
     ]
 
+    const handleExportLogs = async () => {
+        try {
+            // Fetch a larger batch for export if needed, or just use current logs
+            // For now, let's fetch the current filtered set but with a larger size (e.g., 500)
+            const params = {
+                page: 0,
+                size: 500,
+                status: status === 'ALL' ? null : status,
+                action: action || null
+            }
+            const response = await logsAPI.getLogs(params)
+            const exportData = response.data.result.content
+
+            if (exportData.length === 0) {
+                alert('Không có dữ liệu để xuất báo cáo')
+                return
+            }
+
+            const headers = ['Thời gian', 'Người dùng', 'Hành động', 'Trạng thái', 'Thông báo', 'IP Address']
+            const csvRows = exportData.map(log => [
+                format(new Date(log.timestamp), 'yyyy-MM-dd HH:mm:ss'),
+                log.username,
+                log.action,
+                log.status,
+                `"${(log.message || '').replace(/"/g, '""')}"`,
+                log.ipAddress || '0.0.0.0'
+            ])
+
+            const csvContent = [
+                headers.join(','),
+                ...csvRows.map(row => row.join(','))
+            ].join('\n')
+
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' })
+            const link = document.createElement('a')
+            const url = URL.createObjectURL(blob)
+            link.setAttribute('href', url)
+            link.setAttribute('download', `system-logs-${format(new Date(), 'yyyyMMdd-HHmm')}.csv`)
+            link.style.visibility = 'hidden'
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+        } catch (error) {
+            console.error('Export error:', error)
+            alert('Có lỗi xảy ra khi xuất báo cáo')
+        }
+    }
+
     return (
         <div className="space-y-6">
             {/* Stats Overview */}
@@ -243,7 +291,10 @@ const SystemLogs = () => {
             <div className="flex items-center justify-between text-sm text-gray-500 font-medium px-2">
                 <p>Hiển thị {logs.length} trên tổng số {totalElements} kết quả</p>
                 <div className="flex items-center gap-2">
-                    <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-100 rounded-xl hover:bg-gray-50 transition-all font-bold text-xs text-gray-600">
+                    <button 
+                        onClick={handleExportLogs}
+                        className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-100 rounded-xl hover:bg-gray-50 transition-all font-bold text-xs text-gray-600 active:scale-95"
+                    >
                         <Download className="h-4 w-4" />
                         XUẤT BÁO CÁO (CSV)
                     </button>
