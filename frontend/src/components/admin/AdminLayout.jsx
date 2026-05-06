@@ -108,7 +108,7 @@ const AdminLayout = () => {
             </Link>
           </div>
 
-          <nav className="mt-4 px-4 flex-1 overflow-y-auto custom-scrollbar">
+          <nav className="mt-4 px-4 flex-1 overflow-y-auto admin-sidebar-scrollbar">
             <div className="px-4 mb-4 text-[12px] font-semibold text-gray-500 uppercase tracking-[0.1em]">Quản trị</div>
             <div className="space-y-1.5 pb-6">
               {menuItems.map((item) => (
@@ -156,7 +156,7 @@ const AdminLayout = () => {
                 </button>
               </div>
 
-              <nav className="flex-1 overflow-y-auto p-4 space-y-1.5 mt-4">
+              <nav className="flex-1 overflow-y-auto p-4 space-y-1.5 mt-4 admin-sidebar-scrollbar">
                 {menuItems.map((item) => (
                   <Link
                     key={item.path}

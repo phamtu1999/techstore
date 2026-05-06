@@ -125,7 +125,7 @@ const AdminTable = ({
   )
 
   return (
-    <div className="overflow-x-auto" ref={containerRef}>
+    <div className="overflow-x-auto custom-scrollbar" ref={containerRef}>
       <div className="min-w-full">
         <div className="grid items-center bg-gray-50/50 border-b border-gray-100" style={{ gridTemplateColumns: `${hasSelection ? '48px ' : ''}${showIndex ? '48px ' : ''}${columns.map(() => 'minmax(0, 1fr)').join(' ')}${hasActions ? ' 128px' : ''}` }}>
           {hasSelection && <div className="px-6 py-4 w-12"><input type="checkbox" checked={allSelected} onChange={(e) => onSelectAll(e.target.checked)} className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500 cursor-pointer" /></div>}
