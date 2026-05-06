@@ -36,7 +36,7 @@ const HeroBanner: React.FC = () => {
                <Sparkles className="h-3 w-3 animate-pulse" />
                New Arrival · Limited Edition
             </div>
-            <h1 className="text-3xl sm:text-7xl lg:text-9xl leading-[0.85] text-white tracking-tighter uppercase font-black">
+            <h1 className="text-2xl sm:text-7xl lg:text-9xl leading-[0.85] text-white tracking-tighter uppercase font-black">
               FUTURE<br/>
               <span className="text-primary-600 italic">BEYOND</span>
             </h1>

@@ -127,7 +127,7 @@ const Home = () => {
       <section className="max-w-7xl mx-auto px-4">
         <div className="flex items-end justify-between mb-8 sm:mb-12">
           <div>
-            <h2 className="text-3xl sm:text-5xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
+            <h2 className="text-2xl sm:text-5xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
               DANH <span className="text-primary-600">MỤC</span>
             </h2>
             <p className="text-xs font-black text-gray-400 uppercase tracking-[0.3em] mt-2 italic">Tech Store Collection</p>
@@ -184,7 +184,7 @@ const Home = () => {
                 <Zap className="h-4 w-4 fill-current" />
                 FLASH SALE ĐANG CHÁY
               </div>
-              <h2 className="text-5xl sm:text-7xl font-black text-gray-900 dark:text-white tracking-tighter uppercase leading-[0.8] italic">
+              <h2 className="text-4xl sm:text-7xl font-black text-gray-900 dark:text-white tracking-tighter uppercase leading-[0.8] italic">
                 SIÊU <span className="text-primary-600 not-italic">ƯU ĐÃI</span>
               </h2>
               
@@ -256,7 +256,7 @@ const Home = () => {
       <section className="max-w-7xl mx-auto px-4">
         <div className="flex items-end justify-between mb-12">
           <div>
-            <h2 className="text-3xl sm:text-5xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
+            <h2 className="text-2xl sm:text-5xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
               BÁN <span className="text-primary-600">CHẠY</span>
             </h2>
             <p className="text-xs font-black text-gray-400 uppercase tracking-[0.3em] mt-2 italic">Những lựa chọn hàng đầu</p>
@@ -278,7 +278,7 @@ const Home = () => {
         <div className="bg-primary-600 rounded-[3rem] p-8 sm:p-20 text-white relative overflow-hidden group shadow-2xl shadow-primary-600/30">
           <div className="relative z-10 max-w-2xl text-center sm:text-left">
             <span className="text-primary-100 font-black tracking-[0.3em] uppercase text-xs sm:text-sm italic">Sự kiện đặc biệt tháng 5</span>
-            <h2 className="text-4xl sm:text-7xl font-black mt-6 mb-8 leading-[0.9] tracking-tighter uppercase">NÂNG CẤP ĐỜI MÁY <br/><span className="text-white/40">TRỢ GIÁ 2 TRIỆU</span></h2>
+            <h2 className="text-3xl sm:text-7xl font-black mt-6 mb-8 leading-[0.9] tracking-tighter uppercase">NÂNG CẤP ĐỜI MÁY <br/><span className="text-white/40">TRỢ GIÁ 2 TRIỆU</span></h2>
             <div className="flex flex-col sm:flex-row gap-4">
               <button className="bg-white text-primary-600 px-10 py-5 rounded-2xl font-black hover:bg-gray-100 transition-all shadow-xl text-xs uppercase tracking-widest active:scale-95">
                 Đăng ký thu cũ đổi mới
@@ -303,7 +303,7 @@ const Home = () => {
       {/* Recommended Section */}
       <section className="max-w-7xl mx-auto px-4">
         <div className="flex items-center gap-4 mb-12">
-          <h2 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-widest">DÀNH RIÊNG CHO BẠN</h2>
+          <h2 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-widest">DÀNH RIÊNG CHO BẠN</h2>
           <div className="h-[2px] flex-1 bg-gray-100 dark:bg-white/5"></div>
         </div>
         
