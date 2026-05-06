@@ -377,49 +377,150 @@ const AdminInventory = () => {
              </div>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="bg-gray-50/50">
-                  <th className="px-6 py-4 w-10 text-left">
-                    <input 
-                      type="checkbox" 
-                      className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
-                      checked={selectedIds.length > 0 && selectedIds.length === variants.length}
-                      onChange={handleSelectAll}
-                    />
-                  </th>
-                  <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-primary-600 w-16">STT</th>
-                  <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Sản phẩm & Biến thể</th>
-                  <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Tồn kho</th>
-                  {isFinanceVisible && <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Tài chính</th>}
-                  {isFinanceVisible && <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-center">Biên LN</th>}
-                  <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-right">Thao tác</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {variants.length === 0 ? (
-                  <tr>
-                    <td colSpan={isFinanceVisible ? 6 : 4} className="px-8 py-20 text-center text-gray-400 font-bold italic">
-                       Không tìm thấy kết quả phù hợp
-                    </td>
-                  </tr>
-                ) : variants.map((v, index) => (
-                  <AdminInventoryStockRow
-                    key={v.id}
-                    variant={v}
-                    index={index}
-                    pagination={pagination}
-                    isFinanceVisible={isFinanceVisible}
-                    formatCurrency={formatCurrency}
-                    onAdjustStock={handleAdjustStock}
-                    isSelected={selectedIds.includes(v.id)}
-                    onSelect={() => handleSelectOne(v.id)}
-                  />
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <AdminTable 
+            columns={[
+              {
+                key: 'product',
+                label: 'Sản phẩm & Biến thể',
+                render: (_, row) => (
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-bold text-gray-900 text-[14px] line-clamp-1">{row.productName}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] font-medium text-gray-500">{row.variantName}</span>
+                      <span className="text-[10px] bg-gray-100 px-1.5 py-0.5 rounded font-mono font-bold text-gray-400 uppercase tracking-tighter">{row.sku}</span>
+                    </div>
+                  </div>
+                )
+              },
+              {
+                key: 'stock',
+                label: 'Tồn kho',
+                render: (_, row) => (
+                  <div className="flex flex-col">
+                    <span className={`text-[15px] font-black ${row.stockQuantity <= row.lowStockThreshold ? 'text-red-600' : 'text-gray-900'}`}>
+                      {row.stockQuantity}
+                    </span>
+                    {row.stockQuantity <= row.lowStockThreshold && (
+                      <span className="text-[9px] font-black text-red-500 uppercase tracking-tighter">Sắp hết hàng</span>
+                    )}
+                  </div>
+                )
+              },
+              ...(isFinanceVisible ? [
+                {
+                  key: 'finance',
+                  label: 'Tài chính',
+                  render: (_, row) => (
+                    <div className="flex flex-col">
+                      <span className="text-[13px] font-bold text-emerald-600">{formatCurrency(row.costPrice)}</span>
+                      <span className="text-[11px] font-medium text-gray-400">{formatCurrency(row.price)}</span>
+                    </div>
+                  )
+                },
+                {
+                  key: 'margin',
+                  label: 'Biên LN',
+                  align: 'center',
+                  render: (_, row) => {
+                    const margin = row.price > 0 ? ((row.price - row.costPrice) / row.price * 100).toFixed(1) : 0;
+                    return (
+                      <div className="px-2 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[11px] font-black">
+                        {margin}%
+                      </div>
+                    )
+                  }
+                }
+              ] : [])
+            ]}
+            data={variants}
+            isLoading={loading}
+            selectedRows={selectedIds}
+            onSelectRow={(row) => handleSelectOne(row.id)}
+            onSelectAll={(all) => {
+              if (all) setSelectedIds(variants.map(v => v.id))
+              else setSelectedIds([])
+            }}
+            showIndex={true}
+            currentPage={pagination.page}
+            pageSize={pagination.size}
+            actions={(row) => (
+              <div className="flex justify-end">
+                <button 
+                  onClick={() => handleAdjustStock(row)}
+                  className="p-2 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all"
+                  title="Điều chỉnh kho"
+                >
+                  <ArrowRightLeft className="h-4 w-4" />
+                </button>
+              </div>
+            )}
+            renderMobileCard={(row, index, renderActions) => (
+              <div key={row.id || index} className="p-4 border-b border-gray-50 animate-fade-in">
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-sm ${row.stockQuantity <= row.lowStockThreshold ? 'bg-red-50 border-red-100 text-red-600' : 'bg-gray-50 border-gray-100 text-gray-400'}`}>
+                        <Package className="h-6 w-6" />
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="text-[15px] font-black text-gray-900 tracking-tight leading-tight line-clamp-1">{row.productName}</h4>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-[11px] font-bold text-gray-500 truncate max-w-[120px]">{row.variantName}</span>
+                          <span className="text-[10px] bg-gray-100 px-1.5 py-0.5 rounded font-mono font-bold text-gray-400 uppercase tracking-tighter shrink-0">{row.sku}</span>
+                        </div>
+                      </div>
+                    </div>
+                    {renderActions(row, index)}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 py-3 px-4 bg-gray-50 rounded-2xl border border-gray-100">
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Tồn kho hiện tại</span>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[16px] font-black ${row.stockQuantity <= row.lowStockThreshold ? 'text-red-600' : 'text-gray-900'}`}>
+                          {row.stockQuantity}
+                        </span>
+                        {row.stockQuantity <= row.lowStockThreshold && (
+                          <div className="flex items-center gap-1 text-[9px] font-black text-red-500 bg-red-50 px-2 py-0.5 rounded-full border border-red-100">
+                            <AlertTriangle className="w-2.5 h-2.5" /> SẮP HẾT
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    {isFinanceVisible && (
+                      <div className="flex flex-col gap-0.5 text-right">
+                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Giá vốn / Niêm yết</span>
+                        <div className="flex flex-col items-end">
+                           <span className="text-[13px] font-black text-emerald-600 leading-tight">{formatCurrency(row.costPrice)}</span>
+                           <span className="text-[11px] font-bold text-gray-400 leading-tight">{formatCurrency(row.price)}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-between px-1">
+                    <div className="flex items-center gap-4">
+                       {isFinanceVisible && (
+                         <div className="flex flex-col">
+                            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Biên lợi nhuận</span>
+                            <span className="text-[13px] font-black text-emerald-600">
+                               {row.price > 0 ? ((row.price - row.costPrice) / row.price * 100).toFixed(1) : 0}%
+                            </span>
+                         </div>
+                       )}
+                    </div>
+                    <button 
+                      onClick={() => handleAdjustStock(row)}
+                      className="flex items-center gap-1.5 text-[11px] font-black text-primary-600 bg-primary-50 px-3 py-2 rounded-xl active:scale-95 transition-all uppercase tracking-wider"
+                    >
+                      <ArrowRightLeft className="w-3.5 h-3.5" />
+                      ĐIỀU CHỈNH KHO
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          />
 
           {!loading && pagination.totalPages > 1 && (
               <AdminPagination 
@@ -434,8 +535,8 @@ const AdminInventory = () => {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="p-6 border-b border-gray-50 flex flex-col md:flex-row justify-between items-center gap-4">
              <div>
-               <h3 className="text-[18px] font-bold text-gray-900">Lịch sử biến động</h3>
-               <p className="text-[13px] text-gray-500 font-medium">25 bản ghi gần nhất</p>
+                <h3 className="text-[18px] font-bold text-gray-900">Lịch sử biến động</h3>
+                <p className="text-[13px] text-gray-500 font-medium">25 bản ghi gần nhất</p>
              </div>
              
              <div className="relative w-full md:w-80">
@@ -447,25 +548,108 @@ const AdminInventory = () => {
                 />
              </div>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="bg-gray-50/50">
-                  <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 w-12">STT</th>
-                  <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Thời gian</th>
-                  <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Loại / SKU</th>
-                  <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Số lượng</th>
-                  <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Dư sau</th>
-                  <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Ghi chú</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {history.map((log, index) => (
-                  <AdminInventoryHistoryRow key={log.id} log={log} index={index} />
-                ))}
-              </tbody>
-            </table>
-          </div>
+          
+          <AdminTable 
+            columns={[
+              {
+                key: 'timestamp',
+                label: 'Thời gian',
+                render: (val) => (
+                  <div className="flex flex-col">
+                    <span className="text-[13px] font-bold text-gray-700">{new Date(val).toLocaleDateString('vi-VN')}</span>
+                    <span className="text-[11px] text-gray-400">{new Date(val).toLocaleTimeString('vi-VN')}</span>
+                  </div>
+                )
+              },
+              {
+                key: 'type',
+                label: 'Loại / SKU',
+                render: (val, row) => (
+                  <div className="flex flex-col">
+                    <span className={`text-[11px] font-black uppercase tracking-widest ${
+                      val === 'IMPORT' ? 'text-blue-600' : 
+                      val === 'SALE' ? 'text-emerald-600' : 
+                      val === 'DAMAGED' ? 'text-red-600' : 'text-orange-500'
+                    }`}>
+                      {val === 'IMPORT' ? 'Nhập hàng' : 
+                       val === 'SALE' ? 'Bán hàng' : 
+                       val === 'DAMAGED' ? 'Hủy hàng' : 'Điều chỉnh'}
+                    </span>
+                    <span className="text-[11px] font-bold text-gray-400 font-mono">{row.sku}</span>
+                  </div>
+                )
+              },
+              {
+                key: 'quantity',
+                label: 'Số lượng',
+                align: 'center',
+                render: (val) => (
+                  <span className={`text-[15px] font-black ${val > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                    {val > 0 ? `+${val}` : val}
+                  </span>
+                )
+              },
+              {
+                key: 'balanceAfter',
+                label: 'Dư sau',
+                align: 'center',
+                render: (val) => <span className="text-[14px] font-black text-gray-900">{val}</span>
+              },
+              {
+                key: 'note',
+                label: 'Ghi chú',
+                render: (val) => <p className="text-[12px] text-gray-500 line-clamp-1 italic">"{val || 'Không có ghi chú'}"</p>
+              }
+            ]}
+            data={history}
+            isLoading={loading}
+            showIndex={true}
+            renderMobileCard={(row, index) => (
+              <div key={row.id || index} className="p-4 border-b border-gray-50 animate-fade-in">
+                <div className="flex flex-col gap-3">
+                  <div className="flex justify-between items-start">
+                    <div className="flex flex-col">
+                       <span className={`text-[11px] font-black uppercase tracking-widest ${
+                        row.type === 'IMPORT' ? 'text-blue-600' : 
+                        row.type === 'SALE' ? 'text-emerald-600' : 
+                        row.type === 'DAMAGED' ? 'text-red-600' : 'text-orange-500'
+                      }`}>
+                        {row.type === 'IMPORT' ? 'NHẬP HÀNG' : 
+                         row.type === 'SALE' ? 'BÁN HÀNG' : 
+                         row.type === 'DAMAGED' ? 'HỦY HÀNG' : 'ĐIỀU CHỈNH'}
+                      </span>
+                      <span className="text-[14px] font-black text-gray-900 font-mono mt-0.5">{row.sku}</span>
+                    </div>
+                    <div className="text-right flex flex-col">
+                      <span className="text-[12px] font-bold text-gray-600">{new Date(row.timestamp).toLocaleDateString('vi-VN')}</span>
+                      <span className="text-[10px] text-gray-400 font-medium">{new Date(row.timestamp).toLocaleTimeString('vi-VN')}</span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 py-2.5 px-4 bg-gray-50 rounded-2xl border border-gray-100">
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Biến động</span>
+                      <span className={`text-[16px] font-black ${row.quantity > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                        {row.quantity > 0 ? `+${row.quantity}` : row.quantity}
+                      </span>
+                    </div>
+                    <div className="flex flex-col gap-0.5 text-right">
+                      <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Tồn sau cùng</span>
+                      <span className="text-[15px] font-black text-gray-900">{row.balanceAfter}</span>
+                    </div>
+                  </div>
+
+                  {row.note && (
+                    <div className="px-3 py-2 bg-amber-50/50 border border-amber-100/50 rounded-xl">
+                       <p className="text-[11px] text-amber-700 font-medium italic leading-relaxed">
+                         "{row.note}"
+                       </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          />
         </div>
       )}
     </div>

@@ -380,20 +380,21 @@ const AdminOrders = () => {
               currentPage={page}
               pageSize={pageSize}
               renderMobileCard={(row, index, renderActions) => (
-                <div key={row.id || index} className="p-4 border-b border-gray-50 animate-fade-in">
+                <div key={row.id || index} className="p-4 border-b border-gray-50 animate-fade-in hover:bg-gray-50/50 transition-colors">
                   <div className="flex flex-col gap-4">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-gray-50 rounded-2xl flex flex-col items-center justify-center border border-gray-100 shadow-sm">
-                          <span className="text-[10px] font-black text-gray-400 uppercase leading-none">ID</span>
-                          <button onClick={() => handleViewDetail(row)} className="text-[13px] font-black text-primary-600 hover:underline">
+                        <div className="w-14 h-14 bg-gray-50 rounded-2xl flex flex-col items-center justify-center border border-gray-100 shadow-sm shrink-0">
+                          <span className="text-[9px] font-black text-gray-400 uppercase leading-none mb-1">Mã đơn</span>
+                          <button onClick={() => handleViewDetail(row)} className="text-[14px] font-black text-primary-600 hover:underline">
                             #{row.orderNumber}
                           </button>
                         </div>
-                        <div>
-                          <h4 className="text-[15px] font-black text-gray-900 tracking-tight">{row.receiverName}</h4>
+                        <div className="min-w-0">
+                          <h4 className="text-[16px] font-black text-gray-900 tracking-tight truncate">{row.receiverName}</h4>
                           <div className="flex items-center gap-2 mt-1">
                             <AdminPill label={getStatusLabel(row.status)} type={getStatusType(row.status)} size="xs" />
+                            <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
                             <span className="text-[10px] font-bold text-gray-400">{new Date(row.createdAt).toLocaleDateString('vi-VN')}</span>
                           </div>
                         </div>
@@ -403,33 +404,42 @@ const AdminOrders = () => {
                     
                     <div className="grid grid-cols-2 gap-3 py-3 px-4 bg-gray-50 rounded-2xl border border-gray-100">
                       <div className="flex flex-col gap-0.5">
-                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Tổng tiền</span>
-                        <span className="text-[15px] font-black text-secondary-900">
+                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Giá trị đơn hàng</span>
+                        <span className="text-[16px] font-black text-secondary-900 leading-tight">
                           {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(row.totalAmount)}
                         </span>
                       </div>
                       <div className="flex flex-col gap-0.5 text-right">
                         <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Thanh toán</span>
-                        <span className="text-[11px] font-bold text-gray-600 uppercase tracking-tighter">
-                          {row.paymentMethod === 'CASH_ON_DELIVERY' ? 'COD' : 'BANKING'}
-                        </span>
+                        <div className="mt-1 flex justify-end">
+                           <span className={`text-[10px] font-black px-2 py-0.5 rounded-md border uppercase tracking-tighter ${
+                             row.paymentMethod === 'CASH_ON_DELIVERY' 
+                             ? 'bg-amber-50 text-amber-600 border-amber-100' 
+                             : 'bg-blue-50 text-blue-600 border-blue-100'
+                           }`}>
+                             {row.paymentMethod === 'CASH_ON_DELIVERY' ? 'COD' : 'ONLINE'}
+                           </span>
+                        </div>
                       </div>
                     </div>
 
                     <div className="flex items-center justify-between px-1">
                        <button 
                         onClick={() => handleViewDetail(row)}
-                        className="text-[12px] font-black text-primary-600 hover:text-primary-700 flex items-center gap-1 uppercase tracking-wider"
+                        className="text-[12px] font-black text-primary-600 hover:text-primary-700 flex items-center gap-1.5 uppercase tracking-wider active:scale-95 transition-all"
                        >
-                         Xem chi tiết
+                         <Eye className="w-4 h-4" />
+                         Chi tiết đơn
                        </button>
-                       <button 
-                        onClick={() => handlePrintInvoice(row)}
-                        className="flex items-center gap-1.5 text-[11px] font-bold text-gray-500 bg-white border border-gray-200 px-3 py-1.5 rounded-lg shadow-sm active:scale-95 transition-all"
-                       >
-                         <Printer className="w-3.5 h-3.5" />
-                         IN HÓA ĐƠN
-                       </button>
+                       <div className="flex gap-2">
+                         <button 
+                          onClick={() => handlePrintInvoice(row)}
+                          className="flex items-center gap-1.5 text-[11px] font-black text-gray-600 bg-white border border-gray-100 px-4 py-2 rounded-xl shadow-sm active:scale-95 transition-all uppercase tracking-wider"
+                         >
+                           <Printer className="w-3.5 h-3.5" />
+                           IN HÓA ĐƠN
+                         </button>
+                       </div>
                     </div>
                   </div>
                 </div>

@@ -535,47 +535,84 @@ const AdminUsers = () => {
                         </div>
                     )}
                     renderMobileCard={(row, index, renderActions) => (
-                        <div key={row.id || index} className="p-4 border-b border-gray-50 dark:border-white/5 animate-fade-in">
+                        <div key={row.id || index} className="p-4 border-b border-gray-50 dark:border-white/5 animate-fade-in hover:bg-gray-50/50 transition-colors">
                             <div className="flex flex-col gap-4">
                                 <div className="flex items-start justify-between">
                                     <div className="flex items-center gap-3">
                                         <div className="relative">
-                                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white text-[18px] font-black overflow-hidden shadow-sm ${row.enabled ? 'bg-primary-600' : 'bg-gray-300'}`}>
-                                                {row.avatar ? <img src={row.avatar} alt="" className="w-full h-full object-cover" /> : (row.fullName?.[0] || row.username?.[0] || '?').toUpperCase()}
+                                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white text-[20px] font-black overflow-hidden shadow-md border-2 ${row.enabled ? 'bg-primary-600 border-primary-100' : 'bg-gray-300 border-gray-200'}`}>
+                                                {row.avatar ? (
+                                                    <img src={row.avatar} alt="" className="w-full h-full object-cover" />
+                                                ) : (
+                                                    (row.fullName?.[0] || row.username?.[0] || '?').toUpperCase()
+                                                )}
                                             </div>
-                                            {row.enabled && <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>}
+                                            {row.enabled && (
+                                                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full shadow-sm animate-pulse"></div>
+                                            )}
                                         </div>
-                                        <div>
-                                            <h4 className={`text-[15px] font-black ${row.enabled ? 'text-gray-900' : 'text-gray-400 italic'}`}>
+                                        <div className="min-w-0">
+                                            <h4 className={`text-[16px] font-black tracking-tight truncate ${row.enabled ? 'text-gray-900' : 'text-gray-400 italic'}`}>
                                                 {row.fullName || 'Chưa đặt tên'}
                                             </h4>
-                                            <p className="text-[11px] font-bold text-gray-400">@{row.username}</p>
+                                            <div className="flex items-center gap-2 mt-0.5">
+                                                <span className="text-[11px] font-bold text-gray-400">@{row.username}</span>
+                                                <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                                                <span className="text-[10px] font-black text-primary-600 bg-primary-50 px-1.5 py-0.5 rounded uppercase tracking-tighter">
+                                                    ID: {row.id.substring(0, 8)}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                     {renderActions(row, index)}
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4 py-3 px-4 bg-gray-50 rounded-2xl border border-gray-100">
+                                <div className="grid grid-cols-2 gap-3 py-3 px-4 bg-gray-50 rounded-2xl border border-gray-100">
                                     <div className="flex flex-col gap-0.5">
-                                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Vai trò</span>
-                                        <div className="flex">{getRolePill(row.roles)}</div>
+                                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Quyền hạn</span>
+                                        <div className="flex mt-0.5">{getRolePill(row.roles)}</div>
                                     </div>
                                     <div className="flex flex-col gap-0.5 text-right">
-                                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Chi tiêu</span>
-                                        <span className="text-[13px] font-black text-secondary-900">{currencyFormatter.format(row.totalSpent || 0)}</span>
+                                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Chi tiêu tích lũy</span>
+                                        <span className="text-[15px] font-black text-secondary-900">
+                                            {currencyFormatter.format(row.totalSpent || 0)}
+                                        </span>
                                     </div>
                                 </div>
 
-                                <div className="flex items-center justify-between text-[12px]">
-                                    <div className="flex flex-col">
-                                        <span className="font-bold text-gray-700">{maskEmail(row.email)}</span>
-                                        <span className={`text-[10px] font-black uppercase tracking-tighter ${row.emailVerified ? 'text-green-600' : 'text-orange-500'}`}>
-                                            {row.emailVerified ? 'ĐÃ XÁC MINH' : 'CHƯA XÁC MINH'}
+                                <div className="flex items-center justify-between px-1">
+                                    <div className="flex flex-col gap-1">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-[13px] font-bold text-gray-700">{maskEmail(row.email)}</span>
+                                            {row.emailVerified && (
+                                                <ShieldCheck className="w-3.5 h-3.5 text-green-500" />
+                                            )}
+                                        </div>
+                                        <span className={`text-[9px] font-black uppercase tracking-widest ${row.emailVerified ? 'text-green-600' : 'text-orange-500'}`}>
+                                            {row.emailVerified ? 'ĐÃ XÁC MINH' : 'CHỜ XÁC MINH'}
                                         </span>
                                     </div>
-                                    <div className="text-right">
-                                        <span className="text-[11px] font-black text-gray-400 uppercase tracking-tighter">{row.totalOrders || 0} ĐƠN HÀNG</span>
+                                    <div className="text-right flex flex-col gap-0.5">
+                                        <span className="text-[14px] font-black text-gray-900">
+                                            {row.totalOrders || 0}
+                                        </span>
+                                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">ĐƠN HÀNG</span>
                                     </div>
+                                </div>
+
+                                <div className="flex gap-2 pt-1">
+                                    <button 
+                                        onClick={() => handleChangeRole(row)}
+                                        className="flex-1 py-2.5 bg-white border border-gray-100 rounded-xl text-[11px] font-black text-gray-600 uppercase tracking-wider shadow-sm active:scale-95 transition-all"
+                                    >
+                                        Phân quyền
+                                    </button>
+                                    <button 
+                                        onClick={() => handleResetPassword(row)}
+                                        className="flex-1 py-2.5 bg-white border border-gray-100 rounded-xl text-[11px] font-black text-gray-600 uppercase tracking-wider shadow-sm active:scale-95 transition-all"
+                                    >
+                                        Đổi mật khẩu
+                                    </button>
                                 </div>
                             </div>
                         </div>
