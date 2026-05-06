@@ -63,29 +63,57 @@ const AdminLayout = () => {
     window.location.href = '/login'
   }
 
-  const rawMenuItems = [
-    { path: '/admin', icon: LayoutDashboard, label: 'Dashboard', roles: ['ROLE_STAFF', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
-    { path: '/admin/products', icon: Package, label: 'Sản phẩm', roles: ['ROLE_STAFF', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
-    { path: '/admin/orders', icon: ShoppingCart, label: 'Đơn hàng', roles: ['ROLE_STAFF', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
-    { path: '/admin/inventory', icon: Package, label: 'Kho hàng', roles: ['ROLE_STAFF', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
-    { path: '/admin/categories', icon: Tags, label: 'Danh mục', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
-    { path: '/admin/brands', icon: Tags, label: 'Thương hiệu', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
-    { path: '/admin/coupons', icon: Tags, label: 'Mã giảm giá', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_MANAGER'] },
-    { path: '/admin/analytics', icon: LayoutDashboard, label: 'Analytics', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
-    { path: '/admin/livestreams', icon: Video, label: 'Livestream', roles: ['ROLE_STAFF', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
-    { path: '/admin/users', icon: Users, label: 'Người dùng', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
-    { path: '/admin/logs', icon: ClipboardList, label: 'Nhật ký', roles: ['ROLE_SUPER_ADMIN'] },
-    { path: '/admin/settings', icon: Settings, label: 'Cài đặt', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
+  const menuGroups = [
+    {
+      title: 'Quản lý sản phẩm',
+      items: [
+        { path: '/admin/products', icon: Package, label: 'Sản phẩm', roles: ['ROLE_STAFF', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
+        { path: '/admin/categories', icon: Tags, label: 'Danh mục', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
+        { path: '/admin/brands', icon: Tags, label: 'Thương hiệu', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
+      ]
+    },
+    {
+      title: 'Bán hàng',
+      items: [
+        { path: '/admin/orders', icon: ShoppingCart, label: 'Đơn hàng', roles: ['ROLE_STAFF', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
+        { path: '/admin/coupons', icon: Tags, label: 'Mã giảm giá', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_MANAGER'] },
+      ]
+    },
+    {
+      title: 'Kho & Vận hành',
+      items: [
+        { path: '/admin/inventory', icon: Package, label: 'Kho hàng', roles: ['ROLE_STAFF', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
+      ]
+    },
+    {
+      title: 'Báo cáo',
+      items: [
+        { path: '/admin/analytics', icon: LayoutDashboard, label: 'Analytics', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
+        { path: '/admin/logs', icon: ClipboardList, label: 'Nhật ký', roles: ['ROLE_SUPER_ADMIN'] },
+      ]
+    },
+    {
+      title: 'Hệ thống',
+      items: [
+        { path: '/admin/users', icon: Users, label: 'Người dùng', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
+        { path: '/admin/settings', icon: Settings, label: 'Cài đặt', roles: ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
+      ]
+    },
+    {
+      title: 'Nâng cao',
+      items: [
+        { path: '/admin/livestreams', icon: Video, label: 'Livestream', roles: ['ROLE_STAFF', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN'] },
+      ]
+    }
   ]
-
-  const menuItems = rawMenuItems.filter((item) => item.roles.includes(user?.role))
 
   const isActive = (path) => {
     if (path === '/admin') return location.pathname === '/admin'
     return location.pathname.startsWith(path)
   }
 
-  const currentLabel = menuItems.find((item) => isActive(item.path))?.label || 'Dashboard'
+  const allItems = menuGroups.flatMap(g => g.items)
+  const currentLabel = allItems.find((item) => isActive(item.path))?.label || 'Dashboard'
 
   const formatRole = (role) => {
     if (role === 'ROLE_SUPER_ADMIN') return 'Super Admin'
@@ -94,47 +122,78 @@ const AdminLayout = () => {
     return 'Member'
   }
 
+  const renderNavItems = (groups, isMobile = false) => {
+    return groups.map((group, groupIdx) => {
+      const filteredItems = group.items.filter(item => item.roles.includes(user?.role))
+      if (filteredItems.length === 0) return null
+
+      return (
+        <div key={group.title} className={groupIdx > 0 ? 'mt-6' : ''}>
+          <div className="px-4 mb-2 text-[11px] font-bold text-gray-500 uppercase tracking-[0.2em] opacity-60">
+            {group.title}
+          </div>
+          <div className="space-y-1">
+            {filteredItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={() => isMobile && setIsMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
+                  isActive(item.path)
+                    ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/20'
+                    : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                }`}
+              >
+                <item.icon className={`h-5 w-5 transition-colors ${isActive(item.path) ? 'text-white' : 'text-gray-500 group-hover:text-white'}`} />
+                <span className="font-semibold text-[13.5px]">{item.label}</span>
+              </Link>
+            ))}
+          </div>
+          {groupIdx < groups.length - 1 && (
+             <div className="mx-4 mt-4 h-[1px] bg-white/5"></div>
+          )}
+        </div>
+      )
+    })
+  }
+
   return (
     <div className="min-h-screen bg-admin-bg transition-colors duration-300 font-sans">
       <div className="flex">
         {/* Sidebar */}
-        <aside className="hidden lg:flex w-[240px] bg-admin-sidebar text-gray-400 min-h-screen fixed left-0 top-0 z-40 flex-col shadow-xl">
-          <div className="p-8">
+        <aside className="hidden lg:flex w-[260px] bg-admin-sidebar text-gray-400 h-screen fixed left-0 top-0 z-40 flex-col shadow-2xl">
+          <div className="p-8 pb-4">
             <Link to="/" className="flex items-center gap-3 group" title="Về trang chủ">
-              <div className="h-10 w-10 bg-primary-600 rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
+              <div className="h-10 w-10 bg-primary-600 rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform duration-300">
                 <Store className="h-6 w-6 text-white" />
               </div>
               <span className="text-xl font-bold text-white tracking-tight italic">Tech Store</span>
             </Link>
           </div>
 
-          <nav className="mt-4 px-4 flex-1 overflow-y-auto admin-sidebar-scrollbar">
-            <div className="px-4 mb-4 text-[12px] font-semibold text-gray-500 uppercase tracking-[0.1em]">Quản trị</div>
-            <div className="space-y-1.5 pb-6">
-              {menuItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`flex items-center gap-3 px-4 py-3.5 rounded-lg transition-all duration-200 ${
-                    isActive(item.path)
-                      ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/20'
-                      : 'text-gray-400 hover:bg-white/5 hover:text-white'
-                  }`}
-                >
-                  <item.icon className={`h-5 w-5 ${isActive(item.path) ? 'text-white' : 'text-gray-500'}`} />
-                  <span className="font-medium text-[14px]">{item.label}</span>
-                </Link>
-              ))}
-            </div>
+          <nav className="mt-4 px-4 flex-1 overflow-y-auto admin-sidebar-scrollbar pb-10">
+             <Link
+                to="/admin"
+                className={`flex items-center gap-3 px-4 py-3 mb-6 rounded-xl transition-all duration-200 group ${
+                  location.pathname === '/admin'
+                    ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/20'
+                    : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                }`}
+              >
+                <LayoutDashboard className={`h-5 w-5 ${location.pathname === '/admin' ? 'text-white' : 'text-gray-500 group-hover:text-white'}`} />
+                <span className="font-bold text-[14px]">Tổng quan</span>
+              </Link>
+              
+              {renderNavItems(menuGroups)}
           </nav>
 
-          <div className="mt-auto p-6 border-t border-white/5">
+          <div className="p-6 border-t border-white/5">
             <button
               onClick={handleLogout}
-              className="flex items-center gap-3 px-4 py-3.5 text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg transition-all duration-200 w-full font-bold group"
+              className="flex items-center gap-3 px-4 py-3.5 text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-xl transition-all duration-200 w-full font-bold group"
             >
               <LogOut className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
-              <span className="font-medium text-[14px]">Đăng xuất</span>
+              <span className="font-semibold text-[14px]">Đăng xuất</span>
             </button>
           </div>
         </aside>
@@ -156,22 +215,21 @@ const AdminLayout = () => {
                 </button>
               </div>
 
-              <nav className="flex-1 overflow-y-auto p-4 space-y-1.5 mt-4 admin-sidebar-scrollbar">
-                {menuItems.map((item) => (
-                  <Link
-                    key={item.path}
-                    to={item.path}
+              <nav className="flex-1 overflow-y-auto p-4 admin-sidebar-scrollbar pb-10">
+                 <Link
+                    to="/admin"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-4 rounded-xl transition-all ${
-                      isActive(item.path)
+                    className={`flex items-center gap-3 px-4 py-4 mb-4 rounded-xl transition-all ${
+                      location.pathname === '/admin'
                         ? 'bg-primary-600 text-white shadow-lg'
                         : 'text-gray-400 hover:bg-white/5 hover:text-white'
                     }`}
                   >
-                    <item.icon className="h-5 w-5" />
-                    <span className="font-medium">{item.label}</span>
+                    <LayoutDashboard className="h-5 w-5" />
+                    <span className="font-bold">Tổng quan</span>
                   </Link>
-                ))}
+                  
+                  {renderNavItems(menuGroups, true)}
               </nav>
 
               <div className="p-6 border-t border-white/5 space-y-3">
@@ -195,7 +253,7 @@ const AdminLayout = () => {
         )}
 
         {/* Main Content Area */}
-        <main className="flex-1 lg:ml-[240px] min-w-0 min-h-screen">
+        <main className="flex-1 lg:ml-[260px] min-w-0 min-h-screen">
           <header className="bg-white dark:bg-dark-card border-b border-gray-100 dark:border-dark-border sticky top-0 z-30 transition-colors duration-300 h-[72px] flex items-center">
             <div className="px-8 w-full flex items-center justify-between gap-3">
               <div className="flex items-center gap-4 min-w-0">
