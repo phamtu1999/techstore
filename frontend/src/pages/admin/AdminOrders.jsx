@@ -326,7 +326,7 @@ const AdminOrders = () => {
   )
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in text-black">
       <AdminPageHeader 
         title="Quản lý" 
         accentTitle="Đơn hàng"
@@ -336,7 +336,7 @@ const AdminOrders = () => {
 
       <OrderStats stats={stats} statusFilter={statusFilter} setStatusFilter={setStatusFilter} />
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 text-black">
         <OrderFilters 
           searchTerm={searchTerm} setSearchTerm={setSearchTerm}
           statusFilter={statusFilter} setStatusFilter={setStatusFilter}
@@ -351,7 +351,7 @@ const AdminOrders = () => {
         />
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden relative">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden relative text-black">
         {isFetching ? (
           <div className="py-20 text-center">
              <div className="inline-block h-10 w-10 animate-spin rounded-full border-[3px] border-primary-100 border-t-primary-600"></div>
