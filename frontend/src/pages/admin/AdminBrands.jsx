@@ -240,103 +240,104 @@ const AdminBrands = () => {
 
       {/* Table Section */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        {isLoading ? (
-          <div className="flex justify-center py-20">
-            <div className="w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="bg-gray-50/50">
-                  <th className="px-6 py-4 w-10">
-                    <input 
-                      type="checkbox" 
-                      className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
-                      checked={selectedIds.length > 0 && selectedIds.length === filteredBrands.length}
-                      onChange={handleSelectAll}
-                    />
-                  </th>
-                  <th className="px-4 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-center w-12">STT</th>
-                  <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Thương hiệu</th>
-                  <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Đường dẫn</th>
-                  <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Mô tả</th>
-                  <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-right">Thao tác</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {filteredBrands.length === 0 ? (
-                  <tr>
-                    <td colSpan={4} className="px-8 py-20 text-center text-gray-400 font-bold italic">
-                      Không tìm thấy thương hiệu nào phù hợp
-                    </td>
-                  </tr>
-                ) : (
-                  filteredBrands.map((brand, index) => (
-                    <tr key={brand.id} className={`hover:bg-gray-50/30 transition-colors group ${selectedIds.includes(brand.id) ? 'bg-primary-50/30' : ''}`}>
-                      <td className="px-6 py-5">
-                        <input 
-                          type="checkbox" 
-                          className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
-                          checked={selectedIds.includes(brand.id)}
-                          onChange={() => handleSelectOne(brand.id)}
-                        />
-                      </td>
-                      <td className="px-4 py-5 text-center text-[12px] font-bold text-gray-400">
-                        {(index + 1).toString().padStart(2, '0')}
-                      </td>
-                      <td className="px-8 py-5">
-                        <div className="flex items-center gap-4">
-                          <div className="h-12 w-12 rounded-xl bg-gray-50 border border-gray-100 p-2 flex-shrink-0 flex items-center justify-center">
-                            {brand.logoUrl ? (
-                              <img src={brand.logoUrl} alt={brand.name} className="w-full h-full object-contain" />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center text-gray-300">
-                                <ImageIcon className="h-6 w-6" />
-                              </div>
-                            )}
-                          </div>
-                          <div className="text-[14px] font-bold text-gray-900 group-hover:text-primary-600 transition-colors">
-                            {brand.name}
-                          </div>
-                        </div>
-                      </td>
-
-                      <td className="px-8 py-5">
-                        <span className="text-[12px] bg-gray-100 px-2.5 py-1 rounded-lg text-gray-600 font-mono font-bold">
-                          /{brand.slug}
+        <AdminTable 
+          columns={[
+            {
+              key: 'brand',
+              label: 'Thương hiệu',
+              render: (_, row) => (
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-xl bg-gray-50 border border-gray-100 p-2 flex-shrink-0 flex items-center justify-center">
+                    {row.logoUrl ? (
+                      <img src={row.logoUrl} alt={row.name} className="w-full h-full object-contain" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-300">
+                        <ImageIcon className="h-6 w-6" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="text-[14px] font-bold text-gray-900">
+                    {row.name}
+                  </div>
+                </div>
+              )
+            },
+            {
+              key: 'slug',
+              label: 'Đường dẫn',
+              render: (val) => (
+                <span className="text-[12px] bg-gray-100 px-2.5 py-1 rounded-lg text-gray-600 font-mono font-bold">
+                  /{val}
+                </span>
+              )
+            },
+            {
+              key: 'description',
+              label: 'Mô tả',
+              render: (val) => (
+                <p className="text-[13px] text-gray-500 font-medium line-clamp-1 max-w-xs">{val || 'Chưa có mô tả'}</p>
+              )
+            }
+          ]}
+          data={filteredBrands}
+          isLoading={isLoading}
+          selectedRows={selectedIds}
+          onSelectRow={(row) => handleSelectOne(row.id)}
+          onSelectAll={(all) => {
+            if (all) setSelectedIds(filteredBrands.map(b => b.id))
+            else setSelectedIds([])
+          }}
+          actions={(row) => (
+            <div className="flex items-center justify-end gap-1">
+              <button
+                onClick={() => handleEdit(row)}
+                className="p-2 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all"
+                title="Chỉnh sửa"
+              >
+                <Edit2 className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => handleDelete(row)}
+                className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                title="Xóa"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
+          )}
+          renderMobileCard={(row, index, renderActions) => (
+            <div key={row.id || index} className="p-4 border-b border-gray-50 animate-fade-in">
+              <div className="flex flex-col gap-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="h-14 w-14 rounded-2xl bg-gray-50 border border-gray-100 p-2.5 flex items-center justify-center shadow-sm">
+                      {row.logoUrl ? (
+                        <img src={row.logoUrl} alt={row.name} className="w-full h-full object-contain" />
+                      ) : (
+                        <ImageIcon className="h-6 w-6 text-gray-300" />
+                      )}
+                    </div>
+                    <div>
+                      <h4 className="text-[15px] font-black text-gray-900 tracking-tight">{row.name}</h4>
+                      <div className="mt-1">
+                        <span className="text-[10px] bg-gray-100 px-2 py-0.5 rounded-md text-gray-500 font-mono font-black uppercase tracking-tighter">
+                          /{row.slug}
                         </span>
-                      </td>
-
-                      <td className="px-8 py-5">
-                        <p className="text-[13px] text-gray-500 font-medium line-clamp-1 max-w-xs">{brand.description || 'Chưa có mô tả'}</p>
-                      </td>
-
-                      <td className="px-8 py-5 text-right">
-                        <div className="flex items-center justify-end gap-1">
-                          <button
-                            onClick={() => handleEdit(brand)}
-                            className="p-2 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all"
-                            title="Chỉnh sửa"
-                          >
-                            <Edit2 className="h-4 w-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(brand)}
-                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                            title="Xóa"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+                      </div>
+                    </div>
+                  </div>
+                  {renderActions(row, index)}
+                </div>
+                
+                {row.description && (
+                  <p className="text-[12px] text-gray-500 font-medium leading-relaxed line-clamp-2 px-1">
+                    {row.description}
+                  </p>
                 )}
-              </tbody>
-            </table>
-          </div>
-        )}
+              </div>
+            </div>
+          )}
+        />
       </div>
 
       {/* Modal */}

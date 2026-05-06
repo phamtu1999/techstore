@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useChat } from '../../hooks/useChat';
-import { Send, X, MessageCircle, Bot, User, Zap, RefreshCcw } from 'lucide-react';
+import { Send, X, MessageCircle, Bot, Zap, RefreshCcw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ChatWidget: React.FC = () => {

@@ -218,20 +218,44 @@ const AdminSettings = () => {
     return (
     <div className="animate-fade-in pb-20">
         {/* Sticky Header & Tabs Container */}
-        <div className="sticky top-0 z-30 -mx-4 sm:-mx-8 bg-gray-50/80 dark:bg-dark-bg/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-dark-border/50 transition-all">
-            <div className="px-4 sm:px-8 py-4 max-w-[1600px] mx-auto">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div>
-                        <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase italic flex items-center gap-3">
-                            <Settings className="h-7 w-7 text-admin-primary" />
-                            Cài đặt hệ thống
-                        </h1>
-                        <p className="text-[13px] font-bold text-gray-400 mt-1 uppercase tracking-widest hidden sm:block">
-                            Quản lý cấu hình, bảo mật và tùy chỉnh Tech Store
-                        </p>
+        <div className="sticky top-0 z-30 -mx-4 sm:-mx-8 bg-gray-50/90 dark:bg-dark-bg/90 backdrop-blur-xl border-b border-gray-200/50 dark:border-dark-border/50 transition-all shadow-sm">
+            <div className="px-4 sm:px-8 py-3 sm:py-4 max-w-[1600px] mx-auto">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                    <div className="flex items-center justify-between sm:block">
+                        <div>
+                            <h1 className="text-xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase italic flex items-center gap-2 sm:gap-3">
+                                <Settings className="h-6 w-6 sm:h-7 sm:h-7 text-admin-primary" />
+                                <span className="truncate">Cài đặt hệ thống</span>
+                            </h1>
+                            <p className="text-[10px] sm:text-[13px] font-bold text-gray-400 mt-0.5 sm:mt-1 uppercase tracking-widest hidden xs:block sm:block">
+                                Quản lý cấu hình Tech Store
+                            </p>
+                        </div>
+                        
+                        {/* Mobile Actions - only visible on small screens */}
+                        <div className="flex sm:hidden items-center gap-2">
+                            {hasChanges && (
+                                <button 
+                                    onClick={handleDiscard} 
+                                    className="w-10 h-10 flex items-center justify-center bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border text-gray-600 dark:text-gray-300 rounded-xl shadow-sm active:scale-90"
+                                >
+                                    <RefreshCcw className="h-4 w-4" />
+                                </button>
+                            )}
+                            <button 
+                                onClick={handleSave} 
+                                disabled={!hasChanges || saving || loading} 
+                                className={`h-10 px-4 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 shadow-lg transition-all active:scale-90 disabled:opacity-50 ${
+                                    hasChanges ? 'bg-admin-primary text-white shadow-admin-primary/20' : 'bg-gray-200 dark:bg-dark-border text-gray-400'
+                                }`}
+                            >
+                                {saving ? <div className="h-3 w-3 border-2 border-white border-t-transparent animate-spin rounded-full" /> : <Save className="h-4 w-4" />}
+                                {saving ? '...' : 'LƯU'}
+                            </button>
+                        </div>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="hidden sm:flex items-center gap-3">
                         {hasChanges && (
                             <button 
                                 onClick={handleDiscard} 
@@ -261,21 +285,28 @@ const AdminSettings = () => {
                 </div>
 
                 {/* Horizontal Tabs bar */}
-                <div className="mt-8 flex items-center gap-2 overflow-x-auto no-scrollbar -mb-[1px]">
-                    {allTabs.map(tab => (
-                        <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id)}
-                            className={`flex items-center gap-2.5 px-6 py-3 border-b-2 transition-all whitespace-nowrap group ${
-                                activeTab === tab.id 
-                                    ? 'border-admin-primary text-admin-primary font-black' 
-                                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-bold'
-                            }`}
-                        >
-                            <tab.icon className={`h-4.5 w-4.5 transition-transform group-hover:scale-110 ${activeTab === tab.id ? 'text-admin-primary' : 'text-gray-400'}`} />
-                            <span className="text-[14px]">{tab.label}</span>
-                        </button>
-                    ))}
+                <div className="mt-4 sm:mt-8 relative">
+                    <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto no-scrollbar -mb-[1px] scroll-smooth px-1">
+                        {allTabs.map(tab => (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id)}
+                                className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 border-b-2 transition-all whitespace-nowrap group relative ${
+                                    activeTab === tab.id 
+                                        ? 'border-admin-primary text-admin-primary font-black' 
+                                        : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-bold'
+                                }`}
+                            >
+                                <tab.icon className={`h-4 w-4 sm:h-4.5 sm:w-4.5 transition-transform group-hover:scale-110 ${activeTab === tab.id ? 'text-admin-primary' : 'text-gray-400'}`} />
+                                <span className="text-[12px] sm:text-[14px] uppercase tracking-wider">{tab.label}</span>
+                                {activeTab === tab.id && (
+                                    <span className="absolute -bottom-[2px] left-0 w-full h-[2px] bg-admin-primary animate-scale-x" />
+                                )}
+                            </button>
+                        ))}
+                    </div>
+                    {/* Shadow indicators for scrolling */}
+                    <div className="absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-gray-50 dark:from-dark-bg to-transparent pointer-events-none sm:hidden"></div>
                 </div>
             </div>
         </div>

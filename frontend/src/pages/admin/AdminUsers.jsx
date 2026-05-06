@@ -13,6 +13,7 @@ import AdminPageHeader from '../../components/admin/shared/AdminPageHeader'
 import AdminPagination from '../../components/admin/shared/AdminPagination'
 import AdminStatsCard from '../../components/admin/shared/AdminStatsCard'
 import AdminPill from '../../components/admin/shared/AdminPill'
+import AdminTable from '../../components/admin/AdminTable'
 
 const AdminUsers = () => {
     const { user: currentUser } = useSelector((state) => state.auth)
@@ -270,13 +271,53 @@ const AdminUsers = () => {
         }
     }
 
-    const handleSelectOne = (id) => {
-        if (selectedIds.includes(id)) {
-            setSelectedIds(selectedIds.filter(i => i !== id))
-        } else {
-            setSelectedIds([...selectedIds, id])
+    const userColumns = [
+        {
+            key: 'user',
+            label: 'Người dùng',
+            render: (_, row) => (
+                <div className="flex items-center gap-3">
+                    <div className="relative">
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white text-[15px] font-bold overflow-hidden shadow-sm ${row.enabled ? 'bg-primary-600' : 'bg-gray-300'}`}>
+                            {row.avatar ? <img src={row.avatar} alt="" className="w-full h-full object-cover" /> : (row.fullName?.[0] || row.username?.[0] || '?').toUpperCase()}
+                        </div>
+                        {row.enabled && <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>}
+                    </div>
+                    <div>
+                        <p className={`text-[14px] font-bold ${row.enabled ? 'text-gray-900' : 'text-gray-400 italic'}`}>{row.fullName || 'Chưa đặt tên'}</p>
+                        <p className="text-[12px] text-gray-400 font-medium">@{row.username}</p>
+                    </div>
+                </div>
+            )
+        },
+        {
+            key: 'contact',
+            label: 'Liên hệ',
+            render: (_, row) => (
+                <div>
+                    <p className="text-[13px] font-bold text-gray-700">{maskEmail(row.email)}</p>
+                    <p className={`text-[11px] font-black uppercase tracking-widest ${row.emailVerified ? 'text-green-600' : 'text-orange-500'}`}>
+                        {row.emailVerified ? 'Đã xác minh' : 'Chờ xác minh'}
+                    </p>
+                </div>
+            )
+        },
+        {
+            key: 'role',
+            label: 'Vai trò',
+            render: (_, row) => getRolePill(row.roles)
+        },
+        {
+            key: 'spending',
+            label: 'Chi tiêu',
+            render: (_, row) => (
+                <div>
+                    <p className="text-[14px] font-black text-gray-900">{currencyFormatter.format(row.totalSpent || 0)}</p>
+                    <p className="text-[11px] text-gray-400 font-black uppercase tracking-tighter">{row.totalOrders || 0} ĐƠN HÀNG</p>
+                </div>
+            )
         }
-    }
+    ]
 
     const getRolePill = useCallback((roles) => {
         const role = (roles && roles.length > 0) ? roles[0] : 'ROLE_CUSTOMER'
@@ -437,130 +478,120 @@ const AdminUsers = () => {
                 )}
             </div>
 
-            {/* User Table */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                        <thead>
-                            <tr className="bg-gray-50/50">
-                                <th className="px-6 py-4 w-10">
-                                    <input 
-                                        type="checkbox" 
-                                        className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
-                                        checked={selectedIds.length > 0 && selectedIds.length === users.length}
-                                        onChange={handleSelectAll}
-                                    />
-                                </th>
-                                <th className="px-4 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-center w-12">STT</th>
-                                <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Người dùng</th>
-                                <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Liên hệ</th>
-                                <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Vai trò</th>
-                                <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Chi tiêu</th>
-                                <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-right">Quản trị</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-50">
-                            {isLoading ? (
-                                <tr>
-                                    <td colSpan={5} className="px-8 py-20 text-center">
-                                        <div className="w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
-                                    </td>
-                                </tr>
-                            ) : users.length === 0 ? (
-                                <tr>
-                                    <td colSpan={5} className="px-8 py-20 text-center text-gray-400 font-bold italic">
-                                        Không tìm thấy người dùng phù hợp
-                                    </td>
-                                </tr>
-                            ) : users.map((row, index) => (
-                                <tr key={row.id} className={`hover:bg-gray-50 transition-colors ${!row.enabled ? 'bg-gray-50/50' : ''} ${selectedIds.includes(row.id) ? 'bg-primary-50/30' : ''}`}>
-                                    <td className="px-6 py-5">
-                                        <input 
-                                            type="checkbox" 
-                                            className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
-                                            checked={selectedIds.includes(row.id)}
-                                            onChange={() => handleSelectOne(row.id)}
-                                        />
-                                    </td>
-                                    <td className="px-4 py-5 text-center text-[12px] font-bold text-gray-400">
-                                        {(pagination.page * pagination.size + index + 1).toString().padStart(2, '0')}
-                                    </td>
-                                    <td className="px-8 py-5">
-                                        <div className="flex items-center gap-3">
-                                            <div className="relative">
-                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white text-[15px] font-bold overflow-hidden shadow-sm ${row.enabled ? 'bg-primary-600' : 'bg-gray-300'}`}>
-                                                    {row.avatar ? <img src={row.avatar} alt="" className="w-full h-full object-cover" /> : (row.fullName?.[0] || row.username?.[0] || '?').toUpperCase()}
-                                                </div>
-                                                {row.enabled && <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>}
+                <AdminTable 
+                    columns={userColumns}
+                    data={users}
+                    isLoading={isLoading}
+                    selectedRows={selectedIds}
+                    onSelectRow={(row) => {
+                        const id = row.id;
+                        if (selectedIds.includes(id)) {
+                            setSelectedIds(selectedIds.filter(i => i !== id))
+                        } else {
+                            setSelectedIds([...selectedIds, id])
+                        }
+                    }}
+                    onSelectAll={(allSelected) => {
+                        if (allSelected) {
+                            setSelectedIds(users.map(u => u.id))
+                        } else {
+                            setSelectedIds([])
+                        }
+                    }}
+                    actions={(row) => (
+                        <div className="flex items-center justify-end gap-1">
+                            {row.enabled ? (
+                                <button 
+                                    onClick={() => handleLockUser(row)}
+                                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                    title="Khóa tài khoản"
+                                >
+                                    <Lock className="h-4 w-4" />
+                                </button>
+                            ) : (
+                                <button 
+                                    onClick={() => handleUnlockUser(row)}
+                                    className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all"
+                                    title="Mở khóa tài khoản"
+                                >
+                                    <Unlock className="h-4 w-4" />
+                                </button>
+                            )}
+                            <button 
+                                onClick={() => handleResetPassword(row)}
+                                className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all"
+                                title="Reset mật khẩu"
+                            >
+                                <KeyRound className="h-4 w-4" />
+                            </button>
+                            <button 
+                                onClick={() => handleChangeRole(row)}
+                                className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                                title="Thay đổi vai trò"
+                            >
+                                <UserCog className="h-4 w-4" />
+                            </button>
+                        </div>
+                    )}
+                    renderMobileCard={(row, index, renderActions) => (
+                        <div key={row.id || index} className="p-4 border-b border-gray-50 dark:border-white/5 animate-fade-in">
+                            <div className="flex flex-col gap-4">
+                                <div className="flex items-start justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="relative">
+                                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white text-[18px] font-black overflow-hidden shadow-sm ${row.enabled ? 'bg-primary-600' : 'bg-gray-300'}`}>
+                                                {row.avatar ? <img src={row.avatar} alt="" className="w-full h-full object-cover" /> : (row.fullName?.[0] || row.username?.[0] || '?').toUpperCase()}
                                             </div>
-                                            <div>
-                                                <p className={`text-[14px] font-bold ${row.enabled ? 'text-gray-900' : 'text-gray-400 italic'}`}>{row.fullName || 'Chưa đặt tên'}</p>
-                                                <p className="text-[12px] text-gray-400 font-medium">@{row.username}</p>
-                                            </div>
+                                            {row.enabled && <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>}
                                         </div>
-                                    </td>
-                                    <td className="px-8 py-5">
-                                        <p className="text-[13px] font-bold text-gray-700">{maskEmail(row.email)}</p>
-                                        <p className={`text-[11px] font-black uppercase tracking-widest ${row.emailVerified ? 'text-green-600' : 'text-orange-500'}`}>
-                                            {row.emailVerified ? 'Đã xác minh' : 'Chờ xác minh'}
-                                        </p>
-                                    </td>
-                                    <td className="px-8 py-5">
-                                        {getRolePill(row.roles)}
-                                    </td>
-                                    <td className="px-8 py-5">
-                                        <p className="text-[14px] font-black text-gray-900">{currencyFormatter.format(row.totalSpent || 0)}</p>
-                                        <p className="text-[11px] text-gray-400 font-black uppercase tracking-tighter">{row.totalOrders || 0} ĐƠN HÀNG</p>
-                                    </td>
-                                    <td className="px-8 py-5">
-                                        <div className="flex items-center justify-end gap-1">
-                                            {row.enabled ? (
-                                                <button 
-                                                    onClick={() => handleLockUser(row)}
-                                                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                                                    title="Khóa tài khoản"
-                                                >
-                                                    <Lock className="h-4 w-4" />
-                                                </button>
-                                            ) : (
-                                                <button 
-                                                    onClick={() => handleUnlockUser(row)}
-                                                    className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all"
-                                                    title="Mở khóa tài khoản"
-                                                >
-                                                    <Unlock className="h-4 w-4" />
-                                                </button>
-                                            )}
-                                            <button 
-                                                onClick={() => handleResetPassword(row)}
-                                                className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all"
-                                                title="Reset mật khẩu"
-                                            >
-                                                <KeyRound className="h-4 w-4" />
-                                            </button>
-                                            <button 
-                                                onClick={() => handleChangeRole(row)}
-                                                className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
-                                                title="Thay đổi vai trò"
-                                            >
-                                                <UserCog className="h-4 w-4" />
-                                            </button>
+                                        <div>
+                                            <h4 className={`text-[15px] font-black ${row.enabled ? 'text-gray-900' : 'text-gray-400 italic'}`}>
+                                                {row.fullName || 'Chưa đặt tên'}
+                                            </h4>
+                                            <p className="text-[11px] font-bold text-gray-400">@{row.username}</p>
                                         </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                                    </div>
+                                    {renderActions(row, index)}
+                                </div>
 
-                {!isLoading && pagination.totalPages > 1 && (
+                                <div className="grid grid-cols-2 gap-4 py-3 px-4 bg-gray-50 rounded-2xl border border-gray-100">
+                                    <div className="flex flex-col gap-0.5">
+                                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Vai trò</span>
+                                        <div className="flex">{getRolePill(row.roles)}</div>
+                                    </div>
+                                    <div className="flex flex-col gap-0.5 text-right">
+                                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Chi tiêu</span>
+                                        <span className="text-[13px] font-black text-secondary-900">{currencyFormatter.format(row.totalSpent || 0)}</span>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center justify-between text-[12px]">
+                                    <div className="flex flex-col">
+                                        <span className="font-bold text-gray-700">{maskEmail(row.email)}</span>
+                                        <span className={`text-[10px] font-black uppercase tracking-tighter ${row.emailVerified ? 'text-green-600' : 'text-orange-500'}`}>
+                                            {row.emailVerified ? 'ĐÃ XÁC MINH' : 'CHƯA XÁC MINH'}
+                                        </span>
+                                    </div>
+                                    <div className="text-right">
+                                        <span className="text-[11px] font-black text-gray-400 uppercase tracking-tighter">{row.totalOrders || 0} ĐƠN HÀNG</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                />
+            </div>
+
+            {!isLoading && pagination.totalPages > 1 && (
+                <div className="mt-4">
                     <AdminPagination 
                         currentPage={pagination.page}
                         totalPages={pagination.totalPages}
                         onPageChange={(p) => setPagination(prev => ({...prev, page: p}))}
                     />
-                )}
-            </div>
+                </div>
+            )}
         </div>
     )
 }

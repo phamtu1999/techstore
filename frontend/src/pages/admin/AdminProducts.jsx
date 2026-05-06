@@ -352,15 +352,15 @@ const AdminProducts = () => {
   ) : null
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-4 sm:space-y-6 animate-fade-in pb-20 sm:pb-0">
       <AdminPageHeader 
         title="Quản lý" 
         accentTitle="Sản phẩm"
-        subtitle={`Tổng số ${products.length} sản phẩm trong hệ thống.`}
+        subtitle={`Tổng số ${products.length} sản phẩm.`}
         rightContent={headerRight}
       />
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6">
         <ProductFilters 
             searchTerm={searchTerm} 
             setSearchTerm={setSearchTerm} 
@@ -399,6 +399,62 @@ const AdminProducts = () => {
                   onSelectAll={handleSelectAll}
                   sortConfig={sortConfig}
                   onSort={handleSort}
+                  renderMobileCard={(row, index, renderActions) => (
+                    <div key={row.id || index} className="p-4 bg-white dark:bg-dark-card border-b border-gray-100 dark:border-dark-border animate-fade-in hover:bg-gray-50/50 transition-colors">
+                      <div className="flex gap-4">
+                        {/* Left: Checkbox & Image */}
+                        <div className="flex flex-col items-center gap-3">
+                          <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 p-2 overflow-hidden shrink-0">
+                             <img 
+                               src={row.imageUrls?.[0] || 'https://via.placeholder.com/80'} 
+                               alt="Product" 
+                               className="w-full h-full object-contain" 
+                             />
+                          </div>
+                        </div>
+
+                        {/* Right: Info */}
+                        <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="min-w-0">
+                              <h3 className="font-black text-secondary-900 dark:text-white text-[15px] leading-tight line-clamp-2">
+                                {row.name}
+                              </h3>
+                              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+                                {row.brand?.name || 'TECHZONE'}
+                              </p>
+                            </div>
+                            <div className="shrink-0">
+                               {renderActions(row, index)}
+                            </div>
+                          </div>
+
+                          <div className="mt-3 flex flex-col gap-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-primary-600 font-black text-base tracking-tighter">
+                                {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(row.variants?.[0]?.price || 0)}
+                              </span>
+                              <div className="flex items-center gap-1.5">
+                                 <span className="text-[10px] font-bold text-gray-400 uppercase">Tồn:</span>
+                                 <span className="text-[12px] font-black text-secondary-800 dark:text-gray-200">{row.variants?.[0]?.stockQuantity || 0}</span>
+                              </div>
+                            </div>
+                            
+                            <div className="flex items-center gap-2">
+                               <span className="px-2 py-0.5 bg-blue-50 dark:bg-blue-500/10 text-blue-600 text-[10px] font-bold uppercase rounded-md border border-blue-100 dark:border-blue-500/20">
+                                  {row.category?.name || '---'}
+                               </span>
+                               {row.variants?.[0]?.stockQuantity === 0 ? (
+                                 <AdminPill label="Hết hàng" type="danger" />
+                               ) : (
+                                 <AdminPill label={row.active ? 'Hoạt động' : 'Đã ẩn'} type={row.active ? 'success' : 'gray'} />
+                               )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 />
                 
                 <AdminPagination 
@@ -409,6 +465,14 @@ const AdminProducts = () => {
             </div>
         )}
       </div>
+
+      {/* Floating Action Button for Mobile */}
+      <button
+        onClick={handleAddNew}
+        className="sm:hidden fixed bottom-6 right-6 w-14 h-14 bg-primary-600 text-white rounded-full shadow-2xl shadow-primary-600/40 flex items-center justify-center active:scale-90 transition-all z-[100]"
+      >
+        <Plus className="h-7 w-7" />
+      </button>
     </div>
   )
 }

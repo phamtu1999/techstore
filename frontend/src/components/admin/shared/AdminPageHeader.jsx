@@ -9,7 +9,7 @@ const AdminPageHeader = ({
   rightContent 
 }) => {
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-6 mb-6 sm:mb-8">
+    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 sm:gap-6 mb-4 sm:mb-8">
       <div>
         {breadcrumb && (
           <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-2">

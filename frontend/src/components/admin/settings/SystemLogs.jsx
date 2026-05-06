@@ -7,6 +7,9 @@ import {
 } from 'lucide-react'
 import { format } from 'date-fns'
 import { vi } from 'date-fns/locale'
+import AdminTable from '../AdminTable'
+import AdminPill from '../shared/AdminPill'
+import AdminPagination from '../shared/AdminPagination'
 
 const SystemLogs = () => {
     const [logs, setLogs] = useState([])
@@ -46,21 +49,72 @@ const SystemLogs = () => {
         fetchLogs()
     }, [fetchLogs])
 
-    const getStatusIcon = (status) => {
-        switch (status?.toUpperCase()) {
-            case 'SUCCESS': return <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-            case 'ERROR': return <XCircle className="h-4 w-4 text-red-500" />
-            default: return <Info className="h-4 w-4 text-blue-500" />
+    const logColumns = [
+        {
+            key: 'timestamp',
+            label: 'Thời gian',
+            render: (val) => (
+                <div className="flex flex-col">
+                    <span className="text-sm font-bold text-gray-900">
+                        {format(new Date(val), 'HH:mm:ss')}
+                    </span>
+                    <span className="text-[11px] font-medium text-gray-400 uppercase">
+                        {format(new Date(val), 'dd MMM, yyyy', { locale: vi })}
+                    </span>
+                </div>
+            )
+        },
+        {
+            key: 'username',
+            label: 'Người dùng',
+            render: (val) => (
+                <div className="flex items-center gap-2">
+                    <div className="h-7 w-7 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
+                        <User className="h-3.5 w-3.5" />
+                    </div>
+                    <span className="text-sm font-bold text-gray-700">{val}</span>
+                </div>
+            )
+        },
+        {
+            key: 'action',
+            label: 'Hành động',
+            render: (val) => (
+                <span className="text-xs font-black text-primary-600 bg-primary-50 px-2 py-1 rounded-md">
+                    {val}
+                </span>
+            )
+        },
+        {
+            key: 'status',
+            label: 'Trạng thái',
+            render: (val) => (
+                <AdminPill 
+                    label={val} 
+                    type={val === 'SUCCESS' ? 'success' : val === 'ERROR' ? 'danger' : 'gray'} 
+                />
+            )
+        },
+        {
+            key: 'message',
+            label: 'Thông báo',
+            render: (val) => (
+                <p className="text-sm text-gray-600 font-medium line-clamp-1 hover:line-clamp-none transition-all">
+                    {val}
+                </p>
+            )
+        },
+        {
+            key: 'ipAddress',
+            label: 'IP Address',
+            render: (val) => (
+                <div className="flex items-center gap-1.5 text-gray-400">
+                    <Globe className="h-3.5 w-3.5" />
+                    <span className="text-xs font-mono">{val || '0.0.0.0'}</span>
+                </div>
+            )
         }
-    }
-
-    const getStatusStyles = (status) => {
-        switch (status?.toUpperCase()) {
-            case 'SUCCESS': return 'bg-emerald-50 text-emerald-700 border-emerald-100'
-            case 'ERROR': return 'bg-red-50 text-red-700 border-red-100'
-            default: return 'bg-blue-50 text-blue-700 border-blue-100'
-        }
-    }
+    ]
 
     return (
         <div className="space-y-6">
@@ -130,108 +184,59 @@ const SystemLogs = () => {
                     </button>
                 </div>
 
-                <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider mr-2">Trang {currentPage + 1} / {totalPages || 1}</span>
-                    <button 
-                        disabled={currentPage === 0 || loading}
-                        onClick={() => setCurrentPage(prev => prev - 1)}
-                        className="p-2 rounded-xl border border-gray-100 hover:bg-gray-50 disabled:opacity-30 transition-all"
-                    >
-                        <ChevronLeft className="h-5 w-5" />
-                    </button>
-                    <button 
-                        disabled={currentPage >= totalPages - 1 || loading}
-                        onClick={() => setCurrentPage(prev => prev + 1)}
-                        className="p-2 rounded-xl border border-gray-100 hover:bg-gray-50 disabled:opacity-30 transition-all"
-                    >
-                        <ChevronRight className="h-5 w-5" />
-                    </button>
-                </div>
             </div>
 
-            {/* Logs Table */}
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="bg-gray-50/50 border-bottom border-gray-100">
-                                <th className="px-6 py-4 text-[11px] font-black text-gray-400 uppercase tracking-widest">Thời gian</th>
-                                <th className="px-6 py-4 text-[11px] font-black text-gray-400 uppercase tracking-widest">Người dùng</th>
-                                <th className="px-6 py-4 text-[11px] font-black text-gray-400 uppercase tracking-widest">Hành động</th>
-                                <th className="px-6 py-4 text-[11px] font-black text-gray-400 uppercase tracking-widest">Trạng thái</th>
-                                <th className="px-6 py-4 text-[11px] font-black text-gray-400 uppercase tracking-widest">Thông báo</th>
-                                <th className="px-6 py-4 text-[11px] font-black text-gray-400 uppercase tracking-widest text-right">IP Address</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-50">
-                            {loading ? (
-                                Array(8).fill(0).map((_, i) => (
-                                    <tr key={i} className="animate-pulse">
-                                        <td colSpan="6" className="px-6 py-4">
-                                            <div className="h-6 bg-gray-100 rounded-lg w-full"></div>
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : logs.length === 0 ? (
-                                <tr>
-                                    <td colSpan="6" className="px-6 py-20 text-center">
-                                        <div className="flex flex-col items-center gap-3">
-                                            <div className="p-4 bg-gray-50 rounded-full text-gray-300">
-                                                <Activity className="h-10 w-10" />
-                                            </div>
-                                            <p className="text-gray-400 font-bold">Không tìm thấy nhật ký nào</p>
+                <AdminTable 
+                    columns={logColumns}
+                    data={logs}
+                    isLoading={loading}
+                    renderMobileCard={(log, index) => (
+                        <div key={log.id || index} className="p-4 border-b border-gray-50 dark:border-white/5 animate-fade-in">
+                            <div className="flex flex-col gap-3">
+                                <div className="flex items-start justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400">
+                                            <User className="h-4 w-4" />
                                         </div>
-                                    </td>
-                                </tr>
-                            ) : (
-                                logs.map((log) => (
-                                    <tr key={log.id} className="hover:bg-gray-50/50 transition-colors group">
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="flex flex-col">
-                                                <span className="text-sm font-bold text-gray-900">
-                                                    {format(new Date(log.timestamp), 'HH:mm:ss')}
-                                                </span>
-                                                <span className="text-[11px] font-medium text-gray-400 uppercase">
-                                                    {format(new Date(log.timestamp), 'dd MMM, yyyy', { locale: vi })}
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2">
-                                                <div className="h-7 w-7 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
-                                                    <User className="h-3.5 w-3.5" />
-                                                </div>
-                                                <span className="text-sm font-bold text-gray-700">{log.username}</span>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className="text-xs font-black text-primary-600 bg-primary-50 px-2 py-1 rounded-md">
-                                                {log.action}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] font-bold ${getStatusStyles(log.status)}`}>
-                                                {getStatusIcon(log.status)}
-                                                {log.status}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 max-w-xs">
-                                            <p className="text-sm text-gray-600 font-medium truncate group-hover:text-clip group-hover:whitespace-normal">
-                                                {log.message}
+                                        <div>
+                                            <h4 className="text-[14px] font-black text-gray-900">{log.username}</h4>
+                                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                                {format(new Date(log.timestamp), 'HH:mm:ss - dd MMM, yyyy', { locale: vi })}
                                             </p>
-                                        </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-1.5 text-gray-400">
-                                                <Globe className="h-3.5 w-3.5" />
-                                                <span className="text-xs font-mono">{log.ipAddress || '0.0.0.0'}</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                                        </div>
+                                    </div>
+                                    <AdminPill 
+                                        label={log.status} 
+                                        type={log.status === 'SUCCESS' ? 'success' : log.status === 'ERROR' ? 'danger' : 'gray'} 
+                                    />
+                                </div>
+                                
+                                <div className="flex items-center gap-2">
+                                    <span className="text-[11px] font-black text-primary-600 bg-primary-50 px-2.5 py-1 rounded-lg border border-primary-100">
+                                        {log.action}
+                                    </span>
+                                    <div className="flex items-center gap-1.5 text-gray-400 pl-2">
+                                        <Globe className="h-3 w-3" />
+                                        <span className="text-[10px] font-mono">{log.ipAddress || '0.0.0.0'}</span>
+                                    </div>
+                                </div>
+
+                                <p className="text-[13px] text-gray-600 font-medium bg-gray-50 p-3 rounded-xl border border-gray-100/50">
+                                    {log.message}
+                                </p>
+                            </div>
+                        </div>
+                    )}
+                />
+            </div>
+
+            <div className="mt-4">
+                <AdminPagination 
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                />
             </div>
 
             {/* Pagination Info */}
