@@ -23,7 +23,7 @@ const AdminPageHeader = ({
             ))}
           </div>
         )}
-        <h1 className="text-[22px] sm:text-[28px] font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
+        <h1 className="text-xl sm:text-[28px] font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
           {title} {accentTitle && <span className="text-primary-600">{accentTitle}</span>}
         </h1>
         {subtitle && (

@@ -83,38 +83,40 @@ const AdminTable = ({
   )
 
   const renderMobileCard = (row, index) => (
-    <div key={row.id || index} className="p-4 bg-white dark:bg-dark-card border-b border-gray-100 dark:border-dark-border animate-fade-in">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          {hasSelection && (
-            <input
-              type="checkbox"
-              checked={selectedRows.includes(row.id)}
-              onChange={(e) => onSelectRow(row.id, e.target.checked)}
-              className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500 cursor-pointer shrink-0"
-            />
-          )}
-          <div className="flex-1 min-w-0">
-             {columns.map((column, idx) => (
-               <div key={column.key} className={idx === 0 ? "mb-1" : "mb-2"}>
-                  {idx === 0 ? (
-                    <div className="flex items-center gap-3">
-                       {column.render ? column.render(row[column.key], row, index) : row[column.key]}
-                    </div>
-                  ) : (
-                    <div className="flex justify-between items-center text-[13px]">
-                       <span className="text-gray-400 font-bold uppercase text-[10px] tracking-wider">{column.label}</span>
-                       <span className="text-gray-900 dark:text-white font-bold">
-                          {column.render ? column.render(row[column.key], row, index) : row[column.key]}
-                       </span>
-                    </div>
-                  )}
-               </div>
-             ))}
+    <div key={row.id || index} className="p-4 sm:p-5 bg-white dark:bg-dark-card border-b border-gray-100 dark:border-dark-border animate-fade-in hover:bg-gray-50/50 transition-colors">
+      <div className="flex flex-col gap-4">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            {hasSelection && (
+              <input
+                type="checkbox"
+                checked={selectedRows.includes(row.id)}
+                onChange={(e) => onSelectRow(row.id, e.target.checked)}
+                className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500 cursor-pointer shrink-0"
+              />
+            )}
+            <div className="flex-1 min-w-0">
+               {columns.slice(0, 1).map((column) => (
+                 <div key={column.key} className="flex items-center gap-3">
+                    {column.render ? column.render(row[column.key], row, index) : row[column.key]}
+                 </div>
+               ))}
+            </div>
+          </div>
+          <div className="shrink-0 flex items-center gap-1">
+             {renderActions(row, index)}
           </div>
         </div>
-        <div className="shrink-0 border-l border-gray-100 pl-3">
-           {renderActions(row, index)}
+        
+        <div className="grid grid-cols-2 gap-x-4 gap-y-3 pt-3 border-t border-gray-50 dark:border-white/5">
+           {columns.slice(1).map((column) => (
+             <div key={column.key} className="flex flex-col gap-1">
+                <span className="text-gray-400 font-bold uppercase text-[9px] tracking-wider">{column.label}</span>
+                <span className="text-gray-900 dark:text-white font-bold text-[13px] line-clamp-1">
+                   {column.render ? column.render(row[column.key], row, index) : row[column.key]}
+                </span>
+             </div>
+           ))}
         </div>
       </div>
     </div>

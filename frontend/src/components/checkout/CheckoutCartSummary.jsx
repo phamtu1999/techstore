@@ -57,11 +57,11 @@ const CheckoutCartSummary = ({
   const finalTotal = subTotalAfterDiscount + shippingFee
 
   return (
-    <div className="glass border border-white/40 rounded-[2.5rem] p-8 sticky top-28 shadow-premium animate-fade-in overflow-hidden relative group">
+    <div className="glass border border-white/40 rounded-[2.5rem] p-5 sm:p-8 sticky top-28 shadow-premium animate-fade-in overflow-hidden relative group">
       {/* Background decoration */}
       <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary-600/5 rounded-full blur-3xl group-hover:bg-primary-600/10 transition-colors duration-700"></div>
       
-      <h2 className="text-xl font-black text-secondary-900 mb-8 flex items-center gap-3">
+      <h2 className="text-lg sm:text-xl font-black text-secondary-900 mb-6 sm:mb-8 flex items-center gap-3">
         <div className="w-10 h-10 bg-primary-600 rounded-2xl flex items-center justify-center shadow-lg shadow-primary-500/20">
           <Package className="w-5 h-5 text-white" />
         </div>

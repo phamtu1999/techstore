@@ -108,7 +108,7 @@ const Cart = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 sm:py-12">
       <div className="flex items-center gap-4 mb-8 sm:mb-12">
-        <h1 className="text-3xl sm:text-5xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
+        <h1 className="text-2xl sm:text-5xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
           GIỎ <span className="text-primary-600">HÀNG</span>
         </h1>
         <div className="h-[2px] flex-1 bg-gray-100 dark:bg-white/5 hidden sm:block"></div>
@@ -138,10 +138,10 @@ const Cart = () => {
               })
 
               return (
-                <div key={item.id} className="bg-white dark:bg-dark-card p-4 sm:p-6 rounded-[2.5rem] border border-gray-100 dark:border-dark-border shadow-sm group hover:shadow-xl hover:border-primary-100 transition-all duration-500">
+                <div key={item.id} className="bg-white dark:bg-dark-card p-3 sm:p-6 rounded-[2.5rem] border border-gray-100 dark:border-dark-border shadow-sm group hover:shadow-xl hover:border-primary-100 transition-all duration-500">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                     <div className="flex items-center gap-4 flex-1 min-w-0">
-                      <div className="h-24 w-24 sm:h-32 sm:w-32 bg-gray-50 dark:bg-black/20 rounded-[2rem] overflow-hidden flex-shrink-0 border border-gray-100 dark:border-white/5 p-4 transition-transform group-hover:scale-105">
+                      <div className="h-20 w-20 sm:h-32 sm:w-32 bg-gray-50 dark:bg-black/20 rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden flex-shrink-0 border border-gray-100 dark:border-white/5 p-3 sm:p-4 transition-transform group-hover:scale-105">
                         <img
                           src={itemImageUrl}
                           alt={item.productName}
@@ -151,7 +151,7 @@ const Cart = () => {
                       </div>
   
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-black text-gray-900 dark:text-white text-[15px] sm:text-[18px] line-clamp-2 leading-tight uppercase tracking-tight">{item.productName}</h3>
+                        <h3 className="font-black text-gray-900 dark:text-white text-[14px] sm:text-[18px] line-clamp-2 leading-tight uppercase tracking-tight">{item.productName}</h3>
                         <p className="text-[10px] font-black text-primary-600 uppercase tracking-widest mt-2">{item.variantName}</p>
                         <p className="font-black text-gray-900 dark:text-white mt-2 text-lg">
                           {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}
@@ -205,7 +205,7 @@ const Cart = () => {
           {/* Summary Section */}
           <div className="lg:col-span-4 space-y-6">
             {/* Coupon Section */}
-            <div className="bg-white dark:bg-dark-card rounded-[2.5rem] p-8 border border-gray-100 dark:border-dark-border shadow-sm">
+            <div className="bg-white dark:bg-dark-card rounded-[2.5rem] p-6 sm:p-8 border border-gray-100 dark:border-dark-border shadow-sm">
                 <div className="flex items-center gap-3 mb-6">
                     <Ticket className="w-6 h-6 text-primary-600" />
                     <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-widest">Mã giảm giá</h3>
@@ -247,7 +247,7 @@ const Cart = () => {
                 )}
             </div>
 
-            <div className="bg-white dark:bg-dark-card rounded-[2.5rem] p-8 border border-gray-100 dark:border-dark-border shadow-sm sticky top-24">
+            <div className="bg-white dark:bg-dark-card rounded-[2.5rem] p-6 sm:p-8 border border-gray-100 dark:border-dark-border shadow-sm sticky top-24">
               <h2 className="mb-8 text-xl font-black text-gray-900 dark:text-white uppercase tracking-widest">Thanh toán</h2>
               
               <div className="space-y-4 mb-8">
@@ -278,7 +278,7 @@ const Cart = () => {
 
                 <div className="flex justify-between items-center pt-2">
                   <span className="text-base font-black text-gray-900 dark:text-white uppercase tracking-widest">Tổng cộng:</span>
-                  <span className="text-3xl font-black text-primary-600 tracking-tighter">
+                  <span className="text-2xl sm:text-3xl font-black text-primary-600 tracking-tighter">
                     {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(finalTotal)}
                   </span>
                 </div>

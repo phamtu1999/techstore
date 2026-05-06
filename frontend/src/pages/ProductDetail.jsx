@@ -230,7 +230,7 @@ const ProductDetail = () => {
                </div>
             </div>
             
-            <h1 className="text-3xl sm:text-4xl font-black text-secondary-900 leading-[1.1] tracking-tight">
+            <h1 className="text-2xl sm:text-4xl font-black text-secondary-900 leading-[1.1] tracking-tight">
               {currentProduct.name}
             </h1>
 
@@ -301,7 +301,7 @@ const ProductDetail = () => {
 
           <div className="price-box bg-white p-3 sm:p-2 rounded-[1.5rem] sm:rounded-[2rem] space-y-1">
             <div className="flex items-end gap-3 sm:gap-4 flex-wrap">
-              <p className="text-3xl sm:text-5xl font-black text-primary-MAIN tracking-tighter leading-none">
+              <p className="text-2xl sm:text-5xl font-black text-primary-MAIN tracking-tighter leading-none">
                 {new Intl.NumberFormat('vi-VN', {
                   style: 'currency',
                   currency: 'VND',
@@ -381,7 +381,7 @@ const ProductDetail = () => {
                   if (!isCartLoading) navigate('/checkout')
                 }}
                 disabled={stockQuantity === 0 || isCartLoading}
-                className="flex-1 bg-primary-MAIN h-[64px] sm:h-[72px] rounded-2xl flex flex-col items-center justify-center text-white shadow-2xl shadow-primary-500/30 hover:shadow-primary-500/50 hover:scale-[1.01] active:scale-95 transition-all disabled:opacity-50 disabled:grayscale no-hover-scale"
+                className="flex-1 bg-primary-MAIN h-14 sm:h-[72px] rounded-2xl flex flex-col items-center justify-center text-white shadow-2xl shadow-primary-500/30 hover:shadow-primary-500/50 hover:scale-[1.01] active:scale-95 transition-all disabled:opacity-50 disabled:grayscale no-hover-scale"
               >
                 <span className="font-black text-lg sm:text-xl tracking-wide">MUA NGAY</span>
                 <span className="text-[10px] font-bold opacity-80 uppercase text-center px-2">Giao hàng tận nơi hoặc Nhận tại cửa hàng</span>
@@ -526,13 +526,13 @@ const ProductDetail = () => {
       <section className="mt-32">
         <div className="flex items-center justify-between mb-10">
           <div>
-            <h2 className="text-3xl font-black text-secondary-900 tracking-tight">CÓ THỂ BẠN <span className="text-primary-600 italic">CŨNG THÍCH</span></h2>
+            <h2 className="text-2xl sm:text-3xl font-black text-secondary-900 tracking-tight">CÓ THỂ BẠN <span className="text-primary-600 italic">CŨNG THÍCH</span></h2>
             <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mt-1">Sản phẩm tương tự dành riêng cho bạn</p>
           </div>
           <Link to="/products" className="text-xs font-black uppercase tracking-widest text-primary-600 hover:text-secondary-900 transition-colors">Xem tất cả</Link>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
           {(allProducts || [])
             .filter(p => p && p.id !== currentProduct.id && p.category?.id === currentProduct.category?.id)
             .slice(0, 4)

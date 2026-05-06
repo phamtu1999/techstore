@@ -367,7 +367,7 @@ const Layout = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
             />
             <div className={`absolute top-0 left-0 w-[86vw] max-w-[340px] h-full bg-white dark:bg-dark-card shadow-2xl transition-transform duration-500 ease-out flex flex-col ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-                <div className="p-5 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+                <div className="p-5 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between shrink-0">
                     <span className="text-lg sm:text-xl font-black text-secondary-900 dark:text-white tracking-widest">MENU</span>
                     <button onClick={() => setIsMobileMenuOpen(false)} className="p-2.5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl transition-all">
                         <X className="h-6 w-6" />
@@ -398,7 +398,7 @@ const Layout = () => {
                     </Link>
                 </div>
 
-                <div className="p-4 sm:p-6 border-t border-gray-100 dark:border-white/5">
+                <div className="p-4 sm:p-6 border-t border-gray-100 dark:border-white/5 shrink-0 bg-white dark:bg-dark-card mb-safe">
                     {user ? (
                         <button onClick={handleLogout} className="w-full h-12 rounded-xl bg-red-50 text-red-600 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 active:scale-[0.98] transition-transform">
                             Đăng xuất

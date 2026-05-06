@@ -303,10 +303,10 @@ const Products = () => {
            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-primary-600/10 text-primary-600 text-[10px] font-black uppercase tracking-[0.25em] mb-4">
               Premium Technology
            </div>
-           <h1 className="text-4xl sm:text-6xl font-black tracking-tighter text-gray-900 dark:text-white uppercase leading-none mb-6">
+           <h1 className="text-3xl sm:text-6xl font-black tracking-tighter text-gray-900 dark:text-white uppercase leading-none mb-4 sm:mb-6">
              KHÁM PHÁ <span className="text-primary-600">SẢN PHẨM</span>
            </h1>
-           <p className="max-w-2xl text-[14px] font-bold text-gray-400 uppercase tracking-widest leading-relaxed">
+           <p className="max-w-2xl text-xs sm:text-[14px] font-bold text-gray-400 uppercase tracking-widest leading-relaxed">
              Tận hưởng tinh hoa công nghệ với bộ sưu tập các thiết bị hàng đầu thế giới, 
              từ những chiếc Laptop Gaming mạnh mẽ đến Smartphone thời thượng.
            </p>

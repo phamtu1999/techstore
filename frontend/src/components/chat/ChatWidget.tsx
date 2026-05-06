@@ -24,7 +24,7 @@ const ChatWidget: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[9999] font-sans">
+    <div className="fixed bottom-[84px] right-4 sm:bottom-6 sm:right-6 z-[90] font-sans">
       <AnimatePresence>
         {isOpen && (
           <motion.div
