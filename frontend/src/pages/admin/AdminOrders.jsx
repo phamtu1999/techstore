@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useSearchParams } from 'react-router-dom'
 import { fetchAllOrders, updateOrderStatus } from '../../store/slices/ordersSlice'
 import { ordersAPI } from '../../api/orders'
 import AdminTable from '../../components/admin/AdminTable'
@@ -19,8 +20,17 @@ import AdminPill from '../../components/admin/shared/AdminPill'
 
 const AdminOrders = () => {
   const dispatch = useDispatch()
-  const { orders, isLoading } = useSelector((state) => state.orders)
+  const { orders, isLoading, totalPages } = useSelector((state) => state.orders)
   
+  const [searchParams, setSearchParams] = useSearchParams()
+  const page = parseInt(searchParams.get('page') || '0')
+  const setPage = (nextPage) => {
+    setSearchParams(prev => {
+      prev.set('page', nextPage)
+      return prev
+    })
+  }
+
   // Filter States
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
@@ -33,10 +43,7 @@ const AdminOrders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [showDetailModal, setShowDetailModal] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
-  const [isFetching, setIsFetching] = useState(false)
   const [printOrder, setPrintOrder] = useState(null)
-  const [currentPage, setCurrentPage] = useState(0)
-  const [totalPages, setTotalPages] = useState(0)
   const pageSize = 10
 
   // Selection States
@@ -70,13 +77,13 @@ const AdminOrders = () => {
         await Promise.all(
           selectedOrders.map(id => {
              const order = orders.find(o => o.id === id);
-             if (canTransitionTo(order.status, newStatus)) {
+             if (order && canTransitionTo(order.status, newStatus)) {
                 return dispatch(updateOrderStatus({ orderId: id, status: newStatus })).unwrap();
              }
              return Promise.resolve();
           })
         )
-        await fetchOrders()
+        fetchOrders()
         setSelectedOrders([])
         fireSuccess('Thành công', `Đơn hàng hợp lệ đã được cập nhật`)
       } catch (error) {
@@ -89,20 +96,10 @@ const AdminOrders = () => {
 
   useEffect(() => {
     fetchOrders()
-  }, [currentPage])
+  }, [page])
 
-  const fetchOrders = async () => {
-    setIsFetching(true)
-    try {
-      const response = await ordersAPI.getAllOrders({ page: currentPage, size: pageSize })
-      const pageData = response.data.result
-      dispatch({ type: 'orders/fetchAllOrders/fulfilled', payload: response.data })
-      setTotalPages(pageData.totalPages || 0)
-    } catch (error) {
-      console.error(getApiErrorMessage(error))
-    } finally {
-      setIsFetching(false)
-    }
+  const fetchOrders = () => {
+    dispatch(fetchAllOrders({ page: page, size: pageSize }))
   }
 
   const canTransitionTo = (currentStatus, newStatus) => {
@@ -236,15 +233,20 @@ const AdminOrders = () => {
   }
 
   const filteredOrders = useMemo(() => orders.filter(order => {
+    if (!order) return false
     if (statusFilter && order.status !== statusFilter) return false
     if (searchTerm) {
       const search = searchTerm.toLowerCase()
-      if (!order.orderNumber.toLowerCase().includes(search) &&
-          !order.receiverName.toLowerCase().includes(search) &&
-          !order.receiverPhone.includes(search)) return false
+      const orderNum = order.orderNumber ? order.orderNumber.toLowerCase() : ''
+      const name = order.receiverName ? order.receiverName.toLowerCase() : ''
+      const phone = order.receiverPhone || ''
+      
+      if (!orderNum.includes(search) &&
+          !name.includes(search) &&
+          !phone.includes(search)) return false
     }
-    if (dateFrom && new Date(order.createdAt) < new Date(dateFrom)) return false
-    if (dateTo) {
+    if (dateFrom && order.createdAt && new Date(order.createdAt) < new Date(dateFrom)) return false
+    if (dateTo && order.createdAt) {
       const toDate = new Date(dateTo)
       toDate.setHours(23, 59, 59, 999)
       if (new Date(order.createdAt) > toDate) return false
@@ -352,7 +354,7 @@ const AdminOrders = () => {
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden relative text-black">
-        {isFetching ? (
+        {isLoading ? (
           <div className="py-20 text-center">
              <div className="inline-block h-10 w-10 animate-spin rounded-full border-[3px] border-primary-100 border-t-primary-600"></div>
              <p className="text-gray-500 font-medium mt-4">Đang tải dữ liệu...</p>
@@ -374,14 +376,14 @@ const AdminOrders = () => {
               onSelectRow={handleSelectRow}
               onSelectAll={handleSelectAll}
               showIndex={true}
-              currentPage={currentPage}
+              currentPage={page}
               pageSize={pageSize}
             />
             
             <AdminPagination 
-              currentPage={currentPage}
+              currentPage={page}
               totalPages={totalPages}
-              onPageChange={setCurrentPage}
+              onPageChange={setPage}
             />
           </>
         )}

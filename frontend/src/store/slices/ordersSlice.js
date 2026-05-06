@@ -155,7 +155,18 @@ const ordersSlice = createSlice({
       })
       .addCase(fetchAllOrders.fulfilled, (state, action) => {
         state.isLoading = false
-        state.orders = action.payload.result?.content || action.payload.result || []
+        const result = action.payload.result
+        if (result && typeof result === 'object' && 'content' in result) {
+          state.orders = result.content
+          state.totalPages = result.totalPages
+          state.totalElements = result.totalElements
+          state.currentPage = result.number
+        } else {
+          state.orders = result || []
+          state.totalPages = 1
+          state.totalElements = result?.length || 0
+          state.currentPage = 0
+        }
       })
       .addCase(fetchAllOrders.rejected, (state, action) => {
         state.isLoading = false
