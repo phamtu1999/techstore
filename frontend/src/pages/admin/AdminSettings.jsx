@@ -205,85 +205,126 @@ const AdminSettings = () => {
         })
     }
 
-    const tabs = [
-        { id: 'general', label: 'Cửa hàng', icon: Store, group: 'Cài đặt chung' },
-        { id: 'payment', label: 'Thanh toán', icon: CreditCard, group: 'Cài đặt chung' },
-        { id: 'seo', label: 'SEO & Metadata', icon: Globe, group: 'Marketing' },
-        { id: 'security', label: 'Bảo mật', icon: ShieldCheck, group: 'Hệ thống' },
-        { id: 'notification', label: 'Thông báo', icon: BellRing, group: 'Hệ thống' },
-        { id: 'database', label: 'Dữ liệu', icon: Database, group: 'Hệ thống' },
-        { id: 'logs', label: 'Nhật ký', icon: Activity, group: 'Hệ thống' },
+    const tabGroups = [
+        {
+            name: 'Cơ bản',
+            tabs: [
+                { id: 'general', label: 'Cửa hàng', icon: Store },
+                { id: 'payment', label: 'Thanh toán', icon: CreditCard },
+            ]
+        },
+        {
+            name: 'Marketing',
+            tabs: [
+                { id: 'seo', label: 'SEO & Metadata', icon: Globe },
+                { id: 'notification', label: 'Thông báo', icon: BellRing },
+            ]
+        },
+        {
+            name: 'Hệ thống',
+            tabs: [
+                { id: 'security', label: 'Bảo mật', icon: ShieldCheck },
+                { id: 'database', label: 'Dữ liệu', icon: Database },
+                { id: 'logs', label: 'Nhật ký', icon: Activity },
+            ]
+        }
     ]
 
     return (
-    <div className="space-y-6 animate-fade-in">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-            <div>
-                <h1 className="admin-h1">Cài đặt hệ thống</h1>
-                <p className="text-muted-label mt-1">
-                    Quản lý cấu hình, bảo mật và tùy chỉnh cửa hàng Tech Store.
-                </p>
-            </div>
+    <div className="animate-fade-in pb-20">
+        {/* Sticky Header */}
+        <div className="sticky top-0 z-30 -mx-4 sm:-mx-8 px-4 sm:px-8 py-4 bg-gray-50/80 dark:bg-dark-bg/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-dark-border/50 mb-8 transition-all">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 max-w-[1600px] mx-auto">
+                <div>
+                    <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase italic flex items-center gap-3">
+                        <Settings className="h-7 w-7 text-admin-primary" />
+                        Cài đặt hệ thống
+                    </h1>
+                    <p className="text-[13px] font-bold text-gray-400 mt-1 uppercase tracking-widest hidden sm:block">
+                        Quản lý cấu hình, bảo mật và tùy chỉnh Tech Store
+                    </p>
+                </div>
 
-            <div className="flex items-center gap-3">
-                {hasChanges && (
-                    <button 
-                        onClick={handleDiscard} 
-                        className="h-[42px] px-5 bg-white border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all text-[13px] flex items-center gap-2 shadow-sm"
-                    >
-                        <RefreshCcw className="h-4 w-4" />
-                        Hoàn tác
-                    </button>
-                )}
-                <button 
-                    onClick={handleSave} 
-                    disabled={!hasChanges || saving || loading} 
-                    className={`h-[42px] px-6 rounded-xl font-bold text-[13px] flex items-center gap-2 shadow-lg transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${
-                        hasChanges 
-                            ? 'bg-admin-primary text-white shadow-admin-primary/25 hover:bg-admin-primary/90 hover:-translate-y-0.5' 
-                            : 'bg-gray-100 text-gray-400 shadow-none'
-                    }`}
-                >
-                    {saving ? (
-                        <div className="h-4 w-4 border-2 border-white border-t-transparent animate-spin rounded-full"></div>
-                    ) : (
-                        <Save className="h-4 w-4" />
+                <div className="flex items-center gap-3">
+                    {hasChanges && (
+                        <button 
+                            onClick={handleDiscard} 
+                            className="h-[46px] px-6 bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border text-gray-600 dark:text-gray-300 font-black rounded-2xl hover:bg-gray-50 dark:hover:bg-white/10 transition-all text-[11px] uppercase tracking-widest flex items-center gap-2 shadow-sm active:scale-95"
+                        >
+                            <RefreshCcw className="h-4 w-4" />
+                            Hoàn tác
+                        </button>
                     )}
-                    LƯU THAY ĐỔI
-                </button>
+                    <button 
+                        onClick={handleSave} 
+                        disabled={!hasChanges || saving || loading} 
+                        className={`h-[46px] px-8 rounded-2xl font-black text-[11px] uppercase tracking-widest flex items-center gap-2 shadow-xl transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${
+                            hasChanges 
+                                ? 'bg-admin-primary text-white shadow-admin-primary/30 hover:bg-admin-primary/90 hover:-translate-y-0.5' 
+                                : 'bg-gray-200 dark:bg-dark-border text-gray-400 dark:text-gray-600 shadow-none'
+                        }`}
+                    >
+                        {saving ? (
+                            <div className="h-4 w-4 border-2 border-white border-t-transparent animate-spin rounded-full"></div>
+                        ) : (
+                            <Save className="h-4 w-4" />
+                        )}
+                        {saving ? 'ĐANG LƯU...' : 'LƯU THAY ĐỔI'}
+                    </button>
+                </div>
             </div>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-1.5 flex items-center gap-1 overflow-x-auto scrollbar-hide">
-            {tabs.map(tab => (
-                <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-2.5 px-5 py-2.5 rounded-lg transition-all whitespace-nowrap ${
-                        activeTab === tab.id 
-                            ? 'bg-admin-primary/10 text-admin-primary font-bold shadow-sm' 
-                            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50 font-medium'
-                    }`}
-                >
-                    <tab.icon className={`h-4 w-4 ${activeTab === tab.id ? 'text-admin-primary' : 'text-gray-400'}`} />
-                    <span className="text-[14px]">{tab.label}</span>
-                </button>
-            ))}
-        </div>
-        
-            <div className="max-w-6xl mx-auto">
-                <div className="mb-8 flex items-center justify-between">
+        <div className="flex flex-col lg:flex-row gap-10 max-w-[1600px] mx-auto">
+            {/* Grouped Sidebar Navigation */}
+            <aside className="w-full lg:w-72 shrink-0">
+                <div className="sticky top-28 space-y-8">
+                    {tabGroups.map((group, idx) => (
+                        <div key={idx} className="space-y-3">
+                            <h3 className="px-4 text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.25em]">
+                                {group.name}
+                            </h3>
+                            <div className="space-y-1">
+                                {group.tabs.map(tab => (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => setActiveTab(tab.id)}
+                                        className={`w-full flex items-center gap-3.5 px-5 py-3.5 rounded-2xl transition-all ${
+                                            activeTab === tab.id 
+                                                ? 'bg-admin-primary text-white font-black shadow-lg shadow-admin-primary/25' 
+                                                : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 font-bold'
+                                        }`}
+                                    >
+                                        <tab.icon className={`h-5 w-5 ${activeTab === tab.id ? 'text-white' : 'text-gray-400'}`} />
+                                        <span className="text-[13px] tracking-tight">{tab.label}</span>
+                                        {activeTab === tab.id && (
+                                            <ChevronRight className="h-4 w-4 ml-auto opacity-70" />
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </aside>
+            
+            <div className="flex-1 min-w-0">
+                <div className="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                     <div>
-                        <h2 className="text-2xl sm:text-3xl font-black text-text-primary dark:text-dark-text tracking-tight flex items-center gap-3">
-                            {tabs.find(t => t.id === activeTab)?.label}
-                            <span className="w-2 h-2 rounded-full bg-primary-main animate-pulse"></span>
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-admin-primary/10 text-admin-primary text-[10px] font-black uppercase tracking-[0.2em] mb-3">
+                           Cài đặt hệ thống
+                        </div>
+                        <h2 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-4">
+                            {[...tabGroups.flatMap(g => g.tabs)].find(t => t.id === activeTab)?.label}
+                            <span className="w-2.5 h-2.5 rounded-full bg-admin-primary animate-pulse"></span>
                         </h2>
-                        <p className="text-text-secondary dark:text-gray-400 font-medium text-sm mt-1">Cấu hình chi tiết các tham số của hệ thống</p>
+                        <p className="text-gray-500 dark:text-gray-400 font-bold text-sm mt-2 max-w-2xl leading-relaxed">
+                            Cấu hình chi tiết các tham số của hệ thống. Các thay đổi sẽ được áp dụng ngay lập tức sau khi lưu.
+                        </p>
                     </div>
                 </div>
 
-                <div className="animate-slide-up">
+                <div className="animate-slide-up space-y-12 pb-10">
                     {activeTab === 'general' && <GeneralSettings 
                          logo={logo} uploading={uploading} handleLogoChange={handleLogoChange}
                          storeName={storeName} setStoreName={setStoreName} supportEmail={supportEmail} setSupportEmail={setSupportEmail}
