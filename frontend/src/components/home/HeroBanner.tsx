@@ -27,7 +27,7 @@ const HeroBanner: React.FC = () => {
       <div className="absolute inset-0 z-[5] opacity-[0.05] pointer-events-none noise-bg" />
 
       {/* Main Content */}
-      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center px-6 sm:px-12 lg:px-24 py-16 sm:py-24 lg:py-36">
+      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-24 items-center px-4 sm:px-12 lg:px-24 py-10 sm:py-24 lg:py-36">
         
         {/* Left Side: Product Intro */}
         <div className="space-y-8 sm:space-y-12 animate-fade-in text-center lg:text-left">
@@ -36,7 +36,7 @@ const HeroBanner: React.FC = () => {
                <Sparkles className="h-3 w-3 animate-pulse" />
                New Arrival · Limited Edition
             </div>
-            <h1 className="text-5xl sm:text-7xl lg:text-9xl leading-[0.85] text-white tracking-tighter uppercase font-black">
+            <h1 className="text-4xl sm:text-7xl lg:text-9xl leading-[0.85] text-white tracking-tighter uppercase font-black">
               FUTURE<br/>
               <span className="text-primary-600 italic">BEYOND</span>
             </h1>
@@ -63,46 +63,44 @@ const HeroBanner: React.FC = () => {
             <div className="flex justify-between items-start">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-primary-600 animate-pulse" />
-                  <p className="text-[10px] font-black text-primary-600 uppercase tracking-[0.2em]">Sẵn hàng tại kho</p>
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary-600 animate-pulse" />
+                  <p className="text-[9px] font-black text-primary-600 uppercase tracking-[0.2em]">Sẵn hàng tại kho</p>
                 </div>
-                <h3 className="text-3xl font-black text-white uppercase tracking-tighter">IPhone 15 Pro Max</h3>
+                <h3 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tighter leading-tight">IPhone 15 Pro Max</h3>
               </div>
-              <div className="w-14 h-14 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 flex items-center justify-center text-white shadow-inner">
-                <Zap className="h-6 w-6 fill-current" />
+              <div className="w-12 h-12 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 flex items-center justify-center text-white shadow-inner">
+                <Zap className="h-5 w-5 fill-current" />
               </div>
             </div>
 
-            <div className="space-y-8">
-              <div className="bg-white/5 rounded-3xl p-8 border border-white/5 relative overflow-hidden group/price">
-                <div className="flex justify-between items-end mb-2">
-                  <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">Giá độc quyền</span>
-                  <div className="bg-red-600 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-tighter shadow-lg">-15% OFF</div>
+            <div className="space-y-6">
+              <div className="bg-white/5 rounded-3xl p-6 sm:p-8 border border-white/5 relative overflow-hidden group/price">
+                <div className="flex justify-between items-end mb-1">
+                  <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">Giá độc quyền</span>
+                  <div className="bg-red-600 text-white text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter shadow-lg">-15% OFF</div>
                 </div>
-                <div className="flex items-baseline gap-3">
-                  <span className="text-4xl font-black text-white tracking-tighter">28.990.000₫</span>
-                  <span className="text-sm font-bold text-white/20 line-through">32.990k</span>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-3xl sm:text-4xl font-black text-white tracking-tighter">28.990.000₫</span>
+                  <span className="text-xs font-bold text-white/20 line-through">32.990k</span>
                 </div>
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary-600/10 rounded-full blur-3xl -mr-16 -mt-16 group-hover/price:bg-primary-600/20 transition-all"></div>
               </div>
-
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em]">Dung lượng</p>
-                  <p className="text-sm font-black text-white flex items-center gap-2">
-                     <span className="w-1.5 h-1.5 rounded-full bg-primary-600" />
-                     256GB Titanium
-                  </p>
+              
+              {/* Features section moved to flex for compactness */}
+              <div className="flex justify-between items-center px-2">
+                <div className="space-y-1">
+                  <p className="text-[8px] font-black text-white/30 uppercase tracking-[0.2em]">Dung lượng</p>
+                  <p className="text-xs font-black text-white">256GB Titanium</p>
                 </div>
-                <div className="space-y-2">
-                  <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em]">Hỗ trợ</p>
-                  <p className="text-sm font-black text-emerald-500 uppercase tracking-tight">Trả góp 0%</p>
+                <div className="space-y-1 text-right">
+                  <p className="text-[8px] font-black text-white/30 uppercase tracking-[0.2em]">Hỗ trợ</p>
+                  <p className="text-xs font-black text-emerald-500 uppercase tracking-tight">Trả góp 0%</p>
                 </div>
               </div>
             </div>
 
-            <button className="w-full py-5 bg-white/5 hover:bg-primary-600 border border-white/10 hover:border-primary-500 rounded-2xl text-[10px] font-black text-white uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3 group/btn2">
-              <Sparkles className="h-4 w-4 group-hover/btn2:rotate-45 transition-transform" /> 
+            <button className="w-full py-4 bg-white/5 hover:bg-primary-600 border border-white/10 hover:border-primary-500 rounded-2xl text-[9px] font-black text-white uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3 group/btn2">
+              <Sparkles className="h-3.5 w-3.5 group-hover/btn2:rotate-45 transition-transform" /> 
               Cấu hình chi tiết
             </button>
           </div>

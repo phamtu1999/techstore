@@ -84,41 +84,41 @@ const Home = () => {
       </div>
 
       {/* Trust Indicators */}
-      <section className="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="flex items-center gap-4 p-6 bg-white dark:bg-dark-card rounded-3xl border border-gray-100 dark:border-dark-border shadow-sm">
-             <div className="w-12 h-12 rounded-2xl bg-primary-600/10 flex items-center justify-center text-primary-600">
-                <ShieldCheck className="w-6 h-6" />
+      <section className="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+          <div className="flex items-center gap-3 p-4 sm:p-6 bg-white dark:bg-dark-card rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-dark-border shadow-sm">
+             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-primary-600/10 flex items-center justify-center text-primary-600">
+                <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6" />
              </div>
              <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Cam kết</p>
-                <p className="text-sm font-black dark:text-white uppercase tracking-tight">Chính hãng 100%</p>
+                <p className="text-[8px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400">Cam kết</p>
+                <p className="text-[11px] sm:text-sm font-black dark:text-white uppercase tracking-tight">Chính hãng</p>
              </div>
           </div>
-          <div className="flex items-center gap-4 p-6 bg-white dark:bg-dark-card rounded-3xl border border-gray-100 dark:border-dark-border shadow-sm">
-             <div className="w-12 h-12 rounded-2xl bg-blue-600/10 flex items-center justify-center text-blue-600">
-                <Zap className="w-6 h-6" />
+          <div className="flex items-center gap-3 p-4 sm:p-6 bg-white dark:bg-dark-card rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-dark-border shadow-sm">
+             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-blue-600/10 flex items-center justify-center text-blue-600">
+                <Zap className="w-5 h-5 sm:w-6 sm:h-6" />
              </div>
              <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Vận chuyển</p>
-                <p className="text-sm font-black dark:text-white uppercase tracking-tight">Giao nhanh 2h</p>
+                <p className="text-[8px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400">Vận chuyển</p>
+                <p className="text-[11px] sm:text-sm font-black dark:text-white uppercase tracking-tight">Giao 2h</p>
              </div>
           </div>
-          <div className="flex items-center gap-4 p-6 bg-white dark:bg-dark-card rounded-3xl border border-gray-100 dark:border-dark-border shadow-sm">
-             <div className="w-12 h-12 rounded-2xl bg-emerald-600/10 flex items-center justify-center text-emerald-600">
-                <Award className="w-6 h-6" />
+          <div className="flex items-center gap-3 p-4 sm:p-6 bg-white dark:bg-dark-card rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-dark-border shadow-sm">
+             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-600/10 flex items-center justify-center text-emerald-600">
+                <Award className="w-5 h-5 sm:w-6 sm:h-6" />
              </div>
              <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Bảo hành</p>
-                <p className="text-sm font-black dark:text-white uppercase tracking-tight">Lỗi 1 đổi 1</p>
+                <p className="text-[8px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400">Bảo hành</p>
+                <p className="text-[11px] sm:text-sm font-black dark:text-white uppercase tracking-tight">1 Đổi 1</p>
              </div>
           </div>
-          <div className="flex items-center gap-4 p-6 bg-white dark:bg-dark-card rounded-3xl border border-gray-100 dark:border-dark-border shadow-sm">
-             <div className="w-12 h-12 rounded-2xl bg-amber-600/10 flex items-center justify-center text-amber-600">
-                <Star className="w-6 h-6" />
+          <div className="flex items-center gap-3 p-4 sm:p-6 bg-white dark:bg-dark-card rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-dark-border shadow-sm">
+             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-amber-600/10 flex items-center justify-center text-amber-600">
+                <Star className="w-5 h-5 sm:w-6 sm:h-6" />
              </div>
              <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Đánh giá</p>
-                <p className="text-sm font-black dark:text-white uppercase tracking-tight">4.9/5 Sao</p>
+                <p className="text-[8px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400">Đánh giá</p>
+                <p className="text-[11px] sm:text-sm font-black dark:text-white uppercase tracking-tight">4.9/5 Sao</p>
              </div>
           </div>
       </section>
@@ -145,7 +145,7 @@ const Home = () => {
               <Link
                 key={cat.id}
                 to={`/products?category=${cat.slug}`}
-                className="group relative h-48 sm:h-80 rounded-[2.5rem] overflow-hidden shadow-lg hover:shadow-primary-600/20 hover:scale-[1.03] transition-all duration-500"
+                className="group relative h-40 sm:h-80 rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-lg hover:shadow-primary-600/20 hover:scale-[1.03] transition-all duration-500"
               >
                 <div className="absolute inset-0 bg-gray-900" />
                 <img 
@@ -155,17 +155,17 @@ const Home = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
                 
-                <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
-                   <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 text-white group-hover:bg-primary-600 group-hover:border-primary-500 transition-all">
-                     <Icon className="h-5 w-5" />
+                <div className="absolute top-3 right-3 sm:top-6 sm:right-6">
+                   <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 text-white group-hover:bg-primary-600 group-hover:border-primary-500 transition-all">
+                     <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                    </div>
                 </div>
 
-                <div className="absolute bottom-6 left-6 right-6 sm:bottom-8 sm:left-8 sm:right-8 text-center sm:text-left">
-                  <span className="font-black text-white text-lg sm:text-xl uppercase tracking-wider leading-none block mb-2 drop-shadow-lg">
+                <div className="absolute bottom-4 left-4 right-4 sm:bottom-8 sm:left-8 sm:right-8 text-center sm:text-left">
+                  <span className="font-black text-white text-base sm:text-xl uppercase tracking-wider leading-none block mb-2 drop-shadow-lg">
                     {cat.name}
                   </span>
-                  <div className="h-1.5 w-0 bg-primary-600 rounded-full group-hover:w-full transition-all duration-500" />
+                  <div className="h-1 w-0 bg-primary-600 rounded-full group-hover:w-full transition-all duration-500" />
                 </div>
               </Link>
             )
