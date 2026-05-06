@@ -443,14 +443,14 @@ const AdminInventory = () => {
             showIndex={true}
             currentPage={pagination.page}
             pageSize={pagination.size}
-            actions={(row) => (
-              <div className="flex justify-end">
+            actions={(row, closeDropdown) => (
+              <div className="space-y-1">
                 <button 
-                  onClick={() => handleAdjustStock(row)}
-                  className="p-2 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all"
-                  title="Điều chỉnh kho"
+                  onClick={() => { handleAdjustStock(row); closeDropdown?.() }}
+                  className="w-full px-4 py-2.5 text-left text-[13px] font-bold text-secondary-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
                 >
-                  <ArrowRightLeft className="h-4 w-4" />
+                  <ArrowRightLeft className="h-4 w-4 text-primary-500" />
+                  Điều chỉnh kho
                 </button>
               </div>
             )}

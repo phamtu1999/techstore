@@ -499,38 +499,34 @@ const AdminUsers = () => {
                             setSelectedIds([])
                         }
                     }}
-                    actions={(row) => (
-                        <div className="flex items-center justify-end gap-1">
+                    actions={(row, closeDropdown) => (
+                        <div className="space-y-1">
                             {row.enabled ? (
                                 <button 
-                                    onClick={() => handleLockUser(row)}
-                                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                                    title="Khóa tài khoản"
+                                    onClick={() => { handleLockUser(row); closeDropdown?.() }}
+                                    className="w-full px-4 py-2.5 text-left text-[13px] font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center gap-3 transition-colors"
                                 >
-                                    <Lock className="h-4 w-4" />
+                                    <Lock className="h-4 w-4" /> Khóa tài khoản
                                 </button>
                             ) : (
                                 <button 
-                                    onClick={() => handleUnlockUser(row)}
-                                    className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all"
-                                    title="Mở khóa tài khoản"
+                                    onClick={() => { handleUnlockUser(row); closeDropdown?.() }}
+                                    className="w-full px-4 py-2.5 text-left text-[13px] font-bold text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/10 flex items-center gap-3 transition-colors"
                                 >
-                                    <Unlock className="h-4 w-4" />
+                                    <Unlock className="h-4 w-4" /> Mở khóa
                                 </button>
                             )}
                             <button 
-                                onClick={() => handleResetPassword(row)}
-                                className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all"
-                                title="Reset mật khẩu"
+                                onClick={() => { handleResetPassword(row); closeDropdown?.() }}
+                                className="w-full px-4 py-2.5 text-left text-[13px] font-bold text-secondary-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
                             >
-                                <KeyRound className="h-4 w-4" />
+                                <KeyRound className="h-4 w-4 text-orange-500" /> Đổi mật khẩu
                             </button>
                             <button 
-                                onClick={() => handleChangeRole(row)}
-                                className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
-                                title="Thay đổi vai trò"
+                                onClick={() => { handleChangeRole(row); closeDropdown?.() }}
+                                className="w-full px-4 py-2.5 text-left text-[13px] font-bold text-secondary-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
                             >
-                                <UserCog className="h-4 w-4" />
+                                <UserCog className="h-4 w-4 text-blue-500" /> Phân quyền
                             </button>
                         </div>
                     )}

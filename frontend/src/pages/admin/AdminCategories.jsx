@@ -296,29 +296,6 @@ const AdminCategories = () => {
         />
       )
     },
-    {
-      key: 'actions',
-      label: 'Thao tác',
-      align: 'right',
-      render: (_, row) => (
-        <div className="flex items-center justify-end gap-1">
-          <button
-            onClick={() => handleEdit(row)}
-            className="p-2 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all"
-            title="Chỉnh sửa"
-          >
-            <Edit2 className="h-4 w-4" />
-          </button>
-          <button
-            onClick={() => handleDelete(row)}
-            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-            title="Xóa"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
-        </div>
-      )
-    }
   ]
 
   const bulkActionBar = selectedIds.length > 0 && (
@@ -424,6 +401,8 @@ const AdminCategories = () => {
             selectedRows={selectedIds}
             onSelectRow={(row) => handleSelectOne(row.id)}
             onSelectAll={handleSelectAll}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
             showIndex={true}
             renderMobileCard={(row, index, renderActions) => (
               <div key={row.id || index} className="p-4 bg-white dark:bg-dark-card border-b border-gray-100 dark:border-dark-border animate-fade-in hover:bg-gray-50/50 transition-colors">

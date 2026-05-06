@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 import api from '../../utils/axios';
 import AdminPageHeader from '../../components/admin/shared/AdminPageHeader';
+import AdminTable from '../../components/admin/AdminTable';
+import AdminPill from '../../components/admin/shared/AdminPill';
 import { fireError } from '../../utils/swalError';
 import { X } from 'lucide-react';
 
@@ -230,82 +232,100 @@ const AdminLivestreams = () => {
             )}
 
             {/* History Table */}
-            <div className="card p-0 overflow-hidden">
-                <div className="p-6 border-b border-gray-100">
-                    <h3 className="text-lg font-black text-secondary-800">DANH SÁCH PHIÊN LIVE</h3>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead className="bg-gray-50 border-b border-gray-100 uppercase">
-                            <tr>
-                                <th className="px-6 py-4 w-10 text-left">
-                                    <input 
-                                        type="checkbox" 
-                                        className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
-                                        checked={selectedIds.length > 0 && selectedIds.length === streams.length}
-                                        onChange={handleSelectAll}
-                                    />
-                                </th>
-                                <th className="px-4 py-4 text-[10px] font-black text-gray-400 tracking-widest text-center w-12">STT</th>
-                                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Phiên Live</th>
-                                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Người live</th>
-                                <th className="px-6 py-4 text-center text-[10px] font-black text-gray-400 tracking-widest">Trạng thái</th>
-                                <th className="px-6 py-4 text-center text-[10px] font-black text-gray-400 tracking-widest">Người xem</th>
-                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                            {streams.map((stream, index) => (
-                                <tr key={stream.id} className={`hover:bg-gray-50/50 transition-colors group ${selectedIds.includes(stream.id) ? 'bg-primary-50/30' : ''}`}>
-                                    <td className="px-6 py-4">
-                                        <input 
-                                            type="checkbox" 
-                                            className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
-                                            checked={selectedIds.includes(stream.id)}
-                                            onChange={() => handleSelectOne(stream.id)}
-                                        />
-                                    </td>
-                                    <td className="px-4 py-4 text-center text-[12px] font-bold text-gray-400">
-                                        {(index + 1).toString().padStart(2, '0')}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-16 h-10 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
-                                                <img src={stream.thumbnailUrl} className="w-full h-full object-cover" />
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <AdminTable 
+                    columns={[
+                        { 
+                            key: 'title', 
+                            label: 'Phiên Live',
+                            render: (val, row) => (
+                                <div className="flex items-center gap-4">
+                                    <div className="w-16 h-10 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
+                                        <img src={row.thumbnailUrl} className="w-full h-full object-cover" />
+                                    </div>
+                                    <p className="text-sm font-black text-gray-800 group-hover:text-primary-600 transition-colors uppercase tracking-tight">{val}</p>
+                                </div>
+                            )
+                        },
+                        { key: 'streamerUsername', label: 'Người live', render: (val) => <span className="text-sm font-bold text-gray-600">{val}</span> },
+                        { 
+                            key: 'status', 
+                            label: 'Trạng thái',
+                            align: 'center',
+                            render: (val) => (
+                                <AdminPill 
+                                    label={val || 'LIVE'} 
+                                    type={val === 'LIVE' ? 'success' : 'info'} 
+                                />
+                            )
+                        },
+                        { 
+                            key: 'viewerCount', 
+                            label: 'Người xem',
+                            align: 'center',
+                            render: (val) => <span className="font-black text-sm text-secondary-800">{val || 0}</span>
+                        }
+                    ]}
+                    data={streams}
+                    isLoading={isLoading}
+                    selectedRows={selectedIds}
+                    onSelectRow={(row) => handleSelectOne(row.id)}
+                    onSelectAll={handleSelectAll}
+                    showIndex={true}
+                    actions={(row, closeDropdown) => (
+                        <div className="space-y-1">
+                            <button 
+                                onClick={() => { navigate(`/livestream/${row.id}`); closeDropdown?.() }}
+                                className="w-full px-4 py-2.5 text-left text-[13px] font-bold text-secondary-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                            >
+                                <ExternalLink className="h-4 w-4 text-blue-500" /> Xem phiên Live
+                            </button>
+                            <button 
+                                onClick={() => { /* Add delete logic if needed */ closeDropdown?.() }}
+                                className="w-full px-4 py-2.5 text-left text-[13px] font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center gap-3 transition-colors"
+                            >
+                                <Trash2 className="h-4 w-4" /> Xóa phiên live
+                            </button>
+                        </div>
+                    )}
+                    renderMobileCard={(row, index, renderActions) => (
+                        <div key={row.id || index} className="p-4 border-b border-gray-50 animate-fade-in hover:bg-gray-50/50 transition-colors">
+                            <div className="flex flex-col gap-4">
+                                <div className="flex items-start justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-20 h-14 bg-gray-100 rounded-xl overflow-hidden shrink-0 border border-gray-100 shadow-sm">
+                                            <img src={row.thumbnailUrl} className="w-full h-full object-cover" />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <h4 className="text-[15px] font-black text-gray-900 tracking-tight truncate uppercase">{row.title}</h4>
+                                            <div className="flex items-center gap-2 mt-1">
+                                                <span className="text-[11px] font-bold text-gray-400">@{row.streamerUsername}</span>
+                                                <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                                                <AdminPill label={row.status || 'LIVE'} type={row.status === 'LIVE' ? 'success' : 'info'} size="xs" />
                                             </div>
-                                            <p className="text-sm font-black text-gray-800 group-hover:text-primary-600 transition-colors uppercase tracking-tight">{stream.title}</p>
                                         </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-sm font-bold text-gray-600">{stream.streamerUsername}</td>
-                                    <td className="px-6 py-4 text-center">
-                                        <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
-                                            stream.status === 'LIVE' ? 'bg-red-50 text-red-500' : 'bg-gray-100 text-gray-400'
-                                        }`}>
-                                            {stream.status || 'LIVE'}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 text-center font-black text-sm text-secondary-800">
-                                        {stream.viewerCount || 0}
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <button 
-                                                onClick={() => navigate(`/livestream/${stream.id}`)}
-                                                className="p-2 text-gray-400 hover:text-blue-500 transition-colors"
-                                                title="Xem trang xem Live"
-                                            >
-                                                <ExternalLink size={18} />
-                                            </button>
-                                            <button className="p-2 text-gray-400 hover:text-red-500 transition-colors">
-                                                <Trash2 size={18} />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                                    </div>
+                                    {renderActions(row, index)}
+                                </div>
+                                
+                                <div className="flex items-center justify-between px-1">
+                                    <div className="flex items-center gap-2">
+                                        <Users className="w-4 h-4 text-gray-400" />
+                                        <span className="text-[14px] font-black text-secondary-800">{row.viewerCount || 0}</span>
+                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-0.5">Người xem</span>
+                                    </div>
+                                    <button 
+                                        onClick={() => navigate(`/livestream/${row.id}`)}
+                                        className="text-[12px] font-black text-primary-600 hover:text-primary-700 flex items-center gap-1.5 uppercase tracking-wider active:scale-95 transition-all"
+                                    >
+                                        <ExternalLink className="w-4 h-4" />
+                                        VÀO PHIÊN LIVE
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                />
             </div>
 
             {/* Create Modal */}

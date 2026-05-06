@@ -198,21 +198,6 @@ const AdminCoupons = () => {
               type={val ? 'success' : 'danger'} 
             />
           )
-        },
-        {
-          key: 'actions',
-          label: 'Thao tác',
-          align: 'right',
-          render: (_, row) => (
-            <div className="flex items-center justify-end gap-1">
-              <button onClick={() => handleOpenModal(row)} className="p-2 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all">
-                <Edit2 className="h-4 w-4" />
-              </button>
-              <button onClick={() => handleDelete(row.id)} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all">
-                <Trash2 className="h-4 w-4" />
-              </button>
-            </div>
-          )
         }
     ]
 
@@ -280,6 +265,8 @@ const AdminCoupons = () => {
                     onSelectRow={(row) => handleSelectOne(row.id)}
                     onSelectAll={handleSelectAll}
                     showIndex={true}
+                    onEdit={(row) => handleOpenModal(row)}
+                    onDelete={(row) => handleDelete(row.id)}
                     renderMobileCard={(row, index, renderActions) => (
                         <div key={row.id || index} className="p-4 bg-white dark:bg-dark-card border-b border-gray-100 dark:border-dark-border animate-fade-in hover:bg-gray-50/50 transition-colors">
                             <div className="flex flex-col gap-4">

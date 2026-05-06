@@ -17,6 +17,8 @@ import {
   TerminalSquare
 } from 'lucide-react';
 import AdminPageHeader from '../../components/admin/shared/AdminPageHeader';
+import AdminTable from '../../components/admin/AdminTable';
+import AdminPill from '../../components/admin/shared/AdminPill';
 
 const AdminLogs = () => {
     const [logs, setLogs] = useState([]);
@@ -146,96 +148,124 @@ const AdminLogs = () => {
                     </div>
                 </div>
 
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                        <thead>
-                            <tr className="bg-slate-50/50">
-                                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400">Timestamp</th>
-                                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400">Action</th>
-                                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400">Operator</th>
-                                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400">Detail</th>
-                                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400">IP Address</th>
-                                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-gray-400 text-center">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100">
-                            {loading ? (
-                                Array(pageSize).fill(0).map((_, i) => (
-                                    <tr key={i} className="animate-pulse">
-                                        <td colSpan="6" className="px-8 py-6 bg-slate-50/30"></td>
-                                    </tr>
-                                ))
-                            ) : logs.length === 0 ? (
-                                <tr>
-                                    <td colSpan="6" className="px-8 py-20 text-center">
-                                        <div className="flex flex-col items-center gap-3">
-                                            <div className="p-4 bg-slate-50 rounded-full">
-                                                <TerminalSquare className="h-10 w-10 text-slate-300" />
-                                            </div>
-                                            <p className="text-slate-400 font-bold tracking-tight">Không tìm thấy dữ liệu nhật ký</p>
+            <div className="bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-slate-100 dark:border-dark-border overflow-hidden">
+                <AdminTable 
+                    columns={[
+                        {
+                            key: 'timestamp',
+                            label: 'Thời gian',
+                            render: (val) => (
+                                <div className="flex flex-col">
+                                    <span className="text-sm font-bold text-slate-700">{new Date(val).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
+                                    <span className="text-[10px] font-black text-slate-400">{new Date(val).toLocaleDateString('vi-VN')}</span>
+                                </div>
+                            )
+                        },
+                        {
+                            key: 'action',
+                            label: 'Action',
+                            render: (val) => (
+                                <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-black font-mono border border-slate-200">
+                                    {val}
+                                </span>
+                            )
+                        },
+                        {
+                            key: 'username',
+                            label: 'Operator',
+                            render: (val) => (
+                                <div className="flex items-center gap-3">
+                                    <div className="h-8 w-8 rounded-xl bg-gradient-to-tr from-slate-200 to-slate-100 flex items-center justify-center shadow-sm">
+                                        <User className="h-4 w-4 text-slate-500" />
+                                    </div>
+                                    <span className="text-sm font-bold text-slate-700">{val}</span>
+                                </div>
+                            )
+                        },
+                        {
+                            key: 'ipAddress',
+                            label: 'IP Address',
+                            render: (val) => <span className="text-xs text-slate-400 font-bold font-mono">{val}</span>
+                        },
+                        {
+                            key: 'status',
+                            label: 'Status',
+                            align: 'center',
+                            render: (val) => (
+                                <AdminPill 
+                                    label={val === 'SUCCESS' ? 'OK' : 'Error'} 
+                                    type={val === 'SUCCESS' ? 'success' : 'danger'} 
+                                />
+                            )
+                        }
+                    ]}
+                    data={logs.filter(l => 
+                        l.action?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                        l.username?.toLowerCase().includes(searchTerm.toLowerCase())
+                    )}
+                    isLoading={loading}
+                    showIndex={false}
+                    actions={(row, closeDropdown) => (
+                        <div className="space-y-1">
+                            <button 
+                                onClick={() => { handleViewDetails(row); closeDropdown?.() }}
+                                className="w-full px-4 py-2.5 text-left text-[13px] font-bold text-secondary-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                            >
+                                <Eye className="h-4 w-4 text-indigo-500" /> Xem chi tiết
+                            </button>
+                        </div>
+                    )}
+                    renderMobileCard={(row, index, renderActions) => (
+                        <div key={row.id || index} className="p-4 border-b border-slate-50 animate-fade-in hover:bg-indigo-50/20 transition-colors">
+                            <div className="flex flex-col gap-4">
+                                <div className="flex items-start justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-sm ${row.status === 'SUCCESS' ? 'bg-emerald-50 border-emerald-100 text-emerald-600' : 'bg-rose-50 border-rose-100 text-rose-600'}`}>
+                                            <Terminal className="h-6 w-6" />
                                         </div>
-                                    </td>
-                                </tr>
-                            ) : (
-                                logs.filter(l => 
-                                    l.action?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                                    l.username?.toLowerCase().includes(searchTerm.toLowerCase())
-                                ).map((log) => (
-                                    <tr key={log.id} className="group hover:bg-indigo-50/30 transition-all duration-300 cursor-default">
-                                        <td className="px-8 py-5 whitespace-nowrap">
-                                            <div className="flex flex-col">
-                                                <span className="text-sm font-bold text-slate-700">{new Date(log.timestamp).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
-                                                <span className="text-[10px] font-black text-slate-400">{new Date(log.timestamp).toLocaleDateString('vi-VN')}</span>
+                                        <div className="min-w-0">
+                                            <h4 className="text-[14px] font-black text-slate-900 tracking-tight leading-tight uppercase font-mono">{row.action}</h4>
+                                            <div className="flex items-center gap-2 mt-1">
+                                                <span className="text-[11px] font-bold text-slate-400">@{row.username}</span>
+                                                <div className="w-1 h-1 bg-slate-200 rounded-full"></div>
+                                                <span className="text-[10px] font-bold text-slate-400 font-mono">{row.ipAddress}</span>
                                             </div>
-                                        </td>
-                                        <td className="px-8 py-5">
-                                            <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-black font-mono border border-slate-200 group-hover:bg-indigo-100 group-hover:text-indigo-700 transition-colors">
-                                                {log.action}
-                                            </span>
-                                        </td>
-                                        <td className="px-8 py-5">
-                                            <div className="flex items-center gap-3">
-                                                <div className="h-8 w-8 rounded-xl bg-gradient-to-tr from-slate-200 to-slate-100 flex items-center justify-center shadow-sm">
-                                                    <User className="h-4 w-4 text-slate-500" />
-                                                </div>
-                                                <span className="text-sm font-bold text-slate-700">{log.username}</span>
-                                            </div>
-                                        </td>
-                                        <td className="px-8 py-5">
-                                            <button 
-                                                onClick={() => handleViewDetails(log)}
-                                                className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 hover:bg-white border border-slate-100 hover:border-indigo-300 hover:text-indigo-600 rounded-xl text-xs font-bold text-slate-500 transition-all shadow-sm hover:shadow-md"
-                                            >
-                                                <Eye className="h-4 w-4" />
-                                                <span>Chi tiết</span>
-                                            </button>
-                                        </td>
-                                        <td className="px-8 py-5 text-xs text-slate-400 font-bold font-mono">
-                                            {log.ipAddress}
-                                        </td>
-                                        <td className="px-8 py-5 text-center">
-                                            {log.status === 'SUCCESS' ? (
-                                                <div className="flex justify-center">
-                                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-600 border border-emerald-100">
-                                                        <CheckCircle2 className="h-3 w-3" /> OK
-                                                    </span>
-                                                </div>
-                                            ) : (
-                                                <div className="flex justify-center">
-                                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-600 border border-rose-100">
-                                                        <XCircle className="h-3 w-3" /> Error
-                                                    </span>
-                                                </div>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                                        </div>
+                                    </div>
+                                    {renderActions(row, index)}
+                                </div>
+                                
+                                <div className="grid grid-cols-2 gap-3 py-3 px-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                    <div className="flex flex-col gap-0.5">
+                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Thời gian</span>
+                                        <div className="flex flex-col">
+                                            <span className="text-[13px] font-bold text-slate-700">{new Date(row.timestamp).toLocaleTimeString('vi-VN')}</span>
+                                            <span className="text-[10px] font-black text-slate-400">{new Date(row.timestamp).toLocaleDateString('vi-VN')}</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col gap-0.5 text-right">
+                                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Trạng thái</span>
+                                        <div className="flex justify-end mt-1">
+                                            <AdminPill 
+                                                label={row.status === 'SUCCESS' ? 'SUCCESS' : 'FAILURE'} 
+                                                type={row.status === 'SUCCESS' ? 'success' : 'danger'} 
+                                                size="xs"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
 
-                {/* Pagination Controls */}
+                                <button 
+                                    onClick={() => handleViewDetails(row)}
+                                    className="flex items-center justify-center gap-2 w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-[12px] font-black uppercase tracking-wider transition-all active:scale-[0.98]"
+                                >
+                                    <Eye className="h-4 w-4" /> CHI TIẾT LOG
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                />
+
                 {!loading && totalPages > 1 && (
                     <div className="p-8 border-t border-slate-100 flex items-center justify-between bg-slate-50/20">
                         <p className="text-xs font-bold text-slate-400">
@@ -259,6 +289,7 @@ const AdminLogs = () => {
                         </div>
                     </div>
                 )}
+            </div>
             </div>
 
             {/* JSON Detail Modal */}

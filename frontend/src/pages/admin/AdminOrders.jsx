@@ -288,19 +288,6 @@ const AdminOrders = () => {
         <AdminPill label={getStatusLabel(val)} type={getStatusType(val)} />
       )
     },
-    {
-      key: 'actions',
-      label: 'Thao tác',
-      render: (_, row) => (
-        <div className="flex gap-1 justify-center">
-          <button onClick={() => handleViewDetail(row)} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all" title="Chi tiết"><Eye className="w-5 h-5" /></button>
-          <button onClick={() => handlePrintInvoice(row)} className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-xl transition-all" title="In"><Printer className="w-5 h-5" /></button>
-          {['PENDING', 'CONFIRMED', 'SHIPPING'].includes(row.status) && (
-            <button onClick={() => handleCancelOrder(row)} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all" title="Hủy"><X className="w-5 h-5" /></button>
-          )}
-        </div>
-      )
-    }
   ]
 
   const bulkActionBar = selectedOrders.length > 0 && (
@@ -379,6 +366,30 @@ const AdminOrders = () => {
               showIndex={true}
               currentPage={page}
               pageSize={pageSize}
+              actions={(row, closeDropdown) => (
+                <div className="space-y-1">
+                    <button 
+                        onClick={() => { handleViewDetail(row); closeDropdown?.() }}
+                        className="w-full px-4 py-2.5 text-left text-[13px] font-bold text-secondary-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                    >
+                        <Eye className="h-4 w-4 text-blue-500" /> Xem chi tiết
+                    </button>
+                    <button 
+                        onClick={() => { handlePrintInvoice(row); closeDropdown?.() }}
+                        className="w-full px-4 py-2.5 text-left text-[13px] font-bold text-secondary-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                    >
+                        <Printer className="h-4 w-4 text-emerald-500" /> In hóa đơn
+                    </button>
+                    {['PENDING', 'CONFIRMED', 'SHIPPING'].includes(row.status) && (
+                        <button 
+                            onClick={() => { handleCancelOrder(row); closeDropdown?.() }}
+                            className="w-full px-4 py-2.5 text-left text-[13px] font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center gap-3 transition-colors"
+                        >
+                            <X className="h-4 w-4" /> Hủy đơn hàng
+                        </button>
+                    )}
+                </div>
+              )}
               renderMobileCard={(row, index, renderActions) => (
                 <div key={row.id || index} className="p-4 border-b border-gray-50 animate-fade-in hover:bg-gray-50/50 transition-colors">
                   <div className="flex flex-col gap-4">
