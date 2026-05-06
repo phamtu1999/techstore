@@ -6,6 +6,7 @@ import Swal from 'sweetalert2'
 import { fireError, fireSuccess } from '../../utils/swalError'
 import { getApiErrorMessage } from '../../utils/apiError'
 import AdminPageHeader from '../../components/admin/shared/AdminPageHeader'
+import AdminTable from '../../components/admin/AdminTable'
 
 const AdminBrands = () => {
   const [brands, setBrands] = useState([])
