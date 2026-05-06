@@ -11,6 +11,13 @@ const LazyImage = ({ src, alt, className, fallback }) => {
   }, [src])
 
   useEffect(() => {
+    if (!imgRef.current) return
+
+    if (!('IntersectionObserver' in window)) {
+      setIsInView(true)
+      return
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -19,20 +26,14 @@ const LazyImage = ({ src, alt, className, fallback }) => {
         }
       },
       {
-        rootMargin: '50px', // Start loading 50px before image enters viewport
+        rootMargin: '80px',
       }
     )
 
-    if (imgRef.current) {
-      observer.observe(imgRef.current)
-    }
+    observer.observe(imgRef.current)
 
-    return () => {
-      if (imgRef.current) {
-        observer.unobserve(imgRef.current)
-      }
-    }
-  }, [])
+    return () => observer.disconnect()
+  }, [src])
 
   return (
     <div ref={imgRef} className="relative w-full h-full">
@@ -65,6 +66,7 @@ const LazyImage = ({ src, alt, className, fallback }) => {
             e.currentTarget.src = DEFAULT_PRODUCT_PLACEHOLDER
             setIsLoaded(true)
           }}
+          onLoad={() => setIsLoaded(true)}
         />
       )}
     </div>

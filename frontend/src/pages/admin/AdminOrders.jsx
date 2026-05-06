@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchAllOrders, updateOrderStatus } from '../../store/slices/ordersSlice'
 import { ordersAPI } from '../../api/orders'
@@ -42,15 +42,15 @@ const AdminOrders = () => {
   // Selection States
   const [selectedOrders, setSelectedOrders] = useState([])
   
-  const handleSelectRow = (id, checked) => {
+  const handleSelectRow = useCallback((id, checked) => {
     if (checked) setSelectedOrders(prev => [...prev, id])
     else setSelectedOrders(prev => prev.filter(orderId => orderId !== id))
-  }
+  }, [])
 
-  const handleSelectAll = (checked) => {
+  const handleSelectAll = useCallback((checked) => {
     if (checked) setSelectedOrders(filteredOrders.map(o => o.id))
     else setSelectedOrders([])
-  }
+  }, [filteredOrders])
 
   const handleBulkStatusUpdate = async (newStatus) => {
     if (selectedOrders.length === 0) return
@@ -235,7 +235,7 @@ const AdminOrders = () => {
     }
   }
 
-  const filteredOrders = orders.filter(order => {
+  const filteredOrders = useMemo(() => orders.filter(order => {
     if (statusFilter && order.status !== statusFilter) return false
     if (searchTerm) {
       const search = searchTerm.toLowerCase()
@@ -252,15 +252,15 @@ const AdminOrders = () => {
     if (minAmount && order.totalAmount < parseFloat(minAmount)) return false
     if (maxAmount && order.totalAmount > parseFloat(maxAmount)) return false
     return true
-  })
+  }), [orders, statusFilter, searchTerm, dateFrom, dateTo, minAmount, maxAmount])
 
-  const stats = {
+  const stats = useMemo(() => ({
     pending: orders.filter(o => o.status === 'PENDING').length,
     confirmed: orders.filter(o => o.status === 'CONFIRMED').length,
     shipping: orders.filter(o => o.status === 'SHIPPING').length,
     delivered: orders.filter(o => o.status === 'DELIVERED').length,
     cancelled: orders.filter(o => o.status === 'CANCELLED').length,
-  }
+  }), [orders])
 
   const orderColumns = [
     { 

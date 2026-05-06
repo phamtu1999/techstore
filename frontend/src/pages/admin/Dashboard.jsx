@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Calendar, RefreshCcw, Download } from 'lucide-react'
 import { analyticsAPI } from '../../api/analytics'
 
 // Refactored Components
-import DashboardKPIs from '../../components/admin/dashboard/DashboardKPIs'
-import DashboardRecentOrders from '../../components/admin/dashboard/DashboardRecentOrders'
-import DashboardInsights from '../../components/admin/dashboard/DashboardInsights'
-import DashboardCharts from '../../components/admin/dashboard/DashboardCharts'
-import DashboardTopProducts from '../../components/admin/dashboard/DashboardTopProducts'
-import AdminPageHeader from '../../components/admin/shared/AdminPageHeader'
+const DashboardKPIs = lazy(() => import('../../components/admin/dashboard/DashboardKPIs'))
+const DashboardRecentOrders = lazy(() => import('../../components/admin/dashboard/DashboardRecentOrders'))
+const DashboardInsights = lazy(() => import('../../components/admin/dashboard/DashboardInsights'))
+const DashboardCharts = lazy(() => import('../../components/admin/dashboard/DashboardCharts'))
+const DashboardTopProducts = lazy(() => import('../../components/admin/dashboard/DashboardTopProducts'))
+const AdminPageHeader = lazy(() => import('../../components/admin/shared/AdminPageHeader'))
 
 const Dashboard = () => {
   const { user } = useSelector((state) => state.auth)
@@ -89,29 +89,41 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-8 animate-fade-in">
-      <AdminPageHeader 
-        title="Thống Kê" 
-        accentTitle="Tổng Quan"
-        subtitle="Chào mừng trở lại! Dưới đây là những gì đang diễn ra với Tech Store hôm nay."
-        rightElement={headerRight}
-      />
+      <Suspense fallback={<div className="h-40 animate-pulse rounded-2xl bg-gray-100" />}>
+        <AdminPageHeader 
+          title="Thống Kê" 
+          accentTitle="Tổng Quan"
+          subtitle="Chào mừng trở lại! Dưới đây là những gì đang diễn ra với Tech Store hôm nay."
+          rightElement={headerRight}
+        />
+      </Suspense>
 
-      <DashboardKPIs data={data} isLoading={isLoading} userRole={userRole} />
+      <Suspense fallback={<div className="h-96 animate-pulse rounded-2xl bg-gray-100" />}>
+        <DashboardKPIs data={data} isLoading={isLoading} userRole={userRole} />
+      </Suspense>
 
-      <DashboardCharts 
-        revenueHistory={data.revenueHistory} 
-        statusDistribution={data.orderStatusDistribution} 
-        isLoading={isLoading} 
-        userRole={userRole}
-      />
+      <Suspense fallback={<div className="h-96 animate-pulse rounded-2xl bg-gray-100" />}>
+        <DashboardCharts 
+          revenueHistory={data.revenueHistory} 
+          statusDistribution={data.orderStatusDistribution} 
+          isLoading={isLoading} 
+          userRole={userRole}
+        />
+      </Suspense>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <DashboardRecentOrders isLoading={isLoading} />
-          <DashboardTopProducts products={data.topProducts} isLoading={isLoading} userRole={userRole} />
+          <Suspense fallback={<div className="h-80 animate-pulse rounded-2xl bg-gray-100" />}>
+            <DashboardRecentOrders isLoading={isLoading} />
+          </Suspense>
+          <Suspense fallback={<div className="h-80 animate-pulse rounded-2xl bg-gray-100" />}>
+            <DashboardTopProducts products={data.topProducts} isLoading={isLoading} userRole={userRole} />
+          </Suspense>
       </div>
 
       <div className="grid grid-cols-1 gap-8">
-          <DashboardInsights stats={data} isLoading={isLoading} userRole={userRole} />
+          <Suspense fallback={<div className="h-80 animate-pulse rounded-2xl bg-gray-100" />}>
+            <DashboardInsights stats={data} isLoading={isLoading} userRole={userRole} />
+          </Suspense>
       </div>
 
       {/* Mini tip section */}

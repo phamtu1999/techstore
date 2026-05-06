@@ -1,12 +1,12 @@
 import { memo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Star, ShoppingCart, Heart, Eye, Store, GitCompare, Plus } from 'lucide-react'
+import { Star, ShoppingCart, GitCompare } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { addToCart } from '../store/slices/cartSlice'
 import { addToCompare, removeFromCompare } from '../store/slices/comparisonSlice'
 import Toast from './Toast'
 import LazyImage from './LazyImage'
-import { getProductImageSources, handleProductImageError, DEFAULT_PRODUCT_PLACEHOLDER } from '../utils/productImageFallback'
+import { getProductImageSources } from '../utils/productImageFallback'
 import WishlistButton from './WishlistButton'
 import { useNavigate } from 'react-router-dom'
 
@@ -101,11 +101,11 @@ const ProductCard = ({ product, showBadge }) => {
 
         {/* Image Container */}
         <div className="relative h-[200px] sm:h-[240px] w-full overflow-hidden bg-gray-50/50 dark:bg-black/20 flex items-center justify-center">
-          <img 
-            src={imageUrl || DEFAULT_PRODUCT_PLACEHOLDER} 
+          <LazyImage
+            src={imageUrl}
             alt={product.name}
             className="h-full w-full object-contain p-4 sm:p-6 transition-transform duration-700 group-hover:scale-110"
-            onError={(e) => handleProductImageError(e, fallbackImageUrl)}
+            fallback={fallbackImageUrl}
           />
         </div>
 
