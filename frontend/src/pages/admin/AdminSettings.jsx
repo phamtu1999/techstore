@@ -205,289 +205,263 @@ const AdminSettings = () => {
         })
     }
 
-    const tabGroups = [
-        {
-            name: 'Cơ bản',
-            tabs: [
-                { id: 'general', label: 'Cửa hàng', icon: Store },
-                { id: 'payment', label: 'Thanh toán', icon: CreditCard },
-            ]
-        },
-        {
-            name: 'Marketing',
-            tabs: [
-                { id: 'seo', label: 'SEO & Metadata', icon: Globe },
-                { id: 'notification', label: 'Thông báo', icon: BellRing },
-            ]
-        },
-        {
-            name: 'Hệ thống',
-            tabs: [
-                { id: 'security', label: 'Bảo mật', icon: ShieldCheck },
-                { id: 'database', label: 'Dữ liệu', icon: Database },
-                { id: 'logs', label: 'Nhật ký', icon: Activity },
-            ]
-        }
+    const allTabs = [
+        { id: 'general', label: 'Cửa hàng', icon: Store },
+        { id: 'payment', label: 'Thanh toán', icon: CreditCard },
+        { id: 'seo', label: 'SEO & Metadata', icon: Globe },
+        { id: 'notification', label: 'Thông báo', icon: BellRing },
+        { id: 'security', label: 'Bảo mật', icon: ShieldCheck },
+        { id: 'database', label: 'Dữ liệu', icon: Database },
+        { id: 'logs', label: 'Nhật ký', icon: Activity },
     ]
 
     return (
     <div className="animate-fade-in pb-20">
-        {/* Sticky Header */}
-        <div className="sticky top-0 z-30 -mx-4 sm:-mx-8 px-4 sm:px-8 py-4 bg-gray-50/80 dark:bg-dark-bg/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-dark-border/50 mb-8 transition-all">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 max-w-[1600px] mx-auto">
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase italic flex items-center gap-3">
-                        <Settings className="h-7 w-7 text-admin-primary" />
-                        Cài đặt hệ thống
-                    </h1>
-                    <p className="text-[13px] font-bold text-gray-400 mt-1 uppercase tracking-widest hidden sm:block">
-                        Quản lý cấu hình, bảo mật và tùy chỉnh Tech Store
-                    </p>
+        {/* Sticky Header & Tabs Container */}
+        <div className="sticky top-0 z-30 -mx-4 sm:-mx-8 bg-gray-50/80 dark:bg-dark-bg/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-dark-border/50 transition-all">
+            <div className="px-4 sm:px-8 py-4 max-w-[1600px] mx-auto">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase italic flex items-center gap-3">
+                            <Settings className="h-7 w-7 text-admin-primary" />
+                            Cài đặt hệ thống
+                        </h1>
+                        <p className="text-[13px] font-bold text-gray-400 mt-1 uppercase tracking-widest hidden sm:block">
+                            Quản lý cấu hình, bảo mật và tùy chỉnh Tech Store
+                        </p>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                        {hasChanges && (
+                            <button 
+                                onClick={handleDiscard} 
+                                className="h-[46px] px-6 bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border text-gray-600 dark:text-gray-300 font-black rounded-2xl hover:bg-gray-50 dark:hover:bg-white/10 transition-all text-[11px] uppercase tracking-widest flex items-center gap-2 shadow-sm active:scale-95"
+                            >
+                                <RefreshCcw className="h-4 w-4" />
+                                Hoàn tác
+                            </button>
+                        )}
+                        <button 
+                            onClick={handleSave} 
+                            disabled={!hasChanges || saving || loading} 
+                            className={`h-[46px] px-8 rounded-2xl font-black text-[11px] uppercase tracking-widest flex items-center gap-2 shadow-xl transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${
+                                hasChanges 
+                                    ? 'bg-admin-primary text-white shadow-admin-primary/30 hover:bg-admin-primary/90 hover:-translate-y-0.5' 
+                                    : 'bg-gray-200 dark:bg-dark-border text-gray-400 dark:text-gray-600 shadow-none'
+                            }`}
+                        >
+                            {saving ? (
+                                <div className="h-4 w-4 border-2 border-white border-t-transparent animate-spin rounded-full"></div>
+                            ) : (
+                                <Save className="h-4 w-4" />
+                            )}
+                            {saving ? 'ĐANG LƯU...' : 'LƯU THAY ĐỔI'}
+                        </button>
+                    </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                    {hasChanges && (
-                        <button 
-                            onClick={handleDiscard} 
-                            className="h-[46px] px-6 bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border text-gray-600 dark:text-gray-300 font-black rounded-2xl hover:bg-gray-50 dark:hover:bg-white/10 transition-all text-[11px] uppercase tracking-widest flex items-center gap-2 shadow-sm active:scale-95"
+                {/* Horizontal Tabs bar */}
+                <div className="mt-8 flex items-center gap-2 overflow-x-auto no-scrollbar -mb-[1px]">
+                    {allTabs.map(tab => (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)}
+                            className={`flex items-center gap-2.5 px-6 py-3 border-b-2 transition-all whitespace-nowrap group ${
+                                activeTab === tab.id 
+                                    ? 'border-admin-primary text-admin-primary font-black' 
+                                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-bold'
+                            }`}
                         >
-                            <RefreshCcw className="h-4 w-4" />
-                            Hoàn tác
+                            <tab.icon className={`h-4.5 w-4.5 transition-transform group-hover:scale-110 ${activeTab === tab.id ? 'text-admin-primary' : 'text-gray-400'}`} />
+                            <span className="text-[14px]">{tab.label}</span>
                         </button>
-                    )}
-                    <button 
-                        onClick={handleSave} 
-                        disabled={!hasChanges || saving || loading} 
-                        className={`h-[46px] px-8 rounded-2xl font-black text-[11px] uppercase tracking-widest flex items-center gap-2 shadow-xl transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${
-                            hasChanges 
-                                ? 'bg-admin-primary text-white shadow-admin-primary/30 hover:bg-admin-primary/90 hover:-translate-y-0.5' 
-                                : 'bg-gray-200 dark:bg-dark-border text-gray-400 dark:text-gray-600 shadow-none'
-                        }`}
-                    >
-                        {saving ? (
-                            <div className="h-4 w-4 border-2 border-white border-t-transparent animate-spin rounded-full"></div>
-                        ) : (
-                            <Save className="h-4 w-4" />
-                        )}
-                        {saving ? 'ĐANG LƯU...' : 'LƯU THAY ĐỔI'}
-                    </button>
+                    ))}
                 </div>
             </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-10 max-w-[1600px] mx-auto">
-            {/* Grouped Sidebar Navigation */}
-            <aside className="w-full lg:w-72 shrink-0">
-                <div className="sticky top-28 space-y-8">
-                    {tabGroups.map((group, idx) => (
-                        <div key={idx} className="space-y-3">
-                            <h3 className="px-4 text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.25em]">
-                                {group.name}
+        <div className="max-w-[1200px] mx-auto mt-12 px-4 sm:px-0">
+            <div className="animate-slide-up space-y-12 pb-10">
+                {activeTab === 'general' && <GeneralSettings 
+                        logo={logo} uploading={uploading} handleLogoChange={handleLogoChange}
+                        storeName={storeName} setStoreName={setStoreName} supportEmail={supportEmail} setSupportEmail={setSupportEmail}
+                        hotlinePhone={hotlinePhone} setHotlinePhone={setHotlinePhone} address={address} setAddress={setAddress}
+                        currency={currency} setCurrency={setCurrency} timezone={timezone} setTimezone={setTimezone}
+                        vatRate={vatRate} setVatRate={setVatRate} storeStatus={storeStatus} setStoreStatus={setStoreStatus}
+                />}
+
+                {activeTab === 'payment' && (
+                    <div className="space-y-6">
+                        <div className="bg-white dark:bg-dark-card rounded-3xl p-8 border border-gray-100 dark:border-dark-border shadow-sm">
+                            <div className="flex items-center gap-3 mb-8">
+                                <div className="p-3 bg-blue-50 dark:bg-blue-500/10 rounded-2xl text-blue-600">
+                                    <CreditCard className="h-6 w-6" />
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Cổng thanh toán</h3>
+                                    <p className="text-[13px] text-gray-500 dark:text-gray-400 font-bold mt-1 uppercase tracking-wider">Quản lý các phương thức thanh toán</p>
+                                </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* VNPAY */}
+                                <div className="bg-gray-50 dark:bg-white/5 rounded-2xl border border-transparent p-5 hover:border-admin-primary/30 transition-all">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-500/20 rounded-xl flex items-center justify-center">
+                                                <CreditCard className="h-6 w-6 text-blue-600" />
+                                            </div>
+                                            <div>
+                                                <span className="font-black text-[15px] text-gray-900 dark:text-white block">VNPAY</span>
+                                                <span className="text-[12px] text-gray-400 font-bold uppercase tracking-wider">Thanh toán trực tuyến</span>
+                                            </div>
+                                        </div>
+                                        <label className="relative inline-flex items-center cursor-pointer">
+                                            <input 
+                                                type="checkbox" 
+                                                className="sr-only peer" 
+                                                checked={paymentMethods.vnpay} 
+                                                onChange={(e) => setPaymentMethods(p => ({...p, vnpay: e.target.checked}))}
+                                            />
+                                            <div className="w-12 h-6.5 bg-gray-200 dark:bg-dark-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:transition-all peer-checked:bg-admin-primary"></div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                {/* COD */}
+                                <div className="bg-gray-50 dark:bg-white/5 rounded-2xl border border-transparent p-5 hover:border-admin-primary/30 transition-all">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-12 h-12 bg-green-100 dark:bg-green-500/20 rounded-xl flex items-center justify-center">
+                                                <DollarSign className="h-6 w-6 text-green-600" />
+                                            </div>
+                                            <div>
+                                                <span className="font-black text-[15px] text-gray-900 dark:text-white block">Thanh toán COD</span>
+                                                <span className="text-[12px] text-gray-400 font-bold uppercase tracking-wider">Khi nhận hàng</span>
+                                            </div>
+                                        </div>
+                                        <label className="relative inline-flex items-center cursor-pointer">
+                                            <input 
+                                                type="checkbox" 
+                                                className="sr-only peer" 
+                                                checked={paymentMethods.cod} 
+                                                onChange={(e) => setPaymentMethods(p => ({...p, cod: e.target.checked}))}
+                                            />
+                                            <div className="w-12 h-6.5 bg-gray-200 dark:bg-dark-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:transition-all peer-checked:bg-admin-primary"></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Payment Settings */}
+                        <div className="bg-white dark:bg-dark-card rounded-3xl p-8 border border-gray-100 dark:border-dark-border shadow-sm">
+                            <h3 className="text-lg font-black text-gray-900 dark:text-white mb-8 tracking-tight italic flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-admin-primary"></span>
+                                CHI TIẾT CẤU HÌNH
                             </h3>
-                            <div className="space-y-1">
-                                {group.tabs.map(tab => (
-                                    <button
-                                        key={tab.id}
-                                        onClick={() => setActiveTab(tab.id)}
-                                        className={`w-full flex items-center gap-3.5 px-5 py-3.5 rounded-2xl transition-all ${
-                                            activeTab === tab.id 
-                                                ? 'bg-admin-primary text-white font-black shadow-lg shadow-admin-primary/25' 
-                                                : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 font-bold'
-                                        }`}
-                                    >
-                                        <tab.icon className={`h-5 w-5 ${activeTab === tab.id ? 'text-white' : 'text-gray-400'}`} />
-                                        <span className="text-[13px] tracking-tight">{tab.label}</span>
-                                        {activeTab === tab.id && (
-                                            <ChevronRight className="h-4 w-4 ml-auto opacity-70" />
-                                        )}
-                                    </button>
-                                ))}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div className="space-y-3">
+                                    <label className="text-[12px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest pl-1">Phí COD (VND)</label>
+                                    <div className="relative group">
+                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-admin-primary transition-colors">
+                                            <DollarSign className="h-5 w-5" />
+                                        </div>
+                                        <input 
+                                            type="number" 
+                                            className="w-full h-14 pl-12 pr-6 bg-gray-50 dark:bg-white/5 border-none rounded-2xl focus:ring-2 focus:ring-admin-primary/20 font-black text-gray-900 dark:text-white outline-none transition-all text-lg" 
+                                            value={codFee}
+                                            onChange={(e) => setCodFee(e.target.value)}
+                                            placeholder="0"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-3">
+                                    <label className="text-[12px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest pl-1">Đơn hàng tối thiểu (VND)</label>
+                                    <div className="relative group">
+                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-admin-primary transition-colors">
+                                            <Activity className="h-5 w-5" />
+                                        </div>
+                                        <input 
+                                            type="number" 
+                                            className="w-full h-14 pl-12 pr-6 bg-gray-50 dark:bg-white/5 border-none rounded-2xl focus:ring-2 focus:ring-admin-primary/20 font-black text-gray-900 dark:text-white outline-none transition-all text-lg" 
+                                            value={minOrder}
+                                            onChange={(e) => setMinOrder(e.target.value)}
+                                            placeholder="0"
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    ))}
-                </div>
-            </aside>
-            
-            <div className="flex-1 min-w-0">
-                <div className="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-                    <div>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-admin-primary/10 text-admin-primary text-[10px] font-black uppercase tracking-[0.2em] mb-3">
-                           Cài đặt hệ thống
-                        </div>
-                        <h2 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-4">
-                            {[...tabGroups.flatMap(g => g.tabs)].find(t => t.id === activeTab)?.label}
-                            <span className="w-2.5 h-2.5 rounded-full bg-admin-primary animate-pulse"></span>
-                        </h2>
-                        <p className="text-gray-500 dark:text-gray-400 font-bold text-sm mt-2 max-w-2xl leading-relaxed">
-                            Cấu hình chi tiết các tham số của hệ thống. Các thay đổi sẽ được áp dụng ngay lập tức sau khi lưu.
-                        </p>
                     </div>
-                </div>
-
-                <div className="animate-slide-up space-y-12 pb-10">
-                    {activeTab === 'general' && <GeneralSettings 
-                         logo={logo} uploading={uploading} handleLogoChange={handleLogoChange}
-                         storeName={storeName} setStoreName={setStoreName} supportEmail={supportEmail} setSupportEmail={setSupportEmail}
-                         hotlinePhone={hotlinePhone} setHotlinePhone={setHotlinePhone} address={address} setAddress={setAddress}
-                         currency={currency} setCurrency={setCurrency} timezone={timezone} setTimezone={setTimezone}
-                         vatRate={vatRate} setVatRate={setVatRate} storeStatus={storeStatus} setStoreStatus={setStoreStatus}
-                    />}
-
-                        {activeTab === 'payment' && (
-                            <div className="space-y-6">
-                                <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
-                                    <div className="flex items-center gap-3 mb-6">
-                                        <div className="p-2.5 bg-blue-50 rounded-xl text-blue-600">
-                                            <CreditCard className="h-5 w-5" />
-                                        </div>
-                                        <h3 className="text-[16px] font-bold text-gray-900">Cổng thanh toán</h3>
-                                    </div>
-                                    <p className="text-[13px] text-gray-500 mb-6 font-medium">Quản lý các phương thức thanh toán khả dụng cho khách hàng</p>
-                                    
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {/* VNPAY */}
-                                        <div className="bg-white rounded-xl border border-gray-100 p-4 hover:border-admin-primary/30 transition-all">
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-                                                        <CreditCard className="h-5 w-5 text-blue-600" />
-                                                    </div>
-                                                    <div>
-                                                        <span className="font-bold text-[14px] text-gray-900 block">VNPAY</span>
-                                                        <span className="text-[12px] text-gray-400 font-medium">Cổng thanh toán trực tuyến</span>
-                                                    </div>
-                                                </div>
-                                                <label className="relative inline-flex items-center cursor-pointer">
-                                                    <input 
-                                                        type="checkbox" 
-                                                        className="sr-only peer" 
-                                                        checked={paymentMethods.vnpay} 
-                                                        onChange={(e) => setPaymentMethods(p => ({...p, vnpay: e.target.checked}))}
-                                                    />
-                                                    <div className="w-10 h-5.5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:transition-all peer-checked:bg-admin-primary"></div>
-                                                </label>
-                                            </div>
-                                        </div>
-
-                                        {/* COD */}
-                                        <div className="bg-white rounded-xl border border-gray-100 p-4 hover:border-admin-primary/30 transition-all">
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
-                                                        <DollarSign className="h-5 w-5 text-green-600" />
-                                                    </div>
-                                                    <div>
-                                                        <span className="font-bold text-[14px] text-gray-900 block">Thanh toán COD</span>
-                                                        <span className="text-[12px] text-gray-400 font-medium">Thanh toán khi nhận hàng</span>
-                                                    </div>
-                                                </div>
-                                                <label className="relative inline-flex items-center cursor-pointer">
-                                                    <input 
-                                                        type="checkbox" 
-                                                        className="sr-only peer" 
-                                                        checked={paymentMethods.cod} 
-                                                        onChange={(e) => setPaymentMethods(p => ({...p, cod: e.target.checked}))}
-                                                    />
-                                                    <div className="w-10 h-5.5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:transition-all peer-checked:bg-admin-primary"></div>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
+                )}
+                {activeTab === 'seo' && (
+                    <div className="space-y-8">
+                        <div className="bg-white dark:bg-dark-card rounded-3xl p-8 border border-gray-100 dark:border-dark-border shadow-sm">
+                            <div className="flex items-center gap-3 mb-10">
+                                <div className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl text-indigo-600">
+                                    <Globe className="h-6 w-6" />
                                 </div>
-
-                                {/* Payment Settings */}
-                                <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
-                                    <h3 className="text-[16px] font-bold text-gray-900 mb-6">Cấu hình thanh toán</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="space-y-2">
-                                            <label className="text-[12px] font-bold text-gray-500 uppercase tracking-wider pl-1">Phí COD (VND)</label>
-                                            <input 
-                                                type="number" 
-                                                className="w-full h-11 px-4 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-admin-primary/20 font-bold text-gray-900 outline-none transition-all" 
-                                                value={codFee}
-                                                onChange={(e) => setCodFee(e.target.value)}
-                                                placeholder="0"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-[12px] font-bold text-gray-500 uppercase tracking-wider pl-1">Đơn hàng tối thiểu (VND)</label>
-                                            <input 
-                                                type="number" 
-                                                className="w-full h-11 px-4 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-admin-primary/20 font-bold text-gray-900 outline-none transition-all" 
-                                                value={minOrder}
-                                                onChange={(e) => setMinOrder(e.target.value)}
-                                                placeholder="0"
-                                            />
-                                        </div>
-                                    </div>
+                                <div>
+                                    <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Cấu hình SEO</h3>
+                                    <p className="text-[13px] text-gray-500 dark:text-gray-400 font-bold mt-1 uppercase tracking-wider">Tối ưu hóa công cụ tìm kiếm</p>
                                 </div>
                             </div>
-                        )}
-                        {activeTab === 'seo' && (
-                            <div className="space-y-6">
-                                <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
-                                    <div className="flex items-center gap-3 mb-8">
-                                        <div className="p-2.5 bg-indigo-50 rounded-xl text-indigo-600">
-                                            <Globe className="h-5 w-5" />
-                                        </div>
-                                        <div>
-                                            <h3 className="text-[16px] font-bold text-gray-900">Cấu hình SEO</h3>
-                                            <p className="text-[13px] text-gray-500 font-medium">Tối ưu hóa khả năng tìm kiếm trên Google, Facebook</p>
-                                        </div>
-                                    </div>
 
-                                    <div className="grid grid-cols-1 gap-6">
-                                        <div className="space-y-2">
-                                            <label className="text-[12px] font-bold text-gray-500 uppercase tracking-wider pl-1">Meta Title mặc định</label>
-                                            <input 
-                                                type="text" 
-                                                className="w-full h-11 px-4 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-500/20 font-bold text-gray-900 transition-all outline-none" 
-                                                value={metaTitle}
-                                                onChange={(e) => setMetaTitle(e.target.value)}
-                                                placeholder="Nhập tiêu đề trang..." 
-                                            />
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <label className="text-[12px] font-bold text-gray-500 uppercase tracking-wider pl-1">Meta Description (Mô tả)</label>
-                                            <textarea 
-                                                className="w-full h-28 p-4 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-500/20 font-bold text-gray-900 transition-all outline-none resize-none" 
-                                                value={metaDescription}
-                                                onChange={(e) => setMetaDescription(e.target.value)}
-                                                placeholder="Nhập mô tả ngắn về cửa hàng của bạn..."
-                                            />
-                                        </div>
-                                    </div>
+                            <div className="grid grid-cols-1 gap-8">
+                                <div className="space-y-3">
+                                    <label className="text-[12px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest pl-1">Meta Title mặc định</label>
+                                    <input 
+                                        type="text" 
+                                        className="w-full h-14 px-6 bg-gray-50 dark:bg-white/5 border-none rounded-2xl focus:ring-2 focus:ring-indigo-500/20 font-black text-gray-900 dark:text-white transition-all outline-none text-lg" 
+                                        value={metaTitle}
+                                        onChange={(e) => setMetaTitle(e.target.value)}
+                                        placeholder="Nhập tiêu đề trang..." 
+                                    />
                                 </div>
 
-                                {/* Preview Card */}
-                                <div className="bg-[#1a1a2e] rounded-xl p-6 shadow-sm border border-gray-800">
-                                    <div className="flex items-center gap-2 mb-4">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                                        <h4 className="text-gray-400 text-[11px] font-bold uppercase tracking-wider">
-                                            Xem trước trên Google
-                                        </h4>
-                                    </div>
-                                    <div className="space-y-1">
-                                        <div className="text-[#8ab4f8] text-[16px] font-medium hover:underline cursor-pointer truncate">
-                                            {metaTitle || 'Chưa có tiêu đề'}
-                                        </div>
-                                        <div className="text-[#34a853] text-[13px] flex items-center gap-1">
-                                            https://techstore.com <span className="text-gray-500 text-[10px]">▼</span>
-                                        </div>
-                                        <div className="text-gray-400 text-[13px] leading-relaxed line-clamp-2">
-                                            {metaDescription || 'Chưa có mô tả để hiển thị kết quả tìm kiếm...'}
-                                        </div>
-                                    </div>
+                                <div className="space-y-3">
+                                    <label className="text-[12px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest pl-1">Meta Description (Mô tả)</label>
+                                    <textarea 
+                                        className="w-full h-40 p-6 bg-gray-50 dark:bg-white/5 border-none rounded-2xl focus:ring-2 focus:ring-indigo-500/20 font-bold text-gray-900 dark:text-white transition-all outline-none resize-none text-lg" 
+                                        value={metaDescription}
+                                        onChange={(e) => setMetaDescription(e.target.value)}
+                                        placeholder="Nhập mô tả ngắn về cửa hàng của bạn..."
+                                    />
                                 </div>
                             </div>
-                        )}
+                        </div>
 
-                        {activeTab === 'notification' && <BroadcastNotification />}
-                        {activeTab === 'security' && <SecuritySettings />}
-                        {activeTab === 'database' && <BackupManagement />}
-                        {activeTab === 'logs' && <SystemLogs />}
-                </div>
+                        {/* Preview Card */}
+                        <div className="bg-[#1a1a2e] rounded-3xl p-10 shadow-2xl border border-white/5 overflow-hidden relative">
+                            <div className="absolute top-0 right-0 p-8 opacity-10">
+                                <Globe className="h-32 w-32 text-white" />
+                            </div>
+                            <div className="flex items-center gap-2 mb-6">
+                                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                                <h4 className="text-gray-400 text-[11px] font-black uppercase tracking-[0.3em]">
+                                    Xem trước kết quả Google
+                                </h4>
+                            </div>
+                            <div className="space-y-2 relative z-10">
+                                <div className="text-[#8ab4f8] text-2xl font-bold hover:underline cursor-pointer decoration-2 underline-offset-4">
+                                    {metaTitle || 'Chưa có tiêu đề'}
+                                </div>
+                                <div className="text-[#34a853] text-[15px] flex items-center gap-2 font-medium">
+                                    https://techstore.com <span className="text-gray-500 text-[10px]">▼</span>
+                                </div>
+                                <div className="text-gray-400 text-lg leading-relaxed max-w-3xl line-clamp-2">
+                                    {metaDescription || 'Chưa có mô tả để hiển thị kết quả tìm kiếm...'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === 'notification' && <BroadcastNotification />}
+                {activeTab === 'security' && <SecuritySettings />}
+                {activeTab === 'database' && <BackupManagement />}
+                {activeTab === 'logs' && <SystemLogs />}
             </div>
         </div>
     </div>
