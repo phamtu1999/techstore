@@ -47,12 +47,8 @@ export const useOrders = () => {
   }, [debouncedSearch, pagination.size, statusFilter]);
 
   const fetchSummary = useCallback(async () => {
-    try {
-      const response = await api.get('/admin/orders/summary');
-      setSummary(response.data.result || { totalOrders: 0, totalRevenue: 0, pendingOrders: 0 });
-    } catch (error) {
-      console.error(error);
-    }
+    // Backend doesn't have this endpoint yet, using defaults
+    setSummary({ totalOrders: 0, totalRevenue: 0, pendingOrders: 0 });
   }, []);
 
   useEffect(() => {

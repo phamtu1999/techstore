@@ -45,12 +45,8 @@ export const useUsers = () => {
   }, [debouncedSearch, pagination.size]);
 
   const fetchSummary = useCallback(async () => {
-    try {
-      const response = await api.get('/admin/users/summary');
-      setSummary(response.data.result || { totalUsers: 0, newUsers: 0, activeUsers: 0 });
-    } catch (error) {
-      console.error(error);
-    }
+    // Backend doesn't have this endpoint yet, using defaults
+    setSummary({ totalUsers: 0, newUsers: 0, activeUsers: 0 });
   }, []);
 
   useEffect(() => {

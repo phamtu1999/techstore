@@ -18,15 +18,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/orders")
 @RequiredArgsConstructor
+@CrossOrigin
 public class OrderController {
 
     private final OrderQueryService orderQueryService;
     private final OrderCommandService orderCommandService;
 
     @LogAction("ORDER_CHECKOUT")
-    @PostMapping("/checkout")
+    @PostMapping("/api/v1/orders/checkout")
     public ApiResponse<String> checkout(
             @AuthenticationPrincipal User user,
             @RequestBody CheckoutRequest request
@@ -37,7 +37,7 @@ public class OrderController {
                 .build();
     }
 
-    @GetMapping("/my-orders")
+    @GetMapping("/api/v1/orders/my-orders")
     public ApiResponse<Page<OrderResponse>> getMyOrders(
             @AuthenticationPrincipal User user,
             @RequestParam(required = false) OrderStatus status,
@@ -48,7 +48,7 @@ public class OrderController {
                 .build();
     }
 
-    @GetMapping
+    @GetMapping({"/api/v1/orders", "/api/v1/admin/orders"})
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'SUPER_ADMIN')")
     public ApiResponse<Page<OrderResponse>> getAllOrders(Pageable pageable) {
         return ApiResponse.<Page<OrderResponse>>builder()
@@ -57,7 +57,7 @@ public class OrderController {
     }
 
     @LogAction("UPDATE_ORDER_STATUS")
-    @PutMapping("/{orderId}/status")
+    @PutMapping({"/api/v1/orders/{orderId}/status", "/api/v1/admin/orders/{orderId}/status"})
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'SUPER_ADMIN')")
     public ApiResponse<OrderResponse> updateOrderStatus(
             @PathVariable String orderId,
@@ -69,7 +69,7 @@ public class OrderController {
                 .build();
     }
 
-    @PostMapping("/{orderId}/confirm-receipt")
+    @PostMapping("/api/v1/orders/{orderId}/confirm-receipt")
     public ApiResponse<OrderResponse> confirmReceipt(
             @PathVariable String orderId,
             @AuthenticationPrincipal User user
@@ -80,7 +80,7 @@ public class OrderController {
                 .build();
     }
 
-    @GetMapping("/{orderId}")
+    @GetMapping("/api/v1/orders/{orderId}")
     public ApiResponse<OrderResponse> getOrderById(
             @PathVariable String orderId,
             @AuthenticationPrincipal User user
@@ -91,7 +91,7 @@ public class OrderController {
     }
 
     @LogAction("CANCEL_ORDER")
-    @PostMapping("/{orderId}/cancel")
+    @PostMapping("/api/v1/orders/{orderId}/cancel")
     public ApiResponse<OrderResponse> cancelOrder(
             @PathVariable String orderId,
             @AuthenticationPrincipal User user
@@ -102,7 +102,7 @@ public class OrderController {
                 .build();
     }
 
-    @PostMapping("/{orderId}/reorder")
+    @PostMapping("/api/v1/orders/{orderId}/reorder")
     public ApiResponse<ReorderResponse> reorder(
             @PathVariable String orderId,
             @AuthenticationPrincipal User user
