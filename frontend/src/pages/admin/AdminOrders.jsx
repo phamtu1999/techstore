@@ -48,6 +48,38 @@ const AdminOrders = () => {
 
   // Selection States
   const [selectedOrders, setSelectedOrders] = useState([])
+
+  const filteredOrders = useMemo(() => orders.filter(order => {
+    if (!order) return false
+    if (statusFilter && order.status !== statusFilter) return false
+    if (searchTerm) {
+      const search = searchTerm.toLowerCase()
+      const orderNum = order.orderNumber ? order.orderNumber.toLowerCase() : ''
+      const name = order.receiverName ? order.receiverName.toLowerCase() : ''
+      const phone = order.receiverPhone || ''
+      
+      if (!orderNum.includes(search) &&
+          !name.includes(search) &&
+          !phone.includes(search)) return false
+    }
+    if (dateFrom && order.createdAt && new Date(order.createdAt) < new Date(dateFrom)) return false
+    if (dateTo && order.createdAt) {
+      const toDate = new Date(dateTo)
+      toDate.setHours(23, 59, 59, 999)
+      if (new Date(order.createdAt) > toDate) return false
+    }
+    if (minAmount && order.totalAmount < parseFloat(minAmount)) return false
+    if (maxAmount && order.totalAmount > parseFloat(maxAmount)) return false
+    return true
+  }), [orders, statusFilter, searchTerm, dateFrom, dateTo, minAmount, maxAmount])
+
+  const stats = useMemo(() => ({
+    pending: orders.filter(o => o.status === 'PENDING').length,
+    confirmed: orders.filter(o => o.status === 'CONFIRMED').length,
+    shipping: orders.filter(o => o.status === 'SHIPPING').length,
+    delivered: orders.filter(o => o.status === 'DELIVERED').length,
+    cancelled: orders.filter(o => o.status === 'CANCELLED').length,
+  }), [orders])
   
   const handleSelectRow = useCallback((id, checked) => {
     if (checked) setSelectedOrders(prev => [...prev, id])
@@ -232,37 +264,6 @@ const AdminOrders = () => {
     }
   }
 
-  const filteredOrders = useMemo(() => orders.filter(order => {
-    if (!order) return false
-    if (statusFilter && order.status !== statusFilter) return false
-    if (searchTerm) {
-      const search = searchTerm.toLowerCase()
-      const orderNum = order.orderNumber ? order.orderNumber.toLowerCase() : ''
-      const name = order.receiverName ? order.receiverName.toLowerCase() : ''
-      const phone = order.receiverPhone || ''
-      
-      if (!orderNum.includes(search) &&
-          !name.includes(search) &&
-          !phone.includes(search)) return false
-    }
-    if (dateFrom && order.createdAt && new Date(order.createdAt) < new Date(dateFrom)) return false
-    if (dateTo && order.createdAt) {
-      const toDate = new Date(dateTo)
-      toDate.setHours(23, 59, 59, 999)
-      if (new Date(order.createdAt) > toDate) return false
-    }
-    if (minAmount && order.totalAmount < parseFloat(minAmount)) return false
-    if (maxAmount && order.totalAmount > parseFloat(maxAmount)) return false
-    return true
-  }), [orders, statusFilter, searchTerm, dateFrom, dateTo, minAmount, maxAmount])
-
-  const stats = useMemo(() => ({
-    pending: orders.filter(o => o.status === 'PENDING').length,
-    confirmed: orders.filter(o => o.status === 'CONFIRMED').length,
-    shipping: orders.filter(o => o.status === 'SHIPPING').length,
-    delivered: orders.filter(o => o.status === 'DELIVERED').length,
-    cancelled: orders.filter(o => o.status === 'CANCELLED').length,
-  }), [orders])
 
   const orderColumns = [
     { 
