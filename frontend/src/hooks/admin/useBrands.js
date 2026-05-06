@@ -51,7 +51,7 @@ export const useBrands = () => {
 
   const handleToggleStatus = async (id, currentStatus) => {
     try {
-      await api.put(`/admin/brands/${id}/status`, { active: !currentStatus });
+      await api.put(`/admin/brands/${id}/status`);
       fireSuccess('Thành công', currentStatus ? 'Thương hiệu đã được ẩn!' : 'Thương hiệu đã được hiển thị!');
       fetchBrands();
     } catch (error) {

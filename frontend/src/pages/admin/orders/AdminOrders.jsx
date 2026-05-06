@@ -2,8 +2,8 @@ import React from 'react';
 import AdminPageHeader from '../../components/admin/shared/AdminPageHeader';
 import { formatCurrency } from '../../utils/format';
 import { useOrders } from '../../hooks/admin/useOrders';
-import OrdersStats from './orders/OrdersStats';
-import OrdersTable from './orders/OrdersTable';
+import OrdersStats from './OrdersStats';
+import OrdersTable from './OrdersTable';
 
 const AdminOrders = () => {
   const {

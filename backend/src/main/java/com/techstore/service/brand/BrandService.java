@@ -45,6 +45,7 @@ public class BrandService {
                 .slug(slug)
                 .logoUrl(request.getLogoUrl())
                 .description(request.getDescription())
+                .active(request.getActive() != null ? request.getActive() : true)
                 .build();
 
         return mapToResponse(brandRepository.save(brand));
@@ -65,6 +66,9 @@ public class BrandService {
         brand.setSlug(slug);
         brand.setLogoUrl(request.getLogoUrl());
         brand.setDescription(request.getDescription());
+        if (request.getActive() != null) {
+            brand.setActive(request.getActive());
+        }
 
         return mapToResponse(brandRepository.save(brand));
     }
@@ -78,6 +82,15 @@ public class BrandService {
         brandRepository.deleteById(id);
     }
 
+    @Transactional
+    @CacheEvict(value = "brands", allEntries = true)
+    public BrandResponse toggleStatus(String id) {
+        Brand brand = brandRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy thương hiệu với ID: " + id));
+        brand.setActive(!brand.isActive());
+        return mapToResponse(brandRepository.save(brand));
+    }
+
     private BrandResponse mapToResponse(Brand brand) {
         return BrandResponse.builder()
                 .id(brand.getId())
@@ -85,6 +98,7 @@ public class BrandService {
                 .slug(brand.getSlug())
                 .logoUrl(brand.getLogoUrl())
                 .description(brand.getDescription())
+                .active(brand.isActive())
                 .build();
     }
 }

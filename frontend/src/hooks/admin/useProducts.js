@@ -106,7 +106,7 @@ export const useProducts = () => {
 
   const handleToggleStatus = async (id, currentStatus) => {
     try {
-      await api.put(`/admin/products/${id}/status`, { active: !currentStatus });
+      await api.put(`/admin/products/${id}/status`);
       fireSuccess('Thành công', currentStatus ? 'Sản phẩm đã được ẩn!' : 'Sản phẩm đã được hiển thị!');
       fetchProducts(pagination.page);
     } catch (error) {

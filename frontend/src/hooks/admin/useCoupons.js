@@ -40,14 +40,14 @@ export const useCoupons = () => {
         if (coupon) {
             setEditingCoupon(coupon)
             setFormData({
-                code: coupon.code,
-                discountType: coupon.discountType,
-                discountValue: coupon.discountValue.toString(),
-                minPurchase: coupon.minPurchase.toString(),
+                code: coupon.code || '',
+                discountType: coupon.discountType || 'FIXED_AMOUNT',
+                discountValue: (coupon.discountValue ?? '').toString(),
+                minPurchase: (coupon.minPurchase ?? '0').toString(),
                 maxDiscount: coupon.maxDiscount?.toString() || '',
-                usageLimit: coupon.usageLimit.toString(),
+                usageLimit: (coupon.usageLimit ?? '0').toString(),
                 expirationDate: coupon.expirationDate ? coupon.expirationDate.split('T')[0] : '',
-                active: coupon.active
+                active: coupon.active ?? true
             })
         } else {
             setEditingCoupon(null)

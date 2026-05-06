@@ -18,4 +18,5 @@ public class BrandRequest {
     String logoUrl;
 
     String description;
+    Boolean active;
 }

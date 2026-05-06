@@ -61,4 +61,46 @@ public class LogController {
                 .result(logs)
                 .build();
     }
+
+    @GetMapping("/export")
+    @PreAuthorize("hasRole('ADMIN')")
+    public org.springframework.http.ResponseEntity<byte[]> exportLogs(
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate
+    ) {
+        LocalDateTime start = startDate != null ? startDate : LocalDateTime.now().minusDays(90);
+        LocalDateTime end = endDate != null ? endDate : LocalDateTime.now();
+        
+        java.util.List<com.techstore.entity.settings.SystemLog> logs;
+        boolean isAllStatus = status == null || status.equalsIgnoreCase("ALL");
+        
+        if (!isAllStatus) {
+            logs = logRepository.findByStatusAndTimestampBetween(status, start, end, Pageable.unpaged()).getContent();
+        } else {
+            logs = logRepository.findByTimestampBetween(start, end, Pageable.unpaged()).getContent();
+        }
+        
+        StringBuilder csv = new StringBuilder();
+        csv.append("ID,Timestamp,Username,Action,Status,IP Address,Message\n");
+        
+        for (com.techstore.entity.settings.SystemLog log : logs) {
+            csv.append(String.format("%s,%s,%s,%s,%s,%s,\"%s\"\n",
+                log.getId(),
+                log.getTimestamp(),
+                log.getUsername(),
+                log.getAction(),
+                log.getStatus(),
+                log.getIpAddress(),
+                log.getMessage().replace("\"", "'")
+            ));
+        }
+        
+        byte[] bytes = csv.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        
+        return org.springframework.http.ResponseEntity.ok()
+                .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=system_logs.csv")
+                .contentType(org.springframework.http.MediaType.parseMediaType("text/csv"))
+                .body(bytes);
+    }
 }

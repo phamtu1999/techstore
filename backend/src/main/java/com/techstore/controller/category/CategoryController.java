@@ -62,12 +62,21 @@ public class CategoryController {
                 .build();
     }
 
-    @DeleteMapping("/api/v1/admin/categories/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'SUPER_ADMIN')")
+    @DeleteMapping("/api/v1/admin/categories/{id}")
     public ApiResponse<Void> deleteCategory(@PathVariable String id) {
         categoryService.deleteCategory(id);
         return ApiResponse.<Void>builder()
                 .message("Xóa danh mục thành công")
+                .build();
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'SUPER_ADMIN')")
+    @PutMapping("/api/v1/admin/categories/{id}/status")
+    public ApiResponse<CategoryResponse> toggleCategoryStatus(@PathVariable String id) {
+        return ApiResponse.<CategoryResponse>builder()
+                .message("Cập nhật trạng thái thành công")
+                .result(categoryService.toggleStatus(id))
                 .build();
     }
 }

@@ -49,10 +49,21 @@ export const useCategories = () => {
     }
   };
 
+  const handleToggleStatus = async (id, currentStatus) => {
+    try {
+      await api.put(`/admin/categories/${id}/status`);
+      fireSuccess('Thành công', currentStatus ? 'Danh mục đã được ẩn!' : 'Danh mục đã được hiển thị!');
+      fetchCategories();
+    } catch (error) {
+      fireError(error, 'Lỗi cập nhật trạng thái');
+    }
+  };
+
   return {
     loading,
     categories,
     handleDelete,
+    handleToggleStatus,
     fetchCategories
   };
 };

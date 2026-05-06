@@ -16,19 +16,24 @@ import Livestream from './pages/Livestream'
 import LivestreamDetail from './pages/LivestreamDetail'
 import ForgotPassword from './pages/auth/ForgotPassword'
 import ResetPassword from './pages/auth/ResetPassword'
-import Dashboard from './pages/admin/Dashboard'
-import AdminProducts from './pages/admin/AdminProducts'
-import AdminProductForm from './pages/admin/AdminProductForm'
-import AdminOrders from './pages/admin/AdminOrders'
-import AdminCategories from './pages/admin/AdminCategories'
-import Analytics from './pages/admin/Analytics'
-import AdminUsers from './pages/admin/AdminUsers'
-import AdminCoupons from './pages/admin/AdminCoupons'
-import AdminSettings from './pages/admin/AdminSettings'
-import AdminInventory from './pages/admin/AdminInventory'
-import AdminLivestreams from './pages/admin/AdminLivestreams'
-import AdminBrands from './pages/admin/AdminBrands'
-import AdminLogs from './pages/admin/AdminLogs'
+
+// Admin Pages
+import Dashboard from './pages/admin/dashboard/Dashboard'
+import AdminProducts from './pages/admin/products/AdminProducts'
+import AdminProductForm from './pages/admin/products/AdminProductForm'
+import AdminBrands from './pages/admin/brands/AdminBrands'
+import AdminBrandForm from './pages/admin/brands/AdminBrandForm'
+import AdminCategories from './pages/admin/categories/AdminCategories'
+import AdminCategoryForm from './pages/admin/categories/AdminCategoryForm'
+import Analytics from './pages/admin/analytics/Analytics'
+import AdminUsers from './pages/admin/users/AdminUsers'
+import AdminOrders from './pages/admin/orders/AdminOrders'
+import AdminCoupons from './pages/admin/coupons/AdminCoupons'
+import AdminSettings from './pages/admin/settings/AdminSettings'
+import AdminInventory from './pages/admin/inventory/AdminInventory'
+import AdminLivestreams from './pages/admin/livestreams/AdminLivestreams'
+import AdminLogs from './pages/admin/logs/AdminLogs'
+
 import Profile from './pages/user/Profile'
 import OrbisNft from './pages/OrbisNft'
 import PaymentResult from './pages/user/PaymentResult'
@@ -83,12 +88,19 @@ function App() {
         <Route path="/admin" element={isAdmin ? <AdminLayout /> : <Navigate to={`/login?redirect=${location.pathname}`} replace />}>
           <Route index element={<Dashboard />} />
           <Route path="products" element={<AdminProducts />} />
-          <Route path="products/new" element={<AdminProductForm />} />
-          <Route path="products/:id/edit" element={<AdminProductForm />} />
-          <Route path="orders" element={<AdminOrders />} />
-          <Route path="inventory" element={<AdminInventory />} />
-          <Route path="categories" element={<AdminCategories />} />
+          <Route path="products/add" element={<AdminProductForm />} />
+          <Route path="products/edit/:id" element={<AdminProductForm />} />
+          
           <Route path="brands" element={<AdminBrands />} />
+          <Route path="brands/add" element={<AdminBrandForm />} />
+          <Route path="brands/edit/:id" element={<AdminBrandForm />} />
+
+          <Route path="categories" element={<AdminCategories />} />
+          <Route path="categories/add" element={<AdminCategoryForm />} />
+          <Route path="categories/edit/:id" element={<AdminCategoryForm />} />
+          
+          <Route path="inventory" element={<AdminInventory />} />
+          <Route path="orders" element={<AdminOrders />} />
           <Route path="analytics" element={<Analytics />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="coupons" element={<AdminCoupons />} />

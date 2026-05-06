@@ -1,8 +1,8 @@
 import React from 'react';
 import AdminPageHeader from '../../components/admin/shared/AdminPageHeader';
 import { useUsers } from '../../hooks/admin/useUsers';
-import UsersStats from './users/UsersStats';
-import UsersTable from './users/UsersTable';
+import UsersStats from './UsersStats';
+import UsersTable from './UsersTable';
 
 const AdminUsers = () => {
   const {

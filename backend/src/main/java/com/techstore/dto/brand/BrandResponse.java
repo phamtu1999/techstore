@@ -18,4 +18,5 @@ public class BrandResponse {
     String slug;
     String logoUrl;
     String description;
+    boolean active;
 }

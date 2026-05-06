@@ -92,10 +92,17 @@ public class CategoryService {
     public void deleteCategory(String id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.ENTITY_NOT_FOUND));
-        
-        // Instead of hard delete, we set active to false (soft delete/hide)
         category.setActive(false);
         categoryRepository.save(category);
+    }
+
+    @Transactional
+    @CacheEvict(value = {"categories", "products_v2"}, allEntries = true)
+    public CategoryResponse toggleStatus(String id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.ENTITY_NOT_FOUND));
+        category.setActive(!category.isActive());
+        return mapToFullDto(categoryRepository.save(category));
     }
 
     @Cacheable(value = "categories", key = "'tree'")

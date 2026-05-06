@@ -115,4 +115,15 @@ public class ProductAdminController {
                 .result("OK")
                 .build();
     }
+
+    @LogAction("TOGGLE_PRODUCT_STATUS")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'SUPER_ADMIN')")
+    @PutMapping("/{id}/status")
+    public ApiResponse<String> toggleProductStatus(@PathVariable String id) {
+        productAdminService.toggleStatus(id);
+        return ApiResponse.<String>builder()
+                .message("Cập nhật trạng thái thành công")
+                .result("OK")
+                .build();
+    }
 }

@@ -14,7 +14,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Command,
-  TerminalSquare
+  TerminalSquare,
+  Download,
+  Share2
 } from 'lucide-react';
 import AdminPageHeader from '../../components/admin/shared/AdminPageHeader';
 import AdminTable from '../../components/admin/AdminTable';
@@ -83,13 +85,42 @@ const AdminLogs = () => {
         setShowModal(true);
     };
 
+    const handleExport = async () => {
+        try {
+            const params = {
+                status: statusFilter === 'All' ? 'ALL' : statusFilter,
+                startDate: startDate ? `${startDate}T00:00:00.000` : undefined,
+                endDate: endDate ? `${endDate}T23:59:59.999` : undefined
+            };
+            const response = await logsAPI.exportLogs(params);
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `system_logs_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (error) {
+            console.error('Failed to export logs:', error);
+        }
+    };
+
     return (
         <div className="space-y-6 animate-fade-in mb-10">
-            <AdminPageHeader 
-                title="System" 
-                accentTitle="Logs"
-                subtitle="Trung tâm điều tra và truy vết hoạt động hệ thống theo thời gian thực."
-            />
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <AdminPageHeader 
+                    title="System" 
+                    accentTitle="Logs"
+                    subtitle="Trung tâm điều tra và truy vết hoạt động hệ thống theo thời gian thực."
+                />
+                <button 
+                    onClick={handleExport}
+                    className="flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-200 active:scale-95"
+                >
+                    <Download className="h-5 w-5" />
+                    XUẤT BÁO CÁO
+                </button>
+            </div>
 
             {/* Filter Section */}
             <div className="bg-white dark:bg-dark-card rounded-[2rem] shadow-xl border border-slate-100 dark:border-dark-border overflow-hidden">

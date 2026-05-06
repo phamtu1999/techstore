@@ -59,12 +59,21 @@ public class BrandController {
                 .build();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'SUPER_ADMIN')")
     @DeleteMapping("/api/v1/admin/brands/{id}")
     public ApiResponse<Void> deleteBrand(@PathVariable String id) {
         brandService.deleteBrand(id);
         return ApiResponse.<Void>builder()
                 .message("Xóa thương hiệu thành công")
+                .build();
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'SUPER_ADMIN')")
+    @PutMapping("/api/v1/admin/brands/{id}/status")
+    public ApiResponse<BrandResponse> toggleBrandStatus(@PathVariable String id) {
+        return ApiResponse.<BrandResponse>builder()
+                .message("Cập nhật trạng thái thành công")
+                .result(brandService.toggleStatus(id))
                 .build();
     }
 }

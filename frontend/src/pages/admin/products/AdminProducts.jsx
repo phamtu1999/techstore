@@ -1,10 +1,11 @@
 import React from 'react';
 import { Plus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import AdminPageHeader from '../../components/admin/shared/AdminPageHeader';
 import { formatCurrency } from '../../utils/format';
 import { useProducts } from '../../hooks/admin/useProducts';
-import ProductsStats from './products/ProductsStats';
-import ProductsTable from './products/ProductsTable';
+import ProductsStats from './ProductsStats';
+import ProductsTable from './ProductsTable';
 
 const AdminProducts = () => {
   const {
@@ -21,9 +22,10 @@ const AdminProducts = () => {
     handleToggleStatus
   } = useProducts();
 
+  const navigate = useNavigate();
   const headerRight = (
     <button 
-      onClick={() => window.location.href = '/admin/products/add'}
+      onClick={() => navigate('/admin/products/add')}
       className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-primary-600/20 active:scale-95"
     >
       <Plus className="w-5 h-5" />

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Search, Edit, Trash2, Eye, EyeOff, Box, Tag, Layers } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import AdminTable from '../../../components/admin/AdminTable';
 import AdminPagination from '../../../components/admin/shared/AdminPagination';
 import AdminPill from '../../../components/admin/shared/AdminPill';
@@ -21,6 +22,7 @@ const ProductsTable = ({
   handleToggleStatus,
   formatCurrency
 }) => {
+  const navigate = useNavigate();
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       <div className="p-6 border-b border-gray-50 flex flex-col md:flex-row justify-between items-center gap-4">
@@ -121,7 +123,7 @@ const ProductsTable = ({
         actions={(row, closeDropdown) => (
           <div className="space-y-1">
             <button 
-              onClick={() => { window.location.href = `/admin/products/edit/${row.id}`; closeDropdown?.() }}
+              onClick={() => { navigate(`/admin/products/edit/${row.id}`); closeDropdown?.() }}
               className="w-full px-4 py-2.5 text-left text-[13px] font-bold text-secondary-700 hover:bg-gray-50 flex items-center gap-3 transition-colors"
             >
               <Edit className="h-4 w-4 text-primary-500" /> Chỉnh sửa sản phẩm
@@ -185,7 +187,7 @@ const ProductsTable = ({
 
               <div className="flex gap-2">
                 <button 
-                  onClick={() => { window.location.href = `/admin/products/edit/${row.id}` }}
+                  onClick={() => { navigate(`/admin/products/edit/${row.id}`) }}
                   className="flex-1 flex items-center justify-center gap-1.5 text-[10px] font-black text-primary-600 bg-primary-50 dark:bg-primary-500/5 px-3 py-2 rounded-xl active:scale-95 transition-all uppercase tracking-wider"
                 >
                   <Edit className="w-3.5 h-3.5" />

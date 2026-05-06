@@ -1,9 +1,11 @@
 import React from 'react';
 import { Edit, Trash2, Tag, Eye, EyeOff } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import AdminTable from '../../../components/admin/AdminTable';
 import AdminPill from '../../../components/admin/shared/AdminPill';
 
 const BrandsTable = ({ brands, loading, handleDelete, handleToggleStatus }) => {
+  const navigate = useNavigate();
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       <AdminTable 
@@ -43,7 +45,7 @@ const BrandsTable = ({ brands, loading, handleDelete, handleToggleStatus }) => {
         actions={(row, closeDropdown) => (
           <div className="space-y-1">
             <button 
-              onClick={() => { window.location.href = `/admin/brands/edit/${row.id}`; closeDropdown?.() }}
+              onClick={() => { navigate(`/admin/brands/edit/${row.id}`); closeDropdown?.() }}
               className="w-full px-4 py-2.5 text-left text-[13px] font-bold text-secondary-700 hover:bg-gray-50 flex items-center gap-3 transition-colors"
             >
               <Edit className="h-4 w-4 text-primary-500" /> Chỉnh sửa

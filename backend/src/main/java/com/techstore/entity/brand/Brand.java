@@ -25,4 +25,7 @@ public class Brand extends BaseEntity {
     private String logoUrl;
 
     private String description;
+    
+    @Builder.Default
+    private boolean active = true;
 }

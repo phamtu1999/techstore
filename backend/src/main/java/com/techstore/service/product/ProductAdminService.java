@@ -172,6 +172,15 @@ public class ProductAdminService {
         productRepository.deleteById(id);
     }
 
+    @Transactional
+    @CacheEvict(value = {"products_v3", "admin_products_v1", "product_detail_v3", "product_detail_id_v1", "brands"}, allEntries = true)
+    public void toggleStatus(String id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.ENTITY_NOT_FOUND));
+        product.setActive(!product.isActive());
+        productRepository.save(product);
+    }
+
     private Brand resolveBrand(ProductRequest request) {
         if (request.getBrandId() != null && !request.getBrandId().isBlank()) {
             return brandRepository.findById(request.getBrandId())
