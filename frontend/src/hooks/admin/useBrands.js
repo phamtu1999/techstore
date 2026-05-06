@@ -10,7 +10,7 @@ export const useBrands = () => {
   const fetchBrands = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await api.get('/admin/brands/all');
+      const response = await api.get('/admin/brands');
       setBrands(response.data.result || []);
     } catch (error) {
       console.error(error);

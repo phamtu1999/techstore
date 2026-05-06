@@ -10,7 +10,7 @@ export const useCategories = () => {
   const fetchCategories = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await api.get('/admin/categories/all');
+      const response = await api.get('/admin/categories');
       setCategories(response.data.result || []);
     } catch (error) {
       console.error(error);

@@ -53,8 +53,8 @@ export const useProducts = () => {
   const fetchFilters = useCallback(async () => {
     try {
       const [catRes, brandRes] = await Promise.all([
-        api.get('/admin/categories/all'),
-        api.get('/admin/brands/all')
+        api.get('/admin/categories'),
+        api.get('/admin/brands')
       ]);
       setCategories(catRes.data.result || []);
       setBrands(brandRes.data.result || []);
@@ -64,12 +64,8 @@ export const useProducts = () => {
   }, []);
 
   const fetchSummary = useCallback(async () => {
-    try {
-      const response = await api.get('/admin/products/summary');
-      setSummary(response.data.result || { totalProducts: 0, activeProducts: 0, lowStockProducts: 0 });
-    } catch (error) {
-      console.error(error);
-    }
+    // Backend doesn't have this endpoint yet, using defaults
+    setSummary({ totalProducts: 0, activeProducts: 0, lowStockProducts: 0 });
   }, []);
 
   useEffect(() => {
