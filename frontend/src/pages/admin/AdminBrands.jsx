@@ -23,6 +23,8 @@ const AdminBrands = () => {
     slug: ''
   })
   const [uploading, setUploading] = useState(false)
+  const [activeTab, setActiveTab] = useState('manual')
+  const [jsonInput, setJsonInput] = useState('')
 
   useEffect(() => {
     fetchBrands()
@@ -47,7 +49,26 @@ const AdminBrands = () => {
       logoUrl: '', 
       slug: ''
     })
+    setActiveTab('manual')
+    setJsonInput('')
     setShowModal(true)
+  }
+
+  const handleJsonParse = () => {
+    try {
+      const data = JSON.parse(jsonInput)
+      setFormData(prev => ({
+        ...prev,
+        name: data.name || prev.name,
+        description: data.description || prev.description,
+        logoUrl: data.logoUrl || prev.logoUrl,
+        slug: data.slug || data.name?.toLowerCase().replace(/\s+/g, '-') || prev.slug
+      }))
+      fireSuccess('Phân tích JSON thành công', '', { toast: true, position: 'top-end', timer: 2000 })
+      setActiveTab('manual')
+    } catch (err) {
+      fireError({ response: { data: { message: 'JSON không hợp lệ. Vui lòng kiểm tra lại.' } } })
+    }
   }
 
   const handleEdit = (brand) => {
@@ -323,9 +344,29 @@ const AdminBrands = () => {
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
           <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-xl overflow-hidden animate-slide-up border border-gray-100">
             <div className="px-8 py-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-              <h2 className="text-[18px] font-black text-gray-900 tracking-tight uppercase">
-                {editingBrand ? 'Cập nhật thương hiệu' : 'Thêm thương hiệu mới'}
-              </h2>
+              <div className="flex flex-col gap-1">
+                <h2 className="text-[18px] font-black text-gray-900 tracking-tight uppercase">
+                  {editingBrand ? 'Cập nhật thương hiệu' : 'Thêm thương hiệu mới'}
+                </h2>
+                {!editingBrand && (
+                  <div className="flex bg-gray-100 p-0.5 rounded-lg w-fit">
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('manual')}
+                      className={`px-4 py-1 rounded-md text-[11px] font-black uppercase transition-all ${activeTab === 'manual' ? 'bg-white text-primary-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                    >
+                      Thủ công
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('json')}
+                      className={`px-4 py-1 rounded-md text-[11px] font-black uppercase transition-all ${activeTab === 'json' ? 'bg-white text-primary-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                    >
+                      Nhập JSON
+                    </button>
+                  </div>
+                )}
+              </div>
               <button 
                 onClick={() => setShowModal(false)} 
                 className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded-full transition-all"
@@ -334,7 +375,50 @@ const AdminBrands = () => {
               </button>
             </div>
             
-            <form onSubmit={handleSubmit} className="p-8 space-y-6">
+            {activeTab === 'json' && !editingBrand ? (
+              <div className="p-8 space-y-6 animate-fade-in">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest">Dữ liệu JSON</label>
+                    <button 
+                      type="button"
+                      onClick={() => setJsonInput(JSON.stringify({
+                        name: "Samsung",
+                        slug: "samsung",
+                        description: "Tập đoàn công nghệ hàng đầu thế giới",
+                        logoUrl: "https://example.com/samsung.png"
+                      }, null, 2))}
+                      className="text-[10px] font-black text-primary-600 uppercase hover:underline"
+                    >
+                      Dùng mẫu
+                    </button>
+                  </div>
+                  <textarea 
+                    className="w-full min-h-[300px] p-6 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:border-primary-600/30 focus:bg-white transition-all outline-none font-mono text-[13px] leading-relaxed"
+                    placeholder='{ "name": "Apple", ... }'
+                    value={jsonInput}
+                    onChange={(e) => setJsonInput(e.target.value)}
+                  />
+                </div>
+                <div className="flex gap-4">
+                  <button 
+                    type="button" 
+                    onClick={() => setShowModal(false)} 
+                    className="flex-1 h-12 bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition-all text-[14px] uppercase"
+                  >
+                    Hủy bỏ
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={handleJsonParse}
+                    className="flex-[2] h-12 bg-primary-600 text-white font-bold rounded-xl hover:bg-primary-700 shadow-lg shadow-primary-600/20 transition-all text-[14px] uppercase"
+                  >
+                    Phân tích & Điền form
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="p-8 space-y-6 animate-fade-in">
               <div className="space-y-5">
                 <div className="space-y-2">
                   <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest">
@@ -421,6 +505,7 @@ const AdminBrands = () => {
                 </button>
               </div>
             </form>
+          )}
           </div>
         </div>
       )}
