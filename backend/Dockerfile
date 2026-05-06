@@ -14,7 +14,7 @@ FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends postgresql-client-17 \
+    && apt-get install -y --no-install-recommends postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /app/target/backend-0.0.1-SNAPSHOT.jar /app/backend.jar
