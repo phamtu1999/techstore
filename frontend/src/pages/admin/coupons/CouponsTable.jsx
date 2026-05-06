@@ -1,6 +1,6 @@
 import { Ticket, Calendar } from 'lucide-react'
-import AdminTable from '../../admin/AdminTable'
-import AdminPill from '../../admin/shared/AdminPill'
+import AdminTable from '../../../components/admin/AdminTable'
+import AdminPill from '../../../components/admin/shared/AdminPill'
 import { formatCurrency } from '../../../utils/format'
 
 const CouponsTable = ({ 
