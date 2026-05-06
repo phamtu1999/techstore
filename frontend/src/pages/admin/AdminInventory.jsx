@@ -15,11 +15,10 @@ import Swal from 'sweetalert2'
 import { useDebounce } from '../../hooks/useDebounce'
 import { fireError, fireSuccess } from '../../utils/swalError'
 import { getApiErrorMessage } from '../../utils/apiError'
-import AdminInventoryStockRow from '../../components/admin/inventory/AdminInventoryStockRow'
-import AdminInventoryHistoryRow from '../../components/admin/inventory/AdminInventoryHistoryRow'
 import AdminPageHeader from '../../components/admin/shared/AdminPageHeader'
 import AdminPagination from '../../components/admin/shared/AdminPagination'
 import AdminStatsCard from '../../components/admin/shared/AdminStatsCard'
+import AdminTable from '../../components/admin/AdminTable'
 
 const extractPaginatedPayload = (payload) => {
   const visited = new Set()
@@ -237,14 +236,6 @@ const AdminInventory = () => {
     setPagination(p => ({ ...p, page: 0 }))
   }, [])
 
-  const handleSelectAll = (e) => {
-    if (e.target.checked) {
-      setSelectedIds(variants.map(v => v.id))
-    } else {
-      setSelectedIds([])
-    }
-  }
-
   const handleSelectOne = (id) => {
     if (selectedIds.includes(id)) {
       setSelectedIds(selectedIds.filter(i => i !== id))
@@ -305,7 +296,6 @@ const AdminInventory = () => {
         rightContent={bulkActionBar}
       />
 
-      {/* Header Summary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {isFinanceVisible && (
           <AdminStatsCard 
@@ -331,7 +321,6 @@ const AdminInventory = () => {
         />
       </div>
 
-      {/* Tabs */}
       <div className="bg-white/50 p-1.5 rounded-2xl flex gap-2 w-fit border border-gray-100 shadow-sm">
         <button
           onClick={() => setActiveTab('stock')}
@@ -441,80 +430,57 @@ const AdminInventory = () => {
               else setSelectedIds([])
             }}
             showIndex={true}
-            currentPage={pagination.page}
-            pageSize={pagination.size}
-            actions={(row, closeDropdown) => (
-              <div className="space-y-1">
-                <button 
-                  onClick={() => { handleAdjustStock(row); closeDropdown?.() }}
-                  className="w-full px-4 py-2.5 text-left text-[13px] font-bold text-secondary-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
-                >
-                  <ArrowRightLeft className="h-4 w-4 text-primary-500" />
-                  Điều chỉnh kho
-                </button>
-              </div>
-            )}
+            itemTitle="biến thể"
             renderMobileCard={(row, index, renderActions) => (
-              <div key={row.id || index} className="p-4 border-b border-gray-50 animate-fade-in">
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-sm ${row.stockQuantity <= row.lowStockThreshold ? 'bg-red-50 border-red-100 text-red-600' : 'bg-gray-50 border-gray-100 text-gray-400'}`}>
-                        <Package className="h-6 w-6" />
-                      </div>
-                      <div className="min-w-0">
-                        <h4 className="text-[15px] font-black text-gray-900 tracking-tight leading-tight line-clamp-1">{row.productName}</h4>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-[11px] font-bold text-gray-500 truncate max-w-[120px]">{row.variantName}</span>
-                          <span className="text-[10px] bg-gray-100 px-1.5 py-0.5 rounded font-mono font-bold text-gray-400 uppercase tracking-tighter shrink-0">{row.sku}</span>
-                        </div>
+              <div key={row.id || index} className="p-3 border-b border-gray-50 dark:border-white/5 animate-fade-in hover:bg-gray-50/50 transition-colors">
+                <div className="flex flex-col gap-2.5">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-[14px] font-black text-gray-900 dark:text-white tracking-tight leading-tight line-clamp-1">{row.productName}</h4>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-[11px] font-bold text-gray-400 truncate max-w-[120px]">{row.variantName}</span>
+                        <span className="text-[9px] bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded font-mono font-bold text-gray-400 uppercase tracking-tighter shrink-0">{row.sku}</span>
                       </div>
                     </div>
                     {renderActions(row, index)}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3 py-3 px-4 bg-gray-50 rounded-2xl border border-gray-100">
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Tồn kho hiện tại</span>
-                      <div className="flex items-center gap-2">
-                        <span className={`text-[16px] font-black ${row.stockQuantity <= row.lowStockThreshold ? 'text-red-600' : 'text-gray-900'}`}>
+                  <div className="grid grid-cols-2 gap-3 py-2 px-3 bg-gray-50/50 dark:bg-white/5 rounded-xl border border-gray-100/50 dark:border-white/5">
+                    <div className="flex flex-col">
+                      <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-none">Tồn kho</span>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <span className={`text-[14px] font-black ${row.stockQuantity <= row.lowStockThreshold ? 'text-red-600' : 'text-gray-900 dark:text-white'}`}>
                           {row.stockQuantity}
                         </span>
                         {row.stockQuantity <= row.lowStockThreshold && (
-                          <div className="flex items-center gap-1 text-[9px] font-black text-red-500 bg-red-50 px-2 py-0.5 rounded-full border border-red-100">
-                            <AlertTriangle className="w-2.5 h-2.5" /> SẮP HẾT
-                          </div>
+                          <div className="text-[8px] font-black text-red-500 bg-red-50 px-1.5 py-0.5 rounded border border-red-100">SẮP HẾT</div>
                         )}
                       </div>
                     </div>
                     {isFinanceVisible && (
-                      <div className="flex flex-col gap-0.5 text-right">
-                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Giá vốn / Niêm yết</span>
-                        <div className="flex flex-col items-end">
-                           <span className="text-[13px] font-black text-emerald-600 leading-tight">{formatCurrency(row.costPrice)}</span>
-                           <span className="text-[11px] font-bold text-gray-400 leading-tight">{formatCurrency(row.price)}</span>
+                      <div className="flex flex-col text-right">
+                        <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-none">Giá vốn / Bán</span>
+                        <div className="flex flex-col mt-0.5 leading-tight">
+                           <span className="text-[12px] font-black text-emerald-600">{formatCurrency(row.costPrice)}</span>
+                           <span className="text-[10px] font-bold text-gray-400">{formatCurrency(row.price)}</span>
                         </div>
                       </div>
                     )}
                   </div>
-
-                  <div className="flex items-center justify-between px-1">
-                    <div className="flex items-center gap-4">
-                       {isFinanceVisible && (
-                         <div className="flex flex-col">
-                            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Biên lợi nhuận</span>
-                            <span className="text-[13px] font-black text-emerald-600">
-                               {row.price > 0 ? ((row.price - row.costPrice) / row.price * 100).toFixed(1) : 0}%
-                            </span>
-                         </div>
-                       )}
-                    </div>
+                  <div className="flex gap-2">
                     <button 
                       onClick={() => handleAdjustStock(row)}
-                      className="flex items-center gap-1.5 text-[11px] font-black text-primary-600 bg-primary-50 px-3 py-2 rounded-xl active:scale-95 transition-all uppercase tracking-wider"
+                      className="flex-1 flex items-center justify-center gap-1.5 text-[11px] font-black text-primary-600 bg-primary-50 px-3 py-2 rounded-xl active:scale-95 transition-all uppercase tracking-wider"
                     >
                       <ArrowRightLeft className="w-3.5 h-3.5" />
-                      ĐIỀU CHỈNH KHO
+                      ĐIỀU CHỈNH
+                    </button>
+                    <button 
+                      onClick={() => { window.location.href = `/admin/products?search=${row.productName}` }}
+                      className="flex-1 flex items-center justify-center gap-1.5 text-[11px] font-black text-gray-500 bg-gray-100 px-3 py-2 rounded-xl active:scale-95 transition-all uppercase tracking-wider"
+                    >
+                      <Package className="w-3.5 h-3.5" />
+                      XEM
                     </button>
                   </div>
                 </div>
@@ -604,12 +570,13 @@ const AdminInventory = () => {
             data={history}
             isLoading={loading}
             showIndex={true}
+            itemTitle="biến động"
             renderMobileCard={(row, index) => (
-              <div key={row.id || index} className="p-4 border-b border-gray-50 animate-fade-in">
-                <div className="flex flex-col gap-3">
+              <div key={row.id || index} className="p-3 border-b border-gray-50 dark:border-white/5 animate-fade-in">
+                <div className="flex flex-col gap-2.5">
                   <div className="flex justify-between items-start">
                     <div className="flex flex-col">
-                       <span className={`text-[11px] font-black uppercase tracking-widest ${
+                       <span className={`text-[10px] font-black uppercase tracking-widest ${
                         row.type === 'IMPORT' ? 'text-blue-600' : 
                         row.type === 'SALE' ? 'text-emerald-600' : 
                         row.type === 'DAMAGED' ? 'text-red-600' : 'text-orange-500'
@@ -618,24 +585,24 @@ const AdminInventory = () => {
                          row.type === 'SALE' ? 'BÁN HÀNG' : 
                          row.type === 'DAMAGED' ? 'HỦY HÀNG' : 'ĐIỀU CHỈNH'}
                       </span>
-                      <span className="text-[14px] font-black text-gray-900 font-mono mt-0.5">{row.sku}</span>
+                      <span className="text-[13px] font-black text-gray-900 dark:text-white font-mono mt-0.5">{row.sku}</span>
                     </div>
                     <div className="text-right flex flex-col">
-                      <span className="text-[12px] font-bold text-gray-600">{new Date(row.timestamp).toLocaleDateString('vi-VN')}</span>
-                      <span className="text-[10px] text-gray-400 font-medium">{new Date(row.timestamp).toLocaleTimeString('vi-VN')}</span>
+                      <span className="text-[11px] font-bold text-gray-600 dark:text-gray-400">{new Date(row.timestamp).toLocaleDateString('vi-VN')}</span>
+                      <span className="text-[9px] text-gray-400 font-medium">{new Date(row.timestamp).toLocaleTimeString('vi-VN')}</span>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3 py-2.5 px-4 bg-gray-50 rounded-2xl border border-gray-100">
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Biến động</span>
-                      <span className={`text-[16px] font-black ${row.quantity > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                  <div className="grid grid-cols-2 gap-3 py-2 px-3 bg-gray-50/50 dark:bg-white/5 rounded-xl border border-gray-100/50 dark:border-white/5">
+                    <div className="flex flex-col">
+                      <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-none">Biến động</span>
+                      <span className={`text-[14px] font-black mt-0.5 ${row.quantity > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
                         {row.quantity > 0 ? `+${row.quantity}` : row.quantity}
                       </span>
                     </div>
-                    <div className="flex flex-col gap-0.5 text-right">
-                      <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Tồn sau cùng</span>
-                      <span className="text-[15px] font-black text-gray-900">{row.balanceAfter}</span>
+                    <div className="flex flex-col text-right">
+                      <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-none">Tồn cuối</span>
+                      <span className="text-[14px] font-black text-gray-900 dark:text-white mt-0.5">{row.balanceAfter}</span>
                     </div>
                   </div>
 

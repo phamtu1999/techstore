@@ -265,21 +265,22 @@ const AdminCoupons = () => {
                     onSelectRow={(row) => handleSelectOne(row.id)}
                     onSelectAll={handleSelectAll}
                     showIndex={true}
+                    itemTitle="mã giảm giá"
                     onEdit={(row) => handleOpenModal(row)}
                     onDelete={(row) => handleDelete(row.id)}
                     renderMobileCard={(row, index, renderActions) => (
-                        <div key={row.id || index} className="p-4 bg-white dark:bg-dark-card border-b border-gray-100 dark:border-dark-border animate-fade-in hover:bg-gray-50/50 transition-colors">
-                            <div className="flex flex-col gap-4">
+                        <div key={row.id || index} className="p-3 bg-white dark:bg-dark-card border-b border-gray-100 dark:border-dark-border animate-fade-in hover:bg-gray-50/50 transition-colors">
+                            <div className="flex flex-col gap-2.5">
                                 <div className="flex justify-between items-start">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-12 h-12 bg-primary-50 dark:bg-primary-500/10 rounded-2xl flex items-center justify-center text-primary-600 shadow-sm border border-primary-100 dark:border-primary-500/20">
-                                            <Ticket className="h-6 w-6" />
+                                        <div className="w-10 h-10 bg-primary-50 dark:bg-primary-500/10 rounded-xl flex items-center justify-center text-primary-600 shadow-sm border border-primary-100 dark:border-primary-500/20">
+                                            <Ticket className="h-5 w-5" />
                                         </div>
                                         <div>
-                                            <h4 className="text-[16px] font-black text-gray-900 dark:text-white tracking-widest uppercase leading-none">
+                                            <h4 className="text-[15px] font-black text-gray-900 dark:text-white tracking-widest uppercase leading-none">
                                                 {row.code}
                                             </h4>
-                                            <div className="flex items-center gap-2 mt-1.5">
+                                            <div className="flex items-center gap-2 mt-1">
                                                 <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-100 dark:border-emerald-500/20 uppercase tracking-tighter">
                                                     {row.discountType === 'PERCENT' ? `Giảm ${row.discountValue}%` : `Giảm ${formatCurrency(row.discountValue)}`}
                                                 </span>
@@ -289,15 +290,15 @@ const AdminCoupons = () => {
                                     {renderActions(row, index)}
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-3 py-3 px-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5">
-                                    <div className="flex flex-col gap-0.5">
-                                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Đơn tối thiểu</span>
-                                        <span className="text-[14px] font-black text-gray-900 dark:text-white">
+                                <div className="grid grid-cols-2 gap-3 py-2 px-3 bg-gray-50/50 dark:bg-white/5 rounded-xl border border-gray-100/50 dark:border-white/5">
+                                    <div className="flex flex-col">
+                                        <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-none">Đơn tối thiểu</span>
+                                        <span className="text-[13px] font-black text-gray-900 dark:text-white mt-0.5">
                                             {formatCurrency(row.minPurchase)}
                                         </span>
                                     </div>
-                                    <div className="flex flex-col gap-0.5 text-right">
-                                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Hết hạn</span>
+                                    <div className="flex flex-col text-right">
+                                        <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest leading-none">Hết hạn</span>
                                         <div className="flex items-center justify-end gap-1.5 text-[12px] font-bold text-gray-600 dark:text-gray-300">
                                             <Calendar className="w-3 h-3 text-gray-400" />
                                             {new Date(row.expirationDate).toLocaleDateString('vi-VN')}

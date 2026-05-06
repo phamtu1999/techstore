@@ -408,7 +408,7 @@ const AdminUsers = () => {
             />
 
             {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                 {adminStats.map((stat, i) => (
                     <AdminStatsCard 
                         key={i}
@@ -536,7 +536,7 @@ const AdminUsers = () => {
                                 <div className="flex items-start justify-between">
                                     <div className="flex items-center gap-3">
                                         <div className="relative">
-                                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white text-[20px] font-black overflow-hidden shadow-md border-2 ${row.enabled ? 'bg-primary-600 border-primary-100' : 'bg-gray-300 border-gray-200'}`}>
+                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white text-[16px] font-black overflow-hidden shadow-sm border-2 ${row.enabled ? 'bg-primary-600 border-primary-100' : 'bg-gray-300 border-gray-200'}`}>
                                                 {row.avatar ? (
                                                     <img src={row.avatar} alt="" className="w-full h-full object-cover" />
                                                 ) : (
@@ -548,7 +548,7 @@ const AdminUsers = () => {
                                             )}
                                         </div>
                                         <div className="min-w-0">
-                                            <h4 className={`text-[16px] font-black tracking-tight truncate ${row.enabled ? 'text-gray-900' : 'text-gray-400 italic'}`}>
+                                            <h4 className={`text-[15px] font-black tracking-tight truncate ${row.enabled ? 'text-gray-900' : 'text-gray-400 italic'}`}>
                                                 {row.fullName || 'Chưa đặt tên'}
                                             </h4>
                                             <div className="flex items-center gap-2 mt-0.5">
@@ -563,14 +563,14 @@ const AdminUsers = () => {
                                     {renderActions(row, index)}
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-3 py-3 px-4 bg-gray-50 rounded-2xl border border-gray-100">
-                                    <div className="flex flex-col gap-0.5">
-                                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Quyền hạn</span>
-                                        <div className="flex mt-0.5">{getRolePill(row.roles)}</div>
+                                <div className="grid grid-cols-2 gap-3 py-2 px-3 bg-gray-50/50 rounded-xl border border-gray-100/50">
+                                    <div className="flex flex-col">
+                                        <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Quyền hạn</span>
+                                        <div className="flex mt-0.5 scale-90 origin-left">{getRolePill(row.roles)}</div>
                                     </div>
-                                    <div className="flex flex-col gap-0.5 text-right">
-                                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Chi tiêu tích lũy</span>
-                                        <span className="text-[15px] font-black text-secondary-900">
+                                    <div className="flex flex-col text-right">
+                                        <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Chi tiêu</span>
+                                        <span className="text-[13px] font-black text-secondary-900">
                                             {currencyFormatter.format(row.totalSpent || 0)}
                                         </span>
                                     </div>

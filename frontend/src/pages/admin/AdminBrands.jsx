@@ -22,7 +22,8 @@ const AdminBrands = () => {
     name: '',
     description: '',
     logoUrl: '',
-    slug: ''
+    slug: '',
+    active: true
   })
   const [uploading, setUploading] = useState(false)
   const [activeTab, setActiveTab] = useState('manual')
@@ -80,7 +81,8 @@ const AdminBrands = () => {
       name: brand.name || '',
       description: brand.description || '',
       logoUrl: brand.logoUrl || '',
-      slug: brand.slug || ''
+      slug: brand.slug || '',
+      active: brand.active ?? brand.isActive ?? true
     })
     setShowModal(true)
   }
@@ -287,8 +289,8 @@ const AdminBrands = () => {
               align: 'center',
               render: (val) => (
                 <AdminPill 
-                  label={val ? 'Hoạt động' : 'Đang ẩn'} 
-                  type={val ? 'success' : 'danger'} 
+                  label={(val !== false) ? 'Hoạt động' : 'Đang ẩn'} 
+                  type={(val !== false) ? 'success' : 'danger'} 
                 />
               )
             }
@@ -303,6 +305,7 @@ const AdminBrands = () => {
           }}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          itemTitle="thương hiệu"
           renderMobileCard={(row, index, renderActions) => (
             <div key={row.id || index} className="p-4 bg-white dark:bg-dark-card border-b border-gray-100 dark:border-dark-border animate-fade-in hover:bg-gray-50/50 transition-colors">
               <div className="flex gap-4">
@@ -351,8 +354,8 @@ const AdminBrands = () => {
                       </div>
                       <div className="w-[1px] h-6 bg-gray-100 dark:bg-white/5"></div>
                       <AdminPill 
-                        label={(row.active ?? row.isActive) ? 'Hoạt động' : 'Đang ẩn'} 
-                        type={(row.active ?? row.isActive) ? 'success' : 'danger'} 
+                        label={(row.active ?? row.isActive ?? true) ? 'Hoạt động' : 'Đang ẩn'} 
+                        type={(row.active ?? row.isActive ?? true) ? 'success' : 'danger'} 
                         size="xs"
                       />
                     </div>
@@ -511,6 +514,20 @@ const AdminBrands = () => {
                     </div>
                   </div>
                 </div>
+              </div>
+
+              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                <div className="space-y-0.5">
+                  <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest">Trạng thái hiển thị</label>
+                  <p className="text-[12px] text-gray-500 font-medium">Bật để thương hiệu xuất hiện trên cửa hàng</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, active: !formData.active })}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${formData.active ? 'bg-primary-600' : 'bg-gray-300'}`}
+                >
+                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${formData.active ? 'translate-x-6' : 'translate-x-1'}`} />
+                </button>
               </div>
 
               <div className="flex gap-4 pt-4">

@@ -392,6 +392,7 @@ const AdminProducts = () => {
                   onDelete={handleDelete}
                   onDuplicate={handleDuplicate}
                   onToggleStatus={handleToggleStatus}
+                  itemTitle="sản phẩm"
                   showIndex={true} 
                   currentPage={currentPage} 
                   pageSize={10}

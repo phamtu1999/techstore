@@ -91,7 +91,7 @@ const AdminCategories = () => {
       imageUrl: category.imageUrl || '',
       slug: category.slug || '',
       parentId: category.parentId || null,
-      active: category.active ?? true,
+      active: category.active ?? category.isActive ?? true,
       sortOrder: category.sortOrder || 0
     })
     setShowModal(true)
@@ -291,8 +291,8 @@ const AdminCategories = () => {
       align: 'center',
       render: (val) => (
         <AdminPill 
-          label={val ? 'Hiển thị' : 'Đang ẩn'} 
-          type={val ? 'success' : 'danger'} 
+          label={(val !== false) ? 'Hiển thị' : 'Đang ẩn'} 
+          type={(val !== false) ? 'success' : 'danger'} 
         />
       )
     },
@@ -403,6 +403,7 @@ const AdminCategories = () => {
             onSelectAll={handleSelectAll}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            itemTitle="danh mục"
             showIndex={true}
             renderMobileCard={(row, index, renderActions) => (
               <div key={row.id || index} className="p-4 bg-white dark:bg-dark-card border-b border-gray-100 dark:border-dark-border animate-fade-in hover:bg-gray-50/50 transition-colors">

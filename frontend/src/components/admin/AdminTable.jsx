@@ -22,7 +22,8 @@ const AdminTable = ({
   virtualized = false,
   rowHeight = 72,
   maxHeight = 640,
-  renderMobileCard: customRenderMobileCard
+  renderMobileCard: customRenderMobileCard,
+  itemTitle = 'mục'
 }) => {
   const [openDropdown, setOpenDropdown] = useState(null)
   const containerRef = useRef(null)
@@ -59,15 +60,24 @@ const AdminTable = ({
       return (
         <div className="relative">
           <button 
-            onClick={() => setOpenDropdown(openDropdown === index ? null : index)} 
+            onClick={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect()
+              setOpenDropdown(openDropdown?.index === index ? null : { index, x: rect.right, y: rect.bottom })
+            }} 
             className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-secondary-900 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-all"
           >
             <MoreVertical className="h-5 w-5" />
           </button>
-          {openDropdown === index && (
+          {openDropdown?.index === index && (
             <>
               <div className="fixed inset-0 z-[110]" onClick={() => setOpenDropdown(null)} />
-              <div className="absolute right-0 mt-2 w-44 bg-white dark:bg-dark-card rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-gray-100 dark:border-white/5 py-1.5 z-[120] animate-scale-up">
+              <div 
+                className="fixed mt-2 w-44 bg-white dark:bg-dark-card rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-gray-100 dark:border-white/5 py-1.5 z-[120] animate-scale-up"
+                style={{ 
+                  top: `${openDropdown.y}px`, 
+                  right: `${window.innerWidth - openDropdown.x}px` 
+                }}
+              >
                 {onEdit && (
                   <button onClick={() => { onEdit(row); setOpenDropdown(null) }} className="w-full px-4 py-2.5 text-left text-[13px] font-bold text-secondary-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3">
                     <Edit2 className="h-4 w-4 text-blue-500" /> Chỉnh sửa
@@ -81,13 +91,13 @@ const AdminTable = ({
                 {onToggleStatus && (
                   <button onClick={() => { onToggleStatus(row); setOpenDropdown(null) }} className="w-full px-4 py-2.5 text-left text-[13px] font-bold text-secondary-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3">
                     {row.active ? <EyeOff className="h-4 w-4 text-orange-500" /> : <Eye className="h-4 w-4 text-emerald-500" />}
-                    {row.active ? 'Ẩn sản phẩm' : 'Hiện sản phẩm'}
+                    {row.active ? `Ẩn ${itemTitle}` : `Hiện ${itemTitle}`}
                   </button>
                 )}
                 <div className="h-[1px] bg-gray-100 dark:bg-white/5 my-1" />
                 {onDelete && (
                   <button onClick={() => { onDelete(row); setOpenDropdown(null) }} className="w-full px-4 py-2.5 text-left text-[13px] font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center gap-3">
-                    <Trash2 className="h-4 w-4" /> Xóa sản phẩm
+                    <Trash2 className="h-4 w-4" /> Xóa {itemTitle}
                   </button>
                 )}
                 {actions && (
@@ -120,7 +130,7 @@ const AdminTable = ({
                     <div className="fixed inset-0 z-10" onClick={() => setOpenDropdown(null)} />
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-20 animate-scale-up">
                       {onDuplicate && <button onClick={() => { onDuplicate(row); setOpenDropdown(null) }} className="w-full px-4 py-2.5 text-left text-[13px] font-semibold text-gray-700 hover:bg-gray-50 flex items-center gap-2"><Copy className="h-4 w-4 text-gray-400" />Nhân bản</button>}
-                      {onToggleStatus && <button onClick={() => { onToggleStatus(row); setOpenDropdown(null) }} className="w-full px-4 py-2.5 text-left text-[13px] font-semibold text-gray-700 hover:bg-gray-50 flex items-center gap-2">{row.active ? <EyeOff className="h-4 w-4 text-gray-400" /> : <Eye className="h-4 w-4 text-gray-400" />}{row.active ? 'Ẩn sản phẩm' : 'Hiện sản phẩm'}</button>}
+                      {onToggleStatus && <button onClick={() => { onToggleStatus(row); setOpenDropdown(null) }} className="w-full px-4 py-2.5 text-left text-[13px] font-semibold text-gray-700 hover:bg-gray-50 flex items-center gap-2">{row.active ? <EyeOff className="h-4 w-4 text-gray-400" /> : <Eye className="h-4 w-4 text-gray-400" />}{row.active ? `Ẩn ${itemTitle}` : `Hiện ${itemTitle}`}</button>}
                     </div>
                   </>
                 )}
