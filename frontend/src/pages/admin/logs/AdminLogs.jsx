@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { logsAPI } from '../../api/logs';
+import { logsAPI } from '../../../api/logs';
 import { 
   FileText,
   User,
@@ -18,9 +18,9 @@ import {
   Download,
   Share2
 } from 'lucide-react';
-import AdminPageHeader from '../../components/admin/shared/AdminPageHeader';
-import AdminTable from '../../components/admin/AdminTable';
-import AdminPill from '../../components/admin/shared/AdminPill';
+import AdminPageHeader from '../../../components/admin/shared/AdminPageHeader';
+import AdminTable from '../../../components/admin/AdminTable';
+import AdminPill from '../../../components/admin/shared/AdminPill';
 
 const AdminLogs = () => {
     const [logs, setLogs] = useState([]);
@@ -402,3 +402,5 @@ const AdminLogs = () => {
 };
 
 export default AdminLogs;
+
+

@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Shield, Lock, History, Globe, Clock, Save, ShieldCheck, Smartphone, Mail, Key, Info, Users, RefreshCcw, Activity } from 'lucide-react'
-import { securityAPI } from '../../api/securityAPI'
+import { securityAPI } from '../../../api/securityAPI'
 import Swal from 'sweetalert2'
 
 // Sub-components
-import ActiveSessionsTable from '../../components/admin/security/ActiveSessionsTable'
-import LoginHistoryTable from '../../components/admin/security/LoginHistoryTable'
+import ActiveSessionsTable from '../../../components/admin/security/ActiveSessionsTable'
+import LoginHistoryTable from '../../../components/admin/security/LoginHistoryTable'
 
 const formatDate = (dateString) => {
   if (!dateString) return 'N/A'
@@ -283,3 +283,5 @@ const SecuritySettings = () => {
 }
 
 export default SecuritySettings
+
+

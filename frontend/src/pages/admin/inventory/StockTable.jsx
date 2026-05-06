@@ -200,3 +200,5 @@ const StockTable = ({
 };
 
 export default StockTable;
+
+

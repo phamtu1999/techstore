@@ -93,3 +93,5 @@ const BrandsTable = ({ brands, loading, handleDelete, handleToggleStatus }) => {
 };
 
 export default BrandsTable;
+
+

@@ -113,3 +113,5 @@ const HistoryTable = ({ history, loading }) => {
 };
 
 export default HistoryTable;
+
+

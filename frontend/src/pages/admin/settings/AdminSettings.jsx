@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react'
 import { Settings, Store, CreditCard, Globe, Save, RefreshCcw, BellRing, ShieldCheck, ChevronRight, DollarSign, Database, Activity } from 'lucide-react'
-import { filesAPI } from '../../api/files'
-import { settingsAPI } from '../../api/settings'
+import { filesAPI } from '../../../api/files'
+import { settingsAPI } from '../../../api/settings'
 import Swal from 'sweetalert2'
-import { fireError, fireSuccess } from '../../utils/swalError'
-import { getApiErrorMessage } from '../../utils/apiError'
+import { fireError, fireSuccess } from '../../../utils/swalError'
+import { getApiErrorMessage } from '../../../utils/apiError'
 import SecuritySettings from './SecuritySettings'
 
 // Sub-components
-import GeneralSettings from '../../components/admin/settings/GeneralSettings'
-import BroadcastNotification from '../../components/admin/settings/BroadcastNotification'
-import BackupManagement from '../../components/admin/BackupManagement'
-import SystemLogs from '../../components/admin/settings/SystemLogs'
+import GeneralSettings from '../../../components/admin/settings/GeneralSettings'
+import BroadcastNotification from '../../../components/admin/settings/BroadcastNotification'
+import BackupManagement from '../../../components/admin/BackupManagement'
+import SystemLogs from '../../../components/admin/settings/SystemLogs'
 
 const AdminSettings = () => {
     const [activeTab, setActiveTab] = useState('general')
@@ -500,3 +500,5 @@ const AdminSettings = () => {
 }
 
 export default AdminSettings
+
+

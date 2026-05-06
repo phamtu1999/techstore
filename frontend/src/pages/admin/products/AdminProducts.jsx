@@ -1,9 +1,9 @@
 import React from 'react';
 import { Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import AdminPageHeader from '../../components/admin/shared/AdminPageHeader';
-import { formatCurrency } from '../../utils/format';
-import { useProducts } from '../../hooks/admin/useProducts';
+import AdminPageHeader from '../../../components/admin/shared/AdminPageHeader';
+import { formatCurrency } from '../../../utils/format';
+import { useProducts } from '../../../hooks/admin/useProducts';
 import ProductsStats from './ProductsStats';
 import ProductsTable from './ProductsTable';
 
@@ -64,3 +64,5 @@ const AdminProducts = () => {
 };
 
 export default AdminProducts;
+
+

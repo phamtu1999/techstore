@@ -6,11 +6,11 @@ import {
 } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
-import api from '../../utils/axios';
-import AdminPageHeader from '../../components/admin/shared/AdminPageHeader';
-import AdminTable from '../../components/admin/AdminTable';
-import AdminPill from '../../components/admin/shared/AdminPill';
-import { fireError } from '../../utils/swalError';
+import api from '../../../utils/axios';
+import AdminPageHeader from '../../../components/admin/shared/AdminPageHeader';
+import AdminTable from '../../../components/admin/AdminTable';
+import AdminPill from '../../../components/admin/shared/AdminPill';
+import { fireError } from '../../../utils/swalError';
 import { X } from 'lucide-react';
 
 const AdminLivestreams = () => {
@@ -378,3 +378,5 @@ const AdminLivestreams = () => {
 };
 
 export default AdminLivestreams;
+
+

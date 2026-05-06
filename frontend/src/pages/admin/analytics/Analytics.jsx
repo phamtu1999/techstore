@@ -14,7 +14,7 @@ import {
 } from 'recharts'
 import { DollarSign, ShoppingBag, Users, AlertTriangle, TrendingUp, Info, Package, ShoppingCart, Download, Loader2 } from 'lucide-react'
 import { fetchDashboardAnalytics } from '../../store/slices/analyticsSlice'
-import { analyticsAPI } from '../../api/analytics'
+import { analyticsAPI } from '../../../api/analytics'
 import Swal from 'sweetalert2'
 
 const Analytics = () => {
@@ -320,4 +320,6 @@ const Analytics = () => {
 }
 
 export default Analytics
+
+
 

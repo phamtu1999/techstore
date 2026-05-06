@@ -82,3 +82,5 @@ const CategoriesTable = ({ categories, loading, handleDelete }) => {
 };
 
 export default CategoriesTable;
+
+

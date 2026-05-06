@@ -1,6 +1,6 @@
 import React from 'react';
-import AdminPageHeader from '../../components/admin/shared/AdminPageHeader';
-import { useUsers } from '../../hooks/admin/useUsers';
+import AdminPageHeader from '../../../components/admin/shared/AdminPageHeader';
+import { useUsers } from '../../../hooks/admin/useUsers';
 import UsersStats from './UsersStats';
 import UsersTable from './UsersTable';
 
@@ -38,3 +38,5 @@ const AdminUsers = () => {
 };
 
 export default AdminUsers;
+
+

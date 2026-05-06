@@ -3,9 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, ImagePlus, RefreshCw, X } from 'lucide-react'
 import Swal from 'sweetalert2'
 
-import { brandsAPI } from '../../api/brands'
-import { filesAPI } from '../../api/files'
-import { getApiErrorMessage } from '../../utils/apiError'
+import { brandsAPI } from '../../../api/brands'
+import { filesAPI } from '../../../api/files'
+import { getApiErrorMessage } from '../../../utils/apiError'
 
 const EMPTY_FORM = {
   name: '',
@@ -247,3 +247,5 @@ const AdminBrandForm = () => {
 }
 
 export default AdminBrandForm
+
+

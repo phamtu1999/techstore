@@ -3,11 +3,11 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, ImagePlus, Link as LinkIcon, Plus, RefreshCw, Star, Zap, X } from 'lucide-react'
 import Swal from 'sweetalert2'
 
-import { productsAPI } from '../../api/products'
-import { categoriesAPI } from '../../api/categories'
-import { brandsAPI } from '../../api/brands'
-import { filesAPI } from '../../api/files'
-import { getApiErrorMessage } from '../../utils/apiError'
+import { productsAPI } from '../../../api/products'
+import { categoriesAPI } from '../../../api/categories'
+import { brandsAPI } from '../../../api/brands'
+import { filesAPI } from '../../../api/files'
+import { getApiErrorMessage } from '../../../utils/apiError'
 
 const EMPTY_SPEC = { key: '', value: '' }
 const EMPTY_FORM = {
@@ -543,3 +543,5 @@ const AdminProductForm = () => {
 }
 
 export default AdminProductForm
+
+

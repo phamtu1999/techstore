@@ -28,3 +28,5 @@ const OrdersStats = ({ summary, formatCurrency }) => {
 };
 
 export default OrdersStats;
+
+

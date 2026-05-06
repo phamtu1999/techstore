@@ -1,7 +1,7 @@
 import { Plus, X, Ticket } from 'lucide-react'
 import Swal from 'sweetalert2'
-import AdminPageHeader from '../../components/admin/shared/AdminPageHeader'
-import { useCoupons } from '../../hooks/admin/useCoupons'
+import AdminPageHeader from '../../../components/admin/shared/AdminPageHeader'
+import { useCoupons } from '../../../hooks/admin/useCoupons'
 import CouponsTable from './CouponsTable'
 
 const AdminCoupons = () => {
@@ -193,3 +193,5 @@ const AdminCoupons = () => {
 }
 
 export default AdminCoupons
+
+

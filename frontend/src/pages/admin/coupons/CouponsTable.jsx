@@ -146,3 +146,5 @@ const CouponsTable = ({
 }
 
 export default CouponsTable
+
+

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import AdminPageHeader from '../../components/admin/shared/AdminPageHeader';
-import { useCategories } from '../../hooks/admin/useCategories';
+import AdminPageHeader from '../../../components/admin/shared/AdminPageHeader';
+import { useCategories } from '../../../hooks/admin/useCategories';
 import CategoriesTable from './CategoriesTable';
 
 const AdminCategories = () => {
@@ -36,3 +36,5 @@ const AdminCategories = () => {
 };
 
 export default AdminCategories;
+
+

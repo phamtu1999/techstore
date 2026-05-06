@@ -45,3 +45,5 @@ const InventoryStats = ({ summary, isFinanceVisible, stockFilter, toggleLowStock
 };
 
 export default InventoryStats;
+
+

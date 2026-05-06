@@ -1,15 +1,15 @@
 import { Suspense, lazy, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Calendar, RefreshCcw, Download } from 'lucide-react'
-import { analyticsAPI } from '../../api/analytics'
+import { analyticsAPI } from '../../../api/analytics'
 
 // Refactored Components
-const DashboardKPIs = lazy(() => import('../../components/admin/dashboard/DashboardKPIs'))
-const DashboardRecentOrders = lazy(() => import('../../components/admin/dashboard/DashboardRecentOrders'))
-const DashboardInsights = lazy(() => import('../../components/admin/dashboard/DashboardInsights'))
-const DashboardCharts = lazy(() => import('../../components/admin/dashboard/DashboardCharts'))
-const DashboardTopProducts = lazy(() => import('../../components/admin/dashboard/DashboardTopProducts'))
-const AdminPageHeader = lazy(() => import('../../components/admin/shared/AdminPageHeader'))
+const DashboardKPIs = lazy(() => import('../../../components/admin/dashboard/DashboardKPIs'))
+const DashboardRecentOrders = lazy(() => import('../../../components/admin/dashboard/DashboardRecentOrders'))
+const DashboardInsights = lazy(() => import('../../../components/admin/dashboard/DashboardInsights'))
+const DashboardCharts = lazy(() => import('../../../components/admin/dashboard/DashboardCharts'))
+const DashboardTopProducts = lazy(() => import('../../../components/admin/dashboard/DashboardTopProducts'))
+const AdminPageHeader = lazy(() => import('../../../components/admin/shared/AdminPageHeader'))
 
 const Dashboard = () => {
   const { user } = useSelector((state) => state.auth)
@@ -157,3 +157,5 @@ const Dashboard = () => {
 }
 
 export default Dashboard
+
+
