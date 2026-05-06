@@ -90,6 +90,11 @@ const AdminTable = ({
                     <Trash2 className="h-4 w-4" /> Xóa sản phẩm
                   </button>
                 )}
+                {actions && (
+                  <div className="px-2 pb-1.5">
+                    {actions(row, () => setOpenDropdown(null))}
+                  </div>
+                )}
               </div>
             </>
           )}

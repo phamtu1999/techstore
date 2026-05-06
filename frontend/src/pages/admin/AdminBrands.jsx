@@ -49,7 +49,8 @@ const AdminBrands = () => {
       name: '', 
       description: '', 
       logoUrl: '', 
-      slug: ''
+      slug: '',
+      active: true
     })
     setActiveTab('manual')
     setJsonInput('')
@@ -279,6 +280,17 @@ const AdminBrands = () => {
               render: (val) => (
                 <p className="text-[13px] text-gray-500 font-medium line-clamp-1 max-w-xs">{val || 'Chưa có mô tả'}</p>
               )
+            },
+            {
+              key: 'active',
+              label: 'Trạng thái',
+              align: 'center',
+              render: (val) => (
+                <AdminPill 
+                  label={val ? 'Hoạt động' : 'Đang ẩn'} 
+                  type={val ? 'success' : 'danger'} 
+                />
+              )
             }
           ]}
           data={filteredBrands}
@@ -355,8 +367,8 @@ const AdminBrands = () => {
                       </div>
                       <div className="w-[1px] h-6 bg-gray-100 dark:bg-white/5"></div>
                       <AdminPill 
-                        label={row.active ? 'Hoạt động' : 'Đang ẩn'} 
-                        type={row.active ? 'success' : 'danger'} 
+                        label={(row.active ?? row.isActive) ? 'Hoạt động' : 'Đang ẩn'} 
+                        type={(row.active ?? row.isActive) ? 'success' : 'danger'} 
                         size="xs"
                       />
                     </div>
