@@ -123,7 +123,7 @@ const Layout = () => {
     <div className="min-h-screen bg-background">
       <header className="bg-white/95 backdrop-blur-2xl shadow-sm sticky top-0 z-50 border-b border-gray-100 dark:bg-dark-bg/95 dark:border-dark-border">
         <div className="max-w-[1400px] mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="flex flex-col gap-3 md:grid md:grid-cols-12 md:items-center md:justify-between min-h-[72px] py-3 md:py-0">
+          <div className="flex flex-col gap-2 md:grid md:grid-cols-12 md:items-center md:justify-between min-h-[64px] py-2 md:py-0">
             
             {/* Top row on mobile */}
             <div className="flex items-center justify-between gap-3 md:hidden">
@@ -142,7 +142,7 @@ const Layout = () => {
                     <Store className="h-5 w-5" />
                   </div>
                 )}
-                <span className="text-base font-black tracking-tight text-secondary-800 dark:text-white block truncate">
+                <span className="text-sm font-black tracking-tight text-secondary-800 dark:text-white block truncate">
                   {storeSettings?.storeName || 'TECHZONE'}
                 </span>
               </Link>
@@ -201,9 +201,9 @@ const Layout = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => searchQuery.trim().length >= 2 && setShowResults(true)}
-                  className="w-full pl-11 sm:pl-14 pr-11 sm:pr-12 h-11 sm:h-12 bg-gray-50 dark:bg-dark-card border-2 border-transparent rounded-2xl focus:outline-none focus:border-primary-MAIN focus:bg-white dark:focus:bg-dark-bg transition-all duration-300 shadow-sm text-sm font-bold text-black dark:text-white placeholder:text-gray-400 placeholder:font-bold"
+                  className="w-full pl-10 sm:pl-14 pr-11 sm:pr-12 h-10 sm:h-12 bg-gray-50 dark:bg-dark-card border-2 border-transparent rounded-2xl focus:outline-none focus:border-primary-MAIN focus:bg-white dark:focus:bg-dark-bg transition-all duration-300 shadow-sm text-sm font-bold text-black dark:text-white placeholder:text-gray-400 placeholder:font-bold"
                 />
-                <Search className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 h-4.5 w-4.5 sm:h-5 sm:w-5 text-gray-400 group-focus-within:text-primary-MAIN transition-colors" />
+                <Search className="absolute left-3.5 sm:left-5 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400 group-focus-within:text-primary-MAIN transition-colors" />
                 
                 {searchQuery && (
                    <button 
