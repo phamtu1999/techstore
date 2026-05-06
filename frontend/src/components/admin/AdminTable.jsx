@@ -26,16 +26,20 @@ const AdminTable = ({
   const [openDropdown, setOpenDropdown] = useState(null)
   const containerRef = useRef(null)
   const hasActions = onEdit || onDelete || actions
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024)
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   useEffect(() => {
     setOpenDropdown(null)
   }, [data])
+
   const hasSelection = onSelectRow && onSelectAll
   const allSelected = hasSelection && data.length > 0 && selectedRows.length === data.length
-  const colSpan = useMemo(
-    () => columns.length + (hasActions ? 1 : 0) + (showIndex ? 1 : 0) + (hasSelection ? 1 : 0),
-    [columns.length, hasActions, showIndex, hasSelection]
-  )
 
   const handleSort = (key) => {
     if (onSort) {
@@ -48,6 +52,73 @@ const AdminTable = ({
     if (!sortConfig || sortConfig.key !== key) return '↕️'
     return sortConfig.direction === 'asc' ? '↑' : '↓'
   }
+
+  const renderActions = (row, index) => (
+    <div className="flex items-center justify-center gap-2">
+      {actions ? actions(row) : (
+        <>
+          {onEdit && (
+            <button onClick={() => onEdit(row)} className="p-2 text-gray-400 hover:text-admin-info hover:bg-blue-50 rounded-lg transition-all" title="Chỉnh sửa"><Edit2 className="h-4 w-4" /></button>
+          )}
+          {onDelete && (
+            <button onClick={() => onDelete(row)} className="p-2 text-gray-400 hover:text-admin-danger hover:bg-red-50 rounded-lg transition-all" title="Xóa"><Trash2 className="h-4 w-4" /></button>
+          )}
+          {(onDuplicate || onToggleStatus) && (
+            <div className="relative">
+              <button onClick={() => setOpenDropdown(openDropdown === index ? null : index)} className="p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all" title="Thêm"><MoreVertical className="h-4 w-4" /></button>
+              {openDropdown === index && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setOpenDropdown(null)} />
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-20 animate-scale-up">
+                    {onDuplicate && <button onClick={() => { onDuplicate(row); setOpenDropdown(null) }} className="w-full px-4 py-2.5 text-left text-[13px] font-semibold text-gray-700 hover:bg-gray-50 flex items-center gap-2"><Copy className="h-4 w-4 text-gray-400" />Nhân bản</button>}
+                    {onToggleStatus && <button onClick={() => { onToggleStatus(row); setOpenDropdown(null) }} className="w-full px-4 py-2.5 text-left text-[13px] font-semibold text-gray-700 hover:bg-gray-50 flex items-center gap-2">{row.active ? <EyeOff className="h-4 w-4 text-gray-400" /> : <Eye className="h-4 w-4 text-gray-400" />}{row.active ? 'Ẩn sản phẩm' : 'Hiện sản phẩm'}</button>}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  )
+
+  const renderMobileCard = (row, index) => (
+    <div key={row.id || index} className="p-4 bg-white dark:bg-dark-card border-b border-gray-100 dark:border-dark-border animate-fade-in">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          {hasSelection && (
+            <input
+              type="checkbox"
+              checked={selectedRows.includes(row.id)}
+              onChange={(e) => onSelectRow(row.id, e.target.checked)}
+              className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500 cursor-pointer shrink-0"
+            />
+          )}
+          <div className="flex-1 min-w-0">
+             {columns.map((column, idx) => (
+               <div key={column.key} className={idx === 0 ? "mb-1" : "mb-2"}>
+                  {idx === 0 ? (
+                    <div className="flex items-center gap-3">
+                       {column.render ? column.render(row[column.key], row, index) : row[column.key]}
+                    </div>
+                  ) : (
+                    <div className="flex justify-between items-center text-[13px]">
+                       <span className="text-gray-400 font-bold uppercase text-[10px] tracking-wider">{column.label}</span>
+                       <span className="text-gray-900 dark:text-white font-bold">
+                          {column.render ? column.render(row[column.key], row, index) : row[column.key]}
+                       </span>
+                    </div>
+                  )}
+               </div>
+             ))}
+          </div>
+        </div>
+        <div className="shrink-0 border-l border-gray-100 pl-3">
+           {renderActions(row, index)}
+        </div>
+      </div>
+    </div>
+  )
 
   const renderRow = (row, index) => (
     <div
@@ -77,52 +148,33 @@ const AdminTable = ({
       ))}
       {hasActions && (
         <div className="px-6 py-4 whitespace-nowrap">
-          <div className="flex items-center justify-center gap-2">
-            {actions ? actions(row) : (
-              <>
-                {onEdit && (
-                  <button onClick={() => onEdit(row)} className="p-2 text-gray-400 hover:text-admin-info hover:bg-blue-50 rounded-lg transition-all" title="Chỉnh sửa"><Edit2 className="h-4 w-4" /></button>
-                )}
-                {onDelete && (
-                  <button onClick={() => onDelete(row)} className="p-2 text-gray-400 hover:text-admin-danger hover:bg-red-50 rounded-lg transition-all" title="Xóa"><Trash2 className="h-4 w-4" /></button>
-                )}
-                {(onDuplicate || onToggleStatus) && (
-                  <div className="relative">
-                    <button onClick={() => setOpenDropdown(openDropdown === index ? null : index)} className="p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all" title="Thêm"><MoreVertical className="h-4 w-4" /></button>
-                    {openDropdown === index && (
-                      <>
-                        <div className="fixed inset-0 z-10" onClick={() => setOpenDropdown(null)} />
-                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-20 animate-scale-up">
-                          {onDuplicate && <button onClick={() => { onDuplicate(row); setOpenDropdown(null) }} className="w-full px-4 py-2.5 text-left text-[13px] font-semibold text-gray-700 hover:bg-gray-50 flex items-center gap-2"><Copy className="h-4 w-4 text-gray-400" />Nhân bản</button>}
-                          {onToggleStatus && <button onClick={() => { onToggleStatus(row); setOpenDropdown(null) }} className="w-full px-4 py-2.5 text-left text-[13px] font-semibold text-gray-700 hover:bg-gray-50 flex items-center gap-2">{row.active ? <EyeOff className="h-4 w-4 text-gray-400" /> : <Eye className="h-4 w-4 text-gray-400" />}{row.active ? 'Ẩn sản phẩm' : 'Hiện sản phẩm'}</button>}
-                        </div>
-                      </>
-                    )}
-                  </div>
-                )}
-              </>
-            )}
-          </div>
+          {renderActions(row, index)}
         </div>
       )}
     </div>
   )
 
-  const virtualContent = data.length === 0 ? (
-    <div className="px-6 py-24 text-center">
-      <div className="flex flex-col items-center">
-        <div className="h-16 w-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-          <EyeOff className="h-8 w-8 text-gray-300" />
+  if (data.length === 0) {
+    return (
+      <div className="px-6 py-24 text-center">
+        <div className="flex flex-col items-center">
+          <div className="h-16 w-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+            <EyeOff className="h-8 w-8 text-gray-300" />
+          </div>
+          <p className="text-[14px] font-bold text-gray-900">Không tìm thấy dữ liệu</p>
+          <p className="text-muted-label mt-1">Hãy thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm</p>
         </div>
-        <p className="text-[14px] font-bold text-gray-900">Không tìm thấy dữ liệu</p>
-        <p className="text-muted-label mt-1">Hãy thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm</p>
       </div>
-    </div>
-  ) : (
-    <List height={Math.min(maxHeight, data.length * rowHeight)} itemCount={data.length} itemSize={rowHeight} width="100%">
-      {({ index, style }) => <div style={style}>{renderRow(data[index], index)}</div>}
-    </List>
-  )
+    )
+  }
+
+  if (isMobile) {
+    return (
+      <div className="divide-y divide-gray-100 dark:divide-dark-border">
+        {data.map(renderMobileCard)}
+      </div>
+    )
+  }
 
   return (
     <div className="overflow-x-auto custom-scrollbar" ref={containerRef}>
@@ -133,7 +185,13 @@ const AdminTable = ({
           {columns.map((column) => <div key={column.key} className={`admin-table-header ${column.sortable ? 'cursor-pointer hover:bg-gray-100/50 select-none' : ''}`} onClick={() => column.sortable && handleSort(column.key)}><div className="flex items-center gap-2">{column.label}{column.sortable && <span className="text-gray-300">{getSortIcon(column.key)}</span>}</div></div>)}
           {hasActions && <div className="admin-table-header text-center w-32">Hành động</div>}
         </div>
-        {virtualized ? virtualContent : <div>{data.map(renderRow)}</div>}
+        {virtualized ? (
+          <List height={Math.min(maxHeight, data.length * rowHeight)} itemCount={data.length} itemSize={rowHeight} width="100%">
+            {({ index, style }) => <div style={style}>{renderRow(data[index], index)}</div>}
+          </List>
+        ) : (
+          <div>{data.map(renderRow)}</div>
+        )}
       </div>
     </div>
   )

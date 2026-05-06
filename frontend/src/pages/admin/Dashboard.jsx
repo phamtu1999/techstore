@@ -60,13 +60,13 @@ const Dashboard = () => {
 
   const headerRight = (
     <div className="flex flex-wrap items-center gap-3">
-      <div className="flex bg-white p-1 rounded-xl border border-gray-100 shadow-sm">
+      <div className="flex bg-white dark:bg-dark-card p-1 rounded-xl border border-gray-100 dark:border-dark-border shadow-sm overflow-x-auto scrollbar-none max-w-[calc(100vw-80px)] sm:max-w-none">
         {['today', '7d', '30d', 'all'].map(range => (
           <button 
             key={range}
             onClick={() => setTimeRange(range)}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
-              timeRange === range ? 'bg-primary-600 text-white shadow-md' : 'text-gray-500 hover:text-gray-900'
+            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap shrink-0 ${
+              timeRange === range ? 'bg-primary-600 text-white shadow-md' : 'text-gray-500 hover:text-gray-900 dark:text-gray-400'
             }`}
           >
             {range === 'today' ? 'Hôm nay' : range === '7d' ? '7 ngày' : range === '30d' ? '30 ngày' : 'Tất cả'}

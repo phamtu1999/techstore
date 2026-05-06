@@ -35,15 +35,15 @@ const ProductFilters = ({
   return (
     <div className="space-y-6">
       <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
-        <div className="relative flex-1 xl:max-w-xl">
+        <div className="relative flex-1 xl:max-w-xl w-full">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
           <input
             type="text"
-            placeholder="Tìm kiếm sản phẩm, SKU hoặc mô tả..."
+            placeholder="Tìm kiếm sản phẩm..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyPress={handleKeyPress}
-            className="w-full h-[46px] pl-12 pr-10 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-primary-600/20 focus:bg-white transition-all outline-none text-[14px] font-medium placeholder:text-gray-400"
+            className="w-full h-[46px] pl-12 pr-10 bg-gray-50 dark:bg-white/5 border-none rounded-xl focus:ring-2 focus:ring-primary-600/20 focus:bg-white dark:focus:bg-dark-bg transition-all outline-none text-[14px] font-medium placeholder:text-gray-400 dark:text-white"
           />
           {searchTerm && (
             <button
@@ -55,13 +55,13 @@ const ProductFilters = ({
           )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`inline-flex items-center h-[46px] px-5 rounded-xl border font-bold text-[13px] transition-all ${hasActiveFilters ? 'border-primary-600 bg-primary-600/5 text-primary-600' : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'}`}
+            className={`inline-flex items-center h-[46px] px-4 sm:px-5 rounded-xl border font-bold text-[13px] transition-all shrink-0 ${hasActiveFilters ? 'border-primary-600 bg-primary-600/5 text-primary-600' : 'border-gray-200 dark:border-dark-border bg-white dark:bg-white/5 text-gray-600 dark:text-dark-text hover:bg-gray-50'}`}
           >
-            <Filter className="mr-2 h-4 w-4" />
-            Bộ lọc
+            <Filter className="sm:mr-2 h-4 w-4" />
+            <span className="hidden sm:inline">Bộ lọc</span>
             {hasActiveFilters && (
               <span className="ml-2 w-5 h-5 flex items-center justify-center bg-primary-600 text-white text-[10px] rounded-full">
                 {[selectedCategory, selectedStatus, searchTerm].filter(Boolean).length}
@@ -69,28 +69,29 @@ const ProductFilters = ({
             )}
           </button>
 
-          <div className="h-6 w-[1px] bg-gray-200 mx-1 hidden sm:block"></div>
+          <div className="h-6 w-[1px] bg-gray-200 dark:bg-dark-border mx-1 shrink-0"></div>
 
-          <label className="inline-flex cursor-pointer items-center h-[46px] px-4 rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-all font-bold text-[13px]">
-            <FileUp className="mr-2 h-4 w-4" />
-            Nhập Excel
+          <label className="inline-flex cursor-pointer items-center justify-center h-[46px] px-4 rounded-xl border border-gray-200 dark:border-dark-border bg-white dark:bg-white/5 text-gray-600 dark:text-dark-text hover:bg-gray-50 transition-all font-bold text-[13px] shrink-0">
+            <FileUp className="sm:mr-2 h-4 w-4" />
+            <span className="hidden sm:inline">Nhập</span>
             <input type="file" className="hidden" accept=".xlsx,.xls" onChange={handleImportExcel} />
           </label>
 
           <button 
             onClick={handleExportExcel} 
-            className="inline-flex items-center h-[46px] px-4 rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-all font-bold text-[13px]"
+            className="inline-flex items-center justify-center h-[46px] px-4 rounded-xl border border-gray-200 dark:border-dark-border bg-white dark:bg-white/5 text-gray-600 dark:text-dark-text hover:bg-gray-50 transition-all font-bold text-[13px] shrink-0"
           >
-            <FileDown className="mr-2 h-4 w-4" />
-            Xuất file
+            <FileDown className="sm:mr-2 h-4 w-4" />
+            <span className="hidden sm:inline">Xuất</span>
           </button>
 
           <button 
             onClick={handleAddNew} 
-            className="inline-flex items-center h-[46px] px-5 rounded-xl bg-primary-600 text-white font-bold text-[13px] shadow-sm shadow-primary-600/20 hover:bg-primary-700 transition-all active:scale-95"
+            className="inline-flex items-center justify-center h-[46px] px-4 sm:px-5 rounded-xl bg-primary-600 text-white font-bold text-[13px] shadow-sm shadow-primary-600/20 hover:bg-primary-700 transition-all active:scale-95 shrink-0 ml-auto"
           >
-            <Plus className="mr-2 h-5 w-5" />
-            Thêm sản phẩm
+            <Plus className="sm:mr-2 h-5 w-5" />
+            <span className="hidden sm:inline">Thêm mới</span>
+            <span className="sm:hidden">Thêm</span>
           </button>
         </div>
       </div>
