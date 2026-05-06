@@ -134,33 +134,33 @@ const ProductCard = ({ product, showBadge }) => {
           </div>
 
           <div className="mt-auto pt-2">
-            <div className="flex items-baseline gap-2 flex-wrap mb-4">
-                <span className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
+            <div className="flex items-baseline gap-1 sm:gap-2 flex-wrap mb-3 sm:mb-4">
+                <span className="text-lg sm:text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
                 {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price)}
                 </span>
                 {product.originalPrice > price && (
-                <span className="text-[12px] text-gray-400 line-through font-bold">
+                <span className="text-[10px] sm:text-[12px] text-gray-400 line-through font-bold">
                     {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.originalPrice)}
                 </span>
                 )}
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
                 <button 
                     onClick={handleCompare} 
                     title="So sánh"
-                    className={`h-12 w-12 flex items-center justify-center rounded-2xl border-2 transition-all ${isComparing ? 'bg-primary-600 border-primary-600 text-white shadow-lg shadow-primary-600/25' : 'border-gray-100 dark:border-dark-border text-gray-400 hover:border-primary-500 hover:text-primary-600'}`}
+                    className={`h-10 w-10 sm:h-12 sm:w-12 shrink-0 flex items-center justify-center rounded-xl sm:rounded-2xl border-2 transition-all ${isComparing ? 'bg-primary-600 border-primary-600 text-white shadow-lg shadow-primary-600/25' : 'border-gray-100 dark:border-dark-border text-gray-400 hover:border-primary-500 hover:text-primary-600'}`}
                 >
-                    <GitCompare className="h-5 w-5" />
+                    <GitCompare className="h-4 w-4 sm:h-5 sm:w-5" />
                 </button>
                 
                 <button 
                     onClick={handleAddToCart} 
                     disabled={isCartLoading}
-                    className="flex-1 flex items-center justify-center h-12 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-2xl hover:bg-black dark:hover:bg-gray-100 transition-all gap-3 font-black text-[11px] uppercase tracking-[0.1em] shadow-xl shadow-black/5 disabled:opacity-50 active:scale-[0.98]"
+                    className="flex-1 flex items-center justify-center h-10 sm:h-12 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl sm:rounded-2xl hover:bg-black dark:hover:bg-gray-100 transition-all gap-2 sm:gap-3 font-black text-[10px] sm:text-[11px] uppercase tracking-[0.1em] shadow-xl shadow-black/5 disabled:opacity-50 active:scale-[0.98]"
                 >
                     <ShoppingCart className={`h-4 w-4 ${isCartLoading ? 'animate-spin' : ''}`} />
-                    <span>{isCartLoading ? 'ĐANG THÊM...' : 'THÊM VÀO GIỎ'}</span>
+                    <span className="hidden sm:inline">{isCartLoading ? 'ĐANG THÊM...' : 'THÊM VÀO GIỎ'}</span>
                 </button>
             </div>
           </div>

@@ -414,12 +414,54 @@ const Layout = () => {
       </header>
 
       <main className="max-w-[1400px] mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-8 min-h-[calc(100vh-72px-300px)]">
-        <div className="pb-20 sm:pb-6">
+        <div className="pb-24 sm:pb-6">
           <Outlet />
         </div>
         <CompareBar />
         <ChatWidget />
       </main>
+
+      {/* Mobile Bottom Navigation - Sticky at the bottom */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-dark-bg/80 backdrop-blur-2xl border-t border-gray-100 dark:border-white/5 px-6 py-3 z-[60] flex items-center justify-between shadow-[0_-10px_25px_rgba(0,0,0,0.05)]">
+        <Link to="/" className="flex flex-col items-center gap-1 group">
+          <div className="p-1 rounded-xl group-active:scale-90 transition-transform">
+            <Store className="h-5 w-5 text-gray-400 group-hover:text-primary-MAIN" />
+          </div>
+          <span className="text-[10px] font-black uppercase tracking-tighter text-gray-400 group-hover:text-primary-MAIN">Trang chủ</span>
+        </Link>
+        <Link to="/products" className="flex flex-col items-center gap-1 group">
+          <div className="p-1 rounded-xl group-active:scale-90 transition-transform">
+            <Search className="h-5 w-5 text-gray-400 group-hover:text-primary-MAIN" />
+          </div>
+          <span className="text-[10px] font-black uppercase tracking-tighter text-gray-400 group-hover:text-primary-MAIN">Cửa hàng</span>
+        </Link>
+        <Link to="/cart" className="relative flex flex-col items-center gap-1 group -mt-8">
+           <div className="w-14 h-14 bg-primary-MAIN rounded-full flex items-center justify-center shadow-lg shadow-primary-500/40 border-4 border-white dark:border-dark-bg group-active:scale-90 transition-transform">
+              <ShoppingCart className="h-6 w-6 text-white" />
+              {totalItems > 0 && (
+                <span className="absolute top-0 right-0 w-5 h-5 bg-black dark:bg-white text-white dark:text-black text-[9px] font-black rounded-full flex items-center justify-center border-2 border-white dark:border-dark-bg">
+                  {totalItems}
+                </span>
+              )}
+           </div>
+           <span className="text-[10px] font-black uppercase tracking-tighter text-primary-MAIN mt-1">Giỏ hàng</span>
+        </Link>
+        <Link to="/wishlist" className="flex flex-col items-center gap-1 group">
+          <div className="p-1 rounded-xl group-active:scale-90 transition-transform relative">
+            <Heart className="h-5 w-5 text-gray-400 group-hover:text-red-500" />
+            {wishlistCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border border-white dark:border-dark-bg"></span>
+            )}
+          </div>
+          <span className="text-[10px] font-black uppercase tracking-tighter text-gray-400 group-hover:text-red-500">Yêu thích</span>
+        </Link>
+        <Link to="/profile" className="flex flex-col items-center gap-1 group">
+          <div className="p-1 rounded-xl group-active:scale-90 transition-transform">
+            <User className="h-5 w-5 text-gray-400 group-hover:text-primary-MAIN" />
+          </div>
+          <span className="text-[10px] font-black uppercase tracking-tighter text-gray-400 group-hover:text-primary-MAIN">Tôi</span>
+        </Link>
+      </nav>
 
       <footer className="bg-secondary-900 text-white mt-12">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-8 sm:py-12">

@@ -326,15 +326,15 @@ const Products = () => {
             
             {/* Filter Chips Bar */}
             {(activeChips.length > 0 || products.length > 0) && (
-              <div className="mb-6 flex flex-wrap items-center gap-3">
+              <div className="mb-6 flex overflow-x-auto scrollbar-none sm:flex-wrap items-center gap-2 sm:gap-3 pb-2 sm:pb-0">
                  {activeChips.map((chip, idx) => (
-                    <button key={idx} onClick={() => removeChip(chip.type)} className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-xl text-[11px] font-bold text-gray-900 dark:text-white hover:border-red-500 hover:text-red-600 transition-all group shadow-sm">
+                    <button key={idx} onClick={() => removeChip(chip.type)} className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-xl text-[10px] sm:text-[11px] font-bold text-gray-900 dark:text-white hover:border-red-500 hover:text-red-600 transition-all group shadow-sm whitespace-nowrap">
                        <span>{chip.label}</span>
-                       <X className="w-3.5 h-3.5 text-gray-400 group-hover:text-red-500" />
+                       <X className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-gray-400 group-hover:text-red-500" />
                     </button>
                  ))}
                  {activeChips.length > 0 && (
-                    <button onClick={clearFilters} className="text-[10px] font-black text-gray-400 hover:text-primary-600 uppercase tracking-widest ml-2 underline underline-offset-4">Xóa tất cả</button>
+                    <button onClick={clearFilters} className="text-[10px] font-black text-gray-400 hover:text-primary-600 uppercase tracking-widest ml-2 underline underline-offset-4 whitespace-nowrap">Xóa tất cả</button>
                  )}
                  <div className="ml-auto text-[11px] font-black text-gray-400 uppercase tracking-widest hidden sm:block">
                     Hiển thị <span className="text-gray-900 dark:text-white">{products.length}</span> kết quả
@@ -343,31 +343,31 @@ const Products = () => {
             )}
 
             {/* Top Bar (Search & Sort) - Glassmorphism style */}
-            <div className="flex flex-col sm:flex-row gap-4 mb-10 bg-white/80 dark:bg-dark-card/80 backdrop-blur-xl p-5 rounded-[2.5rem] shadow-xl shadow-black/[0.02] border border-white dark:border-white/5 items-stretch sm:items-center justify-between">
+            <div className="flex flex-col sm:flex-row gap-4 mb-8 sm:mb-10 bg-white/80 dark:bg-dark-card/80 backdrop-blur-xl p-3 sm:p-5 rounded-2xl sm:rounded-[2.5rem] shadow-xl shadow-black/[0.02] border border-white dark:border-white/5 items-stretch sm:items-center justify-between">
                
-               <div className="flex items-center gap-4 w-full sm:w-auto flex-1">
-                 <button onClick={() => setIsMobileFilterOpen(true)} className="lg:hidden h-[56px] px-6 rounded-2xl bg-gray-900 text-white flex items-center justify-center gap-3 text-sm font-black uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-black/10">
-                   <SlidersHorizontal className="w-5 h-5" />
+               <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto flex-1">
+                 <button onClick={() => setIsMobileFilterOpen(true)} className="lg:hidden h-[48px] sm:h-[56px] px-4 sm:px-6 rounded-xl sm:rounded-2xl bg-gray-900 text-white flex items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm font-black uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-black/10 shrink-0">
+                   <SlidersHorizontal className="w-4 h-4 sm:w-5 sm:h-5" />
                    <span>LỌC</span>
                    {activeChips.length > 0 && (
                      <span className="bg-primary-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px]">{activeChips.length}</span>
                    )}
                  </button>
 
-                 <form onSubmit={handleSearch} className="relative flex-1 max-w-md group">
-                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-primary-600 transition-colors" />
-                    <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Tìm model, thương hiệu..." className="w-full h-[56px] bg-gray-50 dark:bg-white/5 border-none focus:ring-2 focus:ring-primary-600/20 rounded-2xl pl-14 pr-4 text-sm font-bold outline-none transition-all dark:text-white placeholder:text-gray-400" />
+                 <form onSubmit={handleSearch} className="relative flex-1 group">
+                    <Search className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400 group-focus-within:text-primary-600 transition-colors" />
+                    <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Tìm kiếm..." className="w-full h-[48px] sm:h-[56px] bg-gray-50 dark:bg-white/5 border-none focus:ring-2 focus:ring-primary-600/20 rounded-xl sm:rounded-2xl pl-12 sm:pl-14 pr-4 text-xs sm:text-sm font-bold outline-none transition-all dark:text-white placeholder:text-gray-400" />
                  </form>
                </div>
 
                <div className="flex items-center gap-3 w-full sm:w-auto">
                  <div className="relative w-full sm:w-60">
-                    <select value={currentSort} onChange={(e) => updateParams({ sort: e.target.value })} className="w-full h-[56px] appearance-none bg-gray-50 dark:bg-white/5 border-none focus:ring-2 focus:ring-primary-600/20 rounded-2xl pl-6 pr-12 text-[11px] font-black text-gray-900 dark:text-white uppercase tracking-widest outline-none transition-all cursor-pointer">
+                    <select value={currentSort} onChange={(e) => updateParams({ sort: e.target.value })} className="w-full h-[48px] sm:h-[56px] appearance-none bg-gray-50 dark:bg-white/5 border-none focus:ring-2 focus:ring-primary-600/20 rounded-xl sm:rounded-2xl pl-5 sm:pl-6 pr-10 sm:pr-12 text-[10px] sm:text-[11px] font-black text-gray-900 dark:text-white uppercase tracking-widest outline-none transition-all cursor-pointer">
                       {SORT_OPTIONS.map(opt => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
                       ))}
                     </select>
-                    <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-primary-600 pointer-events-none" />
+                    <ChevronDown className="absolute right-4 sm:right-5 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-primary-600 pointer-events-none" />
                  </div>
                </div>
             </div>
@@ -381,7 +381,7 @@ const Products = () => {
               </div>
             ) : products.length > 0 ? (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-10">
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-10">
                   {products.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
@@ -389,9 +389,9 @@ const Products = () => {
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                  <div className="mt-20 flex justify-center gap-4">
-                    <button onClick={() => handlePageChange(Math.max(0, currentPage - 1))} disabled={currentPage === 0} className="h-14 w-14 rounded-2xl bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border text-gray-400 flex items-center justify-center hover:bg-primary-600 hover:text-white disabled:opacity-30 transition-all shadow-md shadow-black/[0.02]">
-                      <ChevronDown className="w-6 h-6 rotate-90" />
+                  <div className="mt-12 sm:mt-20 flex justify-center gap-2 sm:gap-4">
+                    <button onClick={() => handlePageChange(Math.max(0, currentPage - 1))} disabled={currentPage === 0} className="h-10 w-10 sm:h-14 sm:w-14 rounded-xl sm:rounded-2xl bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border text-gray-400 flex items-center justify-center hover:bg-primary-600 hover:text-white disabled:opacity-30 transition-all shadow-md shadow-black/[0.02]">
+                      <ChevronDown className="w-5 h-5 sm:w-6 sm:h-6 rotate-90" />
                     </button>
                     {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
                       let pageNum
@@ -401,13 +401,13 @@ const Products = () => {
                       else pageNum = currentPage - 2 + i
 
                       return (
-                        <button key={pageNum} onClick={() => handlePageChange(pageNum)} className={`h-14 w-14 rounded-2xl text-[13px] font-black transition-all ${currentPage === pageNum ? 'bg-primary-600 text-white shadow-xl shadow-primary-600/30 scale-110' : 'bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 shadow-md shadow-black/[0.02]'}`}>
+                        <button key={pageNum} onClick={() => handlePageChange(pageNum)} className={`h-10 w-10 sm:h-14 sm:w-14 rounded-xl sm:rounded-2xl text-[12px] sm:text-[13px] font-black transition-all ${currentPage === pageNum ? 'bg-primary-600 text-white shadow-xl shadow-primary-600/30 scale-105 sm:scale-110' : 'bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 shadow-md shadow-black/[0.02]'}`}>
                           {String(pageNum + 1).padStart(2, '0')}
                         </button>
                       )
                     })}
-                    <button onClick={() => handlePageChange(Math.min(totalPages - 1, currentPage + 1))} disabled={currentPage === totalPages - 1} className="h-14 w-14 rounded-2xl bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border text-gray-400 flex items-center justify-center hover:bg-primary-600 hover:text-white disabled:opacity-30 transition-all shadow-md shadow-black/[0.02]">
-                      <ChevronDown className="w-6 h-6 -rotate-90" />
+                    <button onClick={() => handlePageChange(Math.min(totalPages - 1, currentPage + 1))} disabled={currentPage === totalPages - 1} className="h-10 w-10 sm:h-14 sm:w-14 rounded-xl sm:rounded-2xl bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border text-gray-400 flex items-center justify-center hover:bg-primary-600 hover:text-white disabled:opacity-30 transition-all shadow-md shadow-black/[0.02]">
+                      <ChevronDown className="w-5 h-5 sm:w-6 sm:h-6 -rotate-90" />
                     </button>
                   </div>
                 )}
