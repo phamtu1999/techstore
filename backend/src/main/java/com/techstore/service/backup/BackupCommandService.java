@@ -60,37 +60,48 @@ public class BackupCommandService {
 
         Path tempPath = null;
         try {
-            Files.createDirectories(getBackupRootPath());
-            tempPath = Files.createTempFile("backup_", ".sql.gz");
+            Path backupRoot = getBackupRootPath();
+            log.info("[BACKUP][CREATE] start fileName={} db={} host={} port={} backupDir={}", fileName, dbName, dbHost, dbPort, backupRoot);
 
-            log.info("Starting backup process for database: {} on {}:{}", dbName, dbHost, dbPort);
+            Files.createDirectories(backupRoot);
+            tempPath = Files.createTempFile("backup_", ".sql.gz");
+            log.info("[BACKUP][CREATE] temp file created at {}", tempPath);
+
             ProcessBuilder processBuilder = new ProcessBuilder(
                     "pg_dump", "-h", dbHost, "-p", dbPort, "-U", dbUser, "--no-owner", "--no-privileges", dbName
             );
             configureDatabaseProcess(processBuilder);
+            log.info("[BACKUP][CREATE] pg_dump command prepared. PATH={}", System.getenv("PATH"));
 
             Process process = processBuilder.start();
+            log.info("[BACKUP][CREATE] pg_dump process started");
             StringBuilder stderr = new StringBuilder();
             Thread stderrThread = startStreamCollector(process.getErrorStream(), stderr, "pg_dump");
 
             try (InputStream databaseDump = process.getInputStream();
                  OutputStream fileOutput = Files.newOutputStream(tempPath);
                  GZIPOutputStream gzipOutputStream = new GZIPOutputStream(fileOutput)) {
+                log.info("[BACKUP][CREATE] streaming database dump into compressed file");
                 databaseDump.transferTo(gzipOutputStream);
+                log.info("[BACKUP][CREATE] dump stream finished");
             }
 
             int exitCode = process.waitFor();
             stderrThread.join();
+            log.info("[BACKUP][CREATE] pg_dump finished with exitCode={}", exitCode);
             if (exitCode != 0) {
                 Files.deleteIfExists(tempPath);
                 String errorMsg = stderr.toString().trim();
-                log.error("pg_dump failed with exit code {}: {}", exitCode, errorMsg);
+                log.error("[BACKUP][CREATE] pg_dump failed exitCode={} stderr={}", exitCode, errorMsg);
                 throw new AppException(ErrorCode.BACKUP_FAILED, "Sao lưu thất bại: " + errorMsg);
             }
 
             File file = tempPath.toFile();
             byte[] fileBytes = Files.readAllBytes(tempPath);
+            log.info("[BACKUP][CREATE] compressed file ready sizeBytes={}", fileBytes.length);
+
             String uploadUrl = storageService.uploadFile(fileBytes, fileName, "backups", "application/x-gzip");
+            log.info("[BACKUP][CREATE] uploaded to storage url={}", uploadUrl);
 
             Backup backup = backupRepository.save(Backup.builder()
                     .fileName(fileName)
@@ -98,16 +109,20 @@ public class BackupCommandService {
                     .storagePath("backups/" + fileName)
                     .storageUrl(uploadUrl)
                     .build());
+            log.info("[BACKUP][CREATE] backup metadata saved id={} fileName={}", backup.getId(), backup.getFileName());
 
             return mapToResponse(backup);
         } catch (AppException e) {
             throw e;
         } catch (Exception exception) {
-            log.error("Error creating backup. PATH={}", System.getenv("PATH"), exception);
+            log.error("[BACKUP][CREATE] failed PATH={}", System.getenv("PATH"), exception);
             throw new AppException(ErrorCode.BACKUP_FAILED, "Lỗi hệ thống khi sao lưu: " + exception.getMessage());
         } finally {
             if (tempPath != null) {
-                try { Files.deleteIfExists(tempPath); } catch (IOException ignored) {}
+                try {
+                    boolean deleted = Files.deleteIfExists(tempPath);
+                    log.info("[BACKUP][CREATE] temp file cleanup path={} deleted={}", tempPath, deleted);
+                } catch (IOException ignored) {}
             }
         }
     }
@@ -159,45 +174,54 @@ public class BackupCommandService {
         Path tempPath = null;
         try {
             tempPath = Files.createTempFile("restore_", fileName.endsWith(".gz") ? ".gz" : ".sql");
-            
+            log.info("[BACKUP][RESTORE] start fileName={} storageUrl={} tempPath={}", fileName, backup.getStorageUrl(), tempPath);
+
             String downloadUrl = backup.getStorageUrl();
-            
             try (InputStream remoteInput = new java.net.URL(downloadUrl).openStream();
                  OutputStream localOutput = Files.newOutputStream(tempPath)) {
+                log.info("[BACKUP][RESTORE] downloading backup file from storage");
                 remoteInput.transferTo(localOutput);
+                log.info("[BACKUP][RESTORE] download completed sizeBytes={}", Files.size(tempPath));
             }
 
-            log.info("Starting restore process from file: {}", fileName);
             ProcessBuilder processBuilder = new ProcessBuilder(
                     "psql", "-h", dbHost, "-p", dbPort, "-U", dbUser, dbName
             );
             configureDatabaseProcess(processBuilder);
             processBuilder.redirectErrorStream(true);
+            log.info("[BACKUP][RESTORE] psql command prepared. PATH={}", System.getenv("PATH"));
 
             Process process = processBuilder.start();
+            log.info("[BACKUP][RESTORE] psql process started");
             StringBuilder processOutput = new StringBuilder();
             Thread outputThread = startStreamCollector(process.getInputStream(), processOutput, "psql");
 
             try (InputStream backupInputStream = openBackupInputStream(tempPath);
                  OutputStream databaseInput = process.getOutputStream()) {
+                log.info("[BACKUP][RESTORE] streaming backup into database");
                 backupInputStream.transferTo(databaseInput);
+                log.info("[BACKUP][RESTORE] stream finished");
             }
 
             int exitCode = process.waitFor();
             outputThread.join();
+            log.info("[BACKUP][RESTORE] psql finished with exitCode={}", exitCode);
             if (exitCode != 0) {
                 String errorMsg = processOutput.toString().trim();
-                log.error("psql restore failed with exit code {}: {}", exitCode, errorMsg);
+                log.error("[BACKUP][RESTORE] psql restore failed exitCode={} output={}", exitCode, errorMsg);
                 throw new AppException(ErrorCode.RESTORE_FAILED, "Phục hồi thất bại: " + errorMsg);
             }
         } catch (AppException e) {
             throw e;
         } catch (Exception exception) {
-            log.error("Restore error", exception);
+            log.error("[BACKUP][RESTORE] restore error fileName={}", fileName, exception);
             throw new AppException(ErrorCode.RESTORE_FAILED, "Lỗi hệ thống khi phục hồi: " + exception.getMessage());
         } finally {
             if (tempPath != null) {
-                try { Files.deleteIfExists(tempPath); } catch (IOException ignored) {}
+                try {
+                    boolean deleted = Files.deleteIfExists(tempPath);
+                    log.info("[BACKUP][RESTORE] temp file cleanup path={} deleted={}", tempPath, deleted);
+                } catch (IOException ignored) {}
             }
         }
     }

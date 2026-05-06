@@ -29,23 +29,26 @@ public class BackupScheduler {
     public void init() {
         try {
             Files.createDirectories(Paths.get(backupDir).toAbsolutePath().normalize());
-            log.info("Backup system initialized at: {}", backupDir);
+            log.info("[BACKUP][SCHEDULER] initialized backupDir={}", backupDir);
         } catch (Exception exception) {
-            log.error("Failed to initialize backup directory", exception);
+            log.error("[BACKUP][SCHEDULER] failed to initialize backup directory", exception);
         }
     }
 
     @Scheduled(cron = "${app.backup.schedule-cron:0 0 2 * * *}")
     public void scheduledBackup() {
-        if (!scheduledBackupEnabled) return;
+        if (!scheduledBackupEnabled) {
+            log.info("[BACKUP][SCHEDULER] scheduled backup disabled");
+            return;
+        }
 
-        log.info("Starting scheduled backup...");
+        log.info("[BACKUP][SCHEDULER] starting scheduled backup retentionCount={}", retentionCount);
         try {
             backupCommandService.createBackup();
             backupCommandService.cleanupOldBackups(retentionCount);
-            log.info("Scheduled backup completed successfully");
+            log.info("[BACKUP][SCHEDULER] scheduled backup completed successfully");
         } catch (Exception exception) {
-            log.error("Scheduled backup failed", exception);
+            log.error("[BACKUP][SCHEDULER] scheduled backup failed", exception);
         }
     }
 }
