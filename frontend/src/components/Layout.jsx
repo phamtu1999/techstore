@@ -11,6 +11,15 @@ import { productsAPI } from '../api/products'
 import { getProductImageSources, handleProductImageError } from '../utils/productImageFallback'
 import { fetchWishlist } from '../store/slices/wishlistSlice'
 import ChatWidget from './chat/ChatWidget'
+import { getApiErrorMessage } from '../utils/apiError'
+
+const categories = [
+  { name: 'Điện thoại', icon: '📱', path: '/products?category=phone' },
+  { name: 'Laptop', icon: '💻', path: '/products?category=laptop' },
+  { name: 'Tablet', icon: '📲', path: '/products?category=tablet' },
+  { name: 'Phụ kiện', icon: '🎧', path: '/products?category=accessory' },
+  { name: 'Đồng hồ', icon: '⌚', path: '/products?category=watch' },
+]
 
 const Layout = () => {
   const navigate = useNavigate()
@@ -111,13 +120,6 @@ const Layout = () => {
     setSearchQuery('')
   }
 
-  const categories = [
-    { name: 'Điện thoại', icon: '📱', path: '/products?category=phone' },
-    { name: 'Laptop', icon: '💻', path: '/products?category=laptop' },
-    { name: 'Tablet', icon: '📲', path: '/products?category=tablet' },
-    { name: 'Phụ kiện', icon: '🎧', path: '/products?category=accessory' },
-    { name: 'Đồng hồ', icon: '⌚', path: '/products?category=watch' },
-  ]
 
   return (
     <div className="min-h-screen bg-background">
@@ -363,48 +365,67 @@ const Layout = () => {
         {/* Mobile Menu Drawer */}
         <div className={`fixed inset-0 z-[100] transition-all duration-500 ${isMobileMenuOpen ? 'visible' : 'invisible'}`}>
             <div 
-                className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-500 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0'}`}
+                className={`absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity duration-500 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0'}`}
                 onClick={() => setIsMobileMenuOpen(false)}
             />
-            <div className={`absolute top-0 left-0 w-[86vw] max-w-[340px] h-full bg-white dark:bg-dark-card shadow-2xl transition-transform duration-500 ease-out flex flex-col ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+            <div className={`absolute inset-y-0 left-0 w-[86vw] max-w-[340px] h-[100dvh] bg-white dark:bg-dark-card shadow-2xl transition-transform duration-500 ease-out flex flex-col ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                 <div className="p-5 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between shrink-0">
                     <span className="text-lg sm:text-xl font-black text-secondary-900 dark:text-white tracking-widest">MENU</span>
                     <button onClick={() => setIsMobileMenuOpen(false)} className="p-2.5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl transition-all">
-                        <X className="h-6 w-6" />
+                        <X className="h-6 w-6 text-gray-500" />
                     </button>
                 </div>
                 
-                <div className="flex-1 overflow-y-auto p-4 space-y-2 pb-8">
-                    <div className="px-4 py-2 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Danh mục</div>
-                    {categories.map((cat, i) => (
-                        <Link 
-                            key={i} 
-                            to={cat.path} 
-                            onClick={() => setIsMobileMenuOpen(false)}
-                            className="flex items-center gap-4 p-4 hover:bg-gray-50 dark:hover:bg-white/10 rounded-2xl transition-all group"
-                        >
-                            <span className="text-2xl group-hover:scale-110 transition-transform">{cat.icon}</span>
-                            <span className="font-bold text-secondary-800 dark:text-gray-200">{cat.name}</span>
-                        </Link>
-                    ))}
+                <div className="flex-1 overflow-y-auto scrollbar-hide py-4 px-2">
+                    <div className="px-4 py-3">
+                      <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Danh mục chính</div>
+                      <div className="space-y-1.5">
+                        {categories.map((cat, i) => (
+                            <Link 
+                                key={i} 
+                                to={cat.path} 
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="flex items-center gap-4 p-4 hover:bg-gray-50 dark:hover:bg-white/5 rounded-2xl transition-all group"
+                            >
+                                <span className="text-2xl group-hover:scale-110 transition-transform bg-white dark:bg-white/5 w-12 h-12 flex items-center justify-center rounded-xl shadow-sm border border-gray-100 dark:border-white/5">
+                                  {cat.icon}
+                                </span>
+                                <span className="font-bold text-secondary-800 dark:text-gray-200">{cat.name}</span>
+                            </Link>
+                        ))}
+                      </div>
+                    </div>
                     
-                    <div className="h-4"></div>
-                    <div className="px-4 py-2 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Cửa hàng</div>
-                    <Link to="/products" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-4 p-4 hover:bg-gray-50 dark:hover:bg-white/10 rounded-2xl transition-all group">
-                        <div className="w-8 h-8 rounded-lg bg-primary-50 text-primary-MAIN flex items-center justify-center">
-                            <Store className="h-5 w-5" />
-                        </div>
-                        <span className="font-bold text-secondary-800 dark:text-gray-200">Tất cả sản phẩm</span>
-                    </Link>
+                    <div className="px-4 py-3 border-t border-gray-50 dark:border-white/5 mt-4">
+                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Khám phá cửa hàng</div>
+                        <Link to="/products" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-4 p-4 hover:bg-gray-50 dark:hover:bg-white/5 rounded-2xl transition-all group">
+                            <div className="w-12 h-12 rounded-xl bg-primary-50 dark:bg-primary-500/10 text-primary-MAIN flex items-center justify-center shadow-sm">
+                                <Store className="h-5 w-5" />
+                            </div>
+                            <span className="font-bold text-secondary-800 dark:text-gray-200">Tất cả sản phẩm</span>
+                        </Link>
+                    </div>
                 </div>
 
-                <div className="p-4 sm:p-6 border-t border-gray-100 dark:border-white/5 shrink-0 bg-white dark:bg-dark-card mb-safe">
+                <div className="p-4 sm:p-6 border-t border-gray-100 dark:border-white/5 shrink-0 bg-white dark:bg-dark-card mt-auto pb-safe">
                     {user ? (
-                        <button onClick={handleLogout} className="w-full h-12 rounded-xl bg-red-50 text-red-600 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 active:scale-[0.98] transition-transform">
+                      <div className="flex flex-col gap-3">
+                        <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-4 p-3 bg-gray-50 dark:bg-white/5 rounded-2xl mb-2">
+                           <div className="w-10 h-10 bg-secondary-900 text-white rounded-full flex items-center justify-center font-black text-xs">
+                              {(user.fullName || user.email)?.charAt(0).toUpperCase()}
+                           </div>
+                           <div className="flex-1 min-w-0">
+                              <p className="text-sm font-black text-gray-900 dark:text-white truncate">{user.fullName || 'Tài khoản'}</p>
+                              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{user.role?.replace('ROLE_', '')}</p>
+                           </div>
+                        </Link>
+                        <button onClick={handleLogout} className="w-full h-12 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-600 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 active:scale-[0.98] transition-transform">
+                            <LogOut className="w-4 h-4" />
                             Đăng xuất
                         </button>
+                      </div>
                     ) : (
-                        <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="w-full h-14 rounded-2xl bg-secondary-900 text-white font-black text-xs uppercase tracking-widest flex items-center justify-center active:scale-[0.98] transition-transform">
+                        <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="w-full h-14 rounded-2xl bg-secondary-900 dark:bg-white text-white dark:text-secondary-900 font-black text-xs uppercase tracking-widest flex items-center justify-center active:scale-[0.98] transition-transform shadow-xl shadow-black/10">
                             Đăng nhập
                         </Link>
                     )}
