@@ -45,7 +45,7 @@ public class AnalyticsService {
 
         BigDecimal totalRevenue = nullToZero(orderRepository.getTotalRevenueByDateRange(startDate, endDate));
         long totalOrders = orderRepository.countOrdersByDateRange(startDate, endDate);
-        long totalCustomers = userRepository.count(); // global total
+        long totalCustomers = userRepository.count();
 
         // Growth Metrics
         BigDecimal todayRevenue = nullToZero(orderRepository.getTodayRevenue());

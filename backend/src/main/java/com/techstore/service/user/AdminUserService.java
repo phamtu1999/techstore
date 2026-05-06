@@ -74,13 +74,12 @@ public class AdminUserService {
         Specification<User> spec = createSpecification(filter);
         
         Page<User> users = userRepository.findAll(spec, pageable);
-        return users.map(this::mapToUserResponse);
+        List<UserResponse> mapped = enrichUsers(users.getContent());
+        return new org.springframework.data.domain.PageImpl<>(mapped, pageable, users.getTotalElements());
     }
 
     public List<UserResponse> getAllUsers() {
-        return userRepository.findAllActive().stream()
-                .map(this::mapToUserResponse)
-                .collect(Collectors.toList());
+        return enrichUsers(userRepository.findAllActive());
     }
 
     @Transactional
@@ -285,11 +284,24 @@ public class AdminUserService {
         }
     }
 
-    private UserResponse mapToUserResponse(User user) {
-        Long totalOrders = userRepository.countOrdersByUserId(user.getId());
-        Double totalSpent = userRepository.calculateTotalSpentByUserId(user.getId());
-        
-        return UserResponse.builder()
+    private List<UserResponse> enrichUsers(List<User> users) {
+        if (users == null || users.isEmpty()) {
+            return List.of();
+        }
+
+        List<String> userIds = users.stream().map(User::getId).toList();
+        java.util.Map<String, Long> orderCountMap = userRepository.countOrdersByUserIds(userIds).stream()
+                .collect(java.util.stream.Collectors.toMap(
+                        row -> (String) row[0],
+                        row -> ((Number) row[1]).longValue()
+                ));
+        java.util.Map<String, Double> spentMap = userRepository.calculateTotalSpentByUserIds(userIds).stream()
+                .collect(java.util.stream.Collectors.toMap(
+                        row -> (String) row[0],
+                        row -> row[1] != null ? ((Number) row[1]).doubleValue() : 0D
+                ));
+
+        return users.stream().map(user -> UserResponse.builder()
                 .id(user.getId())
                 .username(user.getEmail())
                 .email(user.getEmail())
@@ -301,10 +313,10 @@ public class AdminUserService {
                 .createdAt(user.getCreatedAt())
                 .status(user.getStatus() != null ? user.getStatus().name() : UserStatus.ACTIVE.name())
                 .emailVerified(user.getEmailVerified())
-                .totalOrders(totalOrders)
-                .totalSpent(totalSpent)
+                .totalOrders(orderCountMap.getOrDefault(user.getId(), 0L))
+                .totalSpent(spentMap.getOrDefault(user.getId(), 0D))
                 .twoFactorEnabled(user.getTwoFactorEnabled())
-                .build();
+                .build()).toList();
     }
 }
 

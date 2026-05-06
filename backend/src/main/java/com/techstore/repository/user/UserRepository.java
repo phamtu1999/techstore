@@ -47,5 +47,11 @@ public interface UserRepository extends JpaRepository<User, String>, JpaSpecific
     // Calculate total spent by user
     @Query("SELECT COALESCE(SUM(o.totalAmount), 0) FROM Order o WHERE o.user.id = :userId AND o.status = 'DELIVERED'")
     Double calculateTotalSpentByUserId(@Param("userId") String userId);
+
+    @Query("SELECT o.user.id AS userId, COUNT(o) AS totalOrders FROM Order o WHERE o.user.id IN :userIds GROUP BY o.user.id")
+    List<Object[]> countOrdersByUserIds(@Param("userIds") List<String> userIds);
+
+    @Query("SELECT o.user.id AS userId, COALESCE(SUM(o.totalAmount), 0) AS totalSpent FROM Order o WHERE o.user.id IN :userIds AND o.status = 'DELIVERED' GROUP BY o.user.id")
+    List<Object[]> calculateTotalSpentByUserIds(@Param("userIds") List<String> userIds);
 }
 

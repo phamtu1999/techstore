@@ -1,6 +1,6 @@
 import { Edit2, Trash2, MoreVertical, Copy, EyeOff, Eye } from 'lucide-react'
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
-import { FixedSizeList as List } from 'react-window'
+import { List } from 'react-window'
 
 const AdminTable = ({ 
   columns, 

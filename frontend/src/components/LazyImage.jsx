@@ -66,7 +66,6 @@ const LazyImage = ({ src, alt, className, fallback }) => {
             e.currentTarget.src = DEFAULT_PRODUCT_PLACEHOLDER
             setIsLoaded(true)
           }}
-          onLoad={() => setIsLoaded(true)}
         />
       )}
     </div>

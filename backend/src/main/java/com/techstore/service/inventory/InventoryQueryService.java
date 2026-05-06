@@ -29,7 +29,7 @@ public class InventoryQueryService {
     public List<SimpleProductVariantResponse> getLowStockVariants() {
         return variantRepository.findLowStockVariants().stream()
                 .map(inventoryMapper::mapToSimpleResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -71,9 +71,6 @@ public class InventoryQueryService {
 
     @Transactional(readOnly = true)
     public BigDecimal calculateTotalInventoryValue() {
-        return variantRepository.findAll().stream()
-                .filter(v -> v.getCostPrice() != null)
-                .map(v -> v.getCostPrice().multiply(BigDecimal.valueOf(v.getStockQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return variantRepository.calculateTotalInventoryValue();
     }
 }

@@ -27,6 +27,12 @@ public interface ProductVariantRepository extends JpaRepository<ProductVariant, 
     @EntityGraph(attributePaths = {"product", "product.images"})
     Page<ProductVariant> findAll(Pageable pageable);
 
+    @Query(value = "SELECT v FROM ProductVariant v JOIN FETCH v.product p LEFT JOIN FETCH p.images")
+    List<ProductVariant> findAllWithProductAndImages();
+
+    @Query(value = "SELECT SUM(COALESCE(v.costPrice, 0) * v.stockQuantity) FROM ProductVariant v")
+    BigDecimal calculateTotalInventoryValue();
+
     @EntityGraph(attributePaths = {"product", "product.images"})
     @Query("SELECT v FROM ProductVariant v WHERE " +
            "LOWER(v.product.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
