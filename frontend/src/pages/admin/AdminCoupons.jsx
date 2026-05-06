@@ -6,6 +6,7 @@ import { fireError, fireSuccess } from '../../utils/swalError'
 import { getApiErrorMessage } from '../../utils/apiError'
 import AdminPageHeader from '../../components/admin/shared/AdminPageHeader'
 import AdminPill from '../../components/admin/shared/AdminPill'
+import AdminTable from '../../components/admin/AdminTable'
 
 const AdminCoupons = () => {
     const [coupons, setCoupons] = useState([])
@@ -139,6 +140,82 @@ const AdminCoupons = () => {
 
     const formatCurrency = (val) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val)
 
+    const couponColumns = [
+        { 
+          key: 'code', 
+          label: 'Mã Coupon',
+          render: (val) => (
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary-50 text-primary-600 rounded-xl group-hover:scale-110 transition-transform">
+                <Ticket className="h-5 w-5" />
+              </div>
+              <span className="font-black text-gray-900 uppercase tracking-widest text-[14px]">{val}</span>
+            </div>
+          )
+        },
+        { 
+          key: 'discountValue', 
+          label: 'Giảm giá',
+          render: (val, row) => (
+            <span className="font-black text-emerald-600 text-[15px]">
+              {row.discountType === 'PERCENT' ? `${val}%` : formatCurrency(val)}
+            </span>
+          )
+        },
+        { 
+          key: 'minPurchase', 
+          label: 'Đơn tối thiểu',
+          render: (val) => <span className="font-bold text-gray-600">{formatCurrency(val)}</span>
+        },
+        { 
+          key: 'usedCount', 
+          label: 'Lượt dùng',
+          align: 'center',
+          render: (val, row) => (
+            <div className="flex flex-col items-center">
+              <span className="text-[14px] font-black text-gray-900">{val} / {row.usageLimit === 0 ? '∞' : row.usageLimit}</span>
+              <span className="text-[10px] text-gray-400 font-black uppercase tracking-tighter">Lượt dùng</span>
+            </div>
+          )
+        },
+        { 
+          key: 'expirationDate', 
+          label: 'Hết hạn',
+          render: (val) => (
+            <div className="flex items-center gap-2 text-[13px] font-bold text-gray-400">
+              <Calendar className="h-4 w-4" />
+              {new Date(val).toLocaleDateString('vi-VN')}
+            </div>
+          )
+        },
+        { 
+          key: 'active', 
+          label: 'Trạng thái',
+          align: 'center',
+          render: (val) => (
+            <AdminPill 
+              label={val ? 'Hoạt động' : 'Vô hiệu'} 
+              type={val ? 'success' : 'danger'} 
+            />
+          )
+        },
+        {
+          key: 'actions',
+          label: 'Thao tác',
+          align: 'right',
+          render: (_, row) => (
+            <div className="flex items-center justify-end gap-1">
+              <button onClick={() => handleOpenModal(row)} className="p-2 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all">
+                <Edit2 className="h-4 w-4" />
+              </button>
+              <button onClick={() => handleDelete(row.id)} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all">
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
+          )
+        }
+    ]
+
     const bulkActionBar = selectedIds.length > 0 && (
         <div className="flex items-center gap-3 bg-gray-900 text-white rounded-xl px-4 py-2 shadow-lg animate-scale-up mr-4">
             <span className="text-[13px] font-bold">
@@ -195,103 +272,71 @@ const AdminCoupons = () => {
             />
 
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                        <thead>
-                            <tr className="bg-gray-50/50">
-                                <th className="px-6 py-4 w-10">
-                                    <input 
-                                        type="checkbox" 
-                                        className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
-                                        checked={selectedIds.length > 0 && selectedIds.length === coupons.length}
-                                        onChange={handleSelectAll}
-                                    />
-                                </th>
-                                <th className="px-4 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-center w-12">STT</th>
-                                <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Mã Coupon</th>
-                                <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Giảm giá</th>
-                                <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Đơn tối thiểu</th>
-                                <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-center">Lượt dùng</th>
-                                <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Hết hạn</th>
-                                <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-center">Trạng thái</th>
-                                <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-right">Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-50">
-                            {isLoading ? (
-                                <tr>
-                                    <td colSpan={7} className="px-8 py-20 text-center">
-                                        <div className="w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
-                                    </td>
-                                </tr>
-                            ) : coupons.length === 0 ? (
-                                <tr>
-                                    <td colSpan={7} className="px-8 py-20 text-center text-gray-400 font-bold italic">
-                                        Chưa có mã giảm giá nào được tạo
-                                    </td>
-                                </tr>
-                            ) : coupons.map((row, index) => (
-                                <tr key={row.id} className={`hover:bg-gray-50 transition-colors group ${selectedIds.includes(row.id) ? 'bg-primary-50/30' : ''}`}>
-                                    <td className="px-6 py-5">
-                                        <input 
-                                            type="checkbox" 
-                                            className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
-                                            checked={selectedIds.includes(row.id)}
-                                            onChange={() => handleSelectOne(row.id)}
-                                        />
-                                    </td>
-                                    <td className="px-4 py-5 text-center text-[12px] font-bold text-gray-400">
-                                        {(index + 1).toString().padStart(2, '0')}
-                                    </td>
-                                    <td className="px-8 py-5">
-                                        <div className="flex items-center gap-3">
-                                            <div className="p-2 bg-primary-50 text-primary-600 rounded-xl group-hover:scale-110 transition-transform">
-                                                <Ticket className="h-5 w-5" />
+                <AdminTable 
+                    columns={couponColumns} 
+                    data={coupons} 
+                    isLoading={isLoading}
+                    selectedRows={selectedIds}
+                    onSelectRow={(row) => handleSelectOne(row.id)}
+                    onSelectAll={handleSelectAll}
+                    showIndex={true}
+                    renderMobileCard={(row, index, renderActions) => (
+                        <div key={row.id || index} className="p-4 bg-white dark:bg-dark-card border-b border-gray-100 dark:border-dark-border animate-fade-in hover:bg-gray-50/50 transition-colors">
+                            <div className="flex flex-col gap-4">
+                                <div className="flex justify-between items-start">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-12 h-12 bg-primary-50 dark:bg-primary-500/10 rounded-2xl flex items-center justify-center text-primary-600 shadow-sm border border-primary-100 dark:border-primary-500/20">
+                                            <Ticket className="h-6 w-6" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-[16px] font-black text-gray-900 dark:text-white tracking-widest uppercase leading-none">
+                                                {row.code}
+                                            </h4>
+                                            <div className="flex items-center gap-2 mt-1.5">
+                                                <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-100 dark:border-emerald-500/20 uppercase tracking-tighter">
+                                                    {row.discountType === 'PERCENT' ? `Giảm ${row.discountValue}%` : `Giảm ${formatCurrency(row.discountValue)}`}
+                                                </span>
                                             </div>
-                                            <span className="font-black text-gray-900 uppercase tracking-widest text-[14px]">{row.code}</span>
                                         </div>
-                                    </td>
-                                    <td className="px-8 py-5">
-                                        <span className="font-black text-emerald-600 text-[15px]">
-                                            {row.discountType === 'PERCENT' ? `${row.discountValue}%` : formatCurrency(row.discountValue)}
+                                    </div>
+                                    {renderActions(row, index)}
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-3 py-3 px-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5">
+                                    <div className="flex flex-col gap-0.5">
+                                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Đơn tối thiểu</span>
+                                        <span className="text-[14px] font-black text-gray-900 dark:text-white">
+                                            {formatCurrency(row.minPurchase)}
                                         </span>
-                                    </td>
-                                    <td className="px-8 py-5">
-                                        <span className="font-bold text-gray-600">{formatCurrency(row.minPurchase)}</span>
-                                    </td>
-                                    <td className="px-8 py-5 text-center">
-                                        <div className="flex flex-col items-center">
-                                            <span className="text-[14px] font-black text-gray-900">{row.usedCount} / {row.usageLimit === 0 ? '∞' : row.usageLimit}</span>
-                                            <span className="text-[10px] text-gray-400 font-black uppercase tracking-tighter">Lượt dùng</span>
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-5">
-                                        <div className="flex items-center gap-2 text-[13px] font-bold text-gray-400">
-                                            <Calendar className="h-4 w-4" />
+                                    </div>
+                                    <div className="flex flex-col gap-0.5 text-right">
+                                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Hết hạn</span>
+                                        <div className="flex items-center justify-end gap-1.5 text-[12px] font-bold text-gray-600 dark:text-gray-300">
+                                            <Calendar className="w-3 h-3 text-gray-400" />
                                             {new Date(row.expirationDate).toLocaleDateString('vi-VN')}
                                         </div>
-                                    </td>
-                                    <td className="px-8 py-5 text-center">
-                                        <AdminPill 
-                                            label={row.active ? 'Hoạt động' : 'Vô hiệu'} 
-                                            type={row.active ? 'success' : 'danger'} 
-                                        />
-                                    </td>
-                                    <td className="px-8 py-5 text-right">
-                                        <div className="flex items-center justify-end gap-1">
-                                            <button onClick={() => handleOpenModal(row)} className="p-2 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all">
-                                                <Edit2 className="h-4 w-4" />
-                                            </button>
-                                            <button onClick={() => handleDelete(row.id)} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all">
-                                                <Trash2 className="h-4 w-4" />
-                                            </button>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center justify-between px-1">
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex flex-col">
+                                            <span className="text-[14px] font-black text-gray-900 dark:text-white leading-none">
+                                                {row.usedCount} / {row.usageLimit === 0 ? '∞' : row.usageLimit}
+                                            </span>
+                                            <span className="text-[9px] text-gray-400 font-black uppercase tracking-tighter mt-1">Lượt dùng</span>
                                         </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                                    </div>
+                                    <AdminPill 
+                                        label={row.active ? 'Hoạt động' : 'Vô hiệu'} 
+                                        type={row.active ? 'success' : 'danger'} 
+                                        size="xs"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                />
             </div>
 
             {isModalOpen && (

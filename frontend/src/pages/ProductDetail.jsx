@@ -367,9 +367,9 @@ const ProductDetail = () => {
                <button
                   onClick={handleAddToCart}
                   disabled={stockQuantity === 0 || isCartLoading}
-                  className="flex-1 h-14 sm:h-16 rounded-2xl flex items-center justify-center gap-2 sm:gap-3 border-2 border-primary-MAIN text-primary-MAIN font-black text-[11px] sm:text-xs md:text-sm hover:bg-primary-50 transition-all uppercase tracking-widest no-hover-scale whitespace-nowrap px-4 disabled:opacity-50"
+                  className="w-full sm:flex-1 h-14 sm:h-16 rounded-2xl flex items-center justify-center gap-2 sm:gap-3 border-2 border-primary-MAIN bg-primary-50/30 text-primary-MAIN font-black text-xs sm:text-sm hover:bg-primary-50 transition-all uppercase tracking-widest no-hover-scale whitespace-nowrap px-4 disabled:opacity-50 shadow-sm"
                >
-                  <ShoppingCart className={`h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 ${isCartLoading ? 'animate-spin' : ''}`} />
+                  <ShoppingCart className={`h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0 ${isCartLoading ? 'animate-spin' : ''}`} />
                   {isCartLoading ? 'Đang thêm...' : 'Thêm vào giỏ'}
                </button>
             </div>

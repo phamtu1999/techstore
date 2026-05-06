@@ -307,34 +307,60 @@ const AdminBrands = () => {
             </div>
           )}
           renderMobileCard={(row, index, renderActions) => (
-            <div key={row.id || index} className="p-4 border-b border-gray-50 animate-fade-in">
-              <div className="flex flex-col gap-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="h-14 w-14 rounded-2xl bg-gray-50 border border-gray-100 p-2.5 flex items-center justify-center shadow-sm">
-                      {row.logoUrl ? (
-                        <img src={row.logoUrl} alt={row.name} className="w-full h-full object-contain" />
-                      ) : (
-                        <ImageIcon className="h-6 w-6 text-gray-300" />
-                      )}
-                    </div>
-                    <div>
-                      <h4 className="text-[15px] font-black text-gray-900 tracking-tight">{row.name}</h4>
-                      <div className="mt-1">
-                        <span className="text-[10px] bg-gray-100 px-2 py-0.5 rounded-md text-gray-500 font-mono font-black uppercase tracking-tighter">
+            <div key={row.id || index} className="p-4 bg-white dark:bg-dark-card border-b border-gray-100 dark:border-dark-border animate-fade-in hover:bg-gray-50/50 transition-colors">
+              <div className="flex gap-4">
+                {/* Left: Logo */}
+                <div className="shrink-0">
+                  <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 p-2 overflow-hidden flex items-center justify-center">
+                    {row.logoUrl ? (
+                      <img src={row.logoUrl} alt={row.name} className="w-full h-full object-contain" />
+                    ) : (
+                      <ImageIcon className="h-8 w-8 text-gray-200" />
+                    )}
+                  </div>
+                </div>
+
+                {/* Right: Info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-start">
+                    <div className="space-y-1">
+                      <h4 className="text-[16px] font-black text-gray-900 dark:text-white tracking-tight leading-none truncate">
+                        {row.name}
+                      </h4>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-bold bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-md text-gray-500 uppercase tracking-tighter">
                           /{row.slug}
                         </span>
                       </div>
                     </div>
+                    {renderActions(row, index)}
                   </div>
-                  {renderActions(row, index)}
+
+                  <div className="mt-3 flex flex-col gap-2">
+                    {row.description ? (
+                      <p className="text-[12px] text-gray-500 dark:text-gray-400 font-medium leading-relaxed line-clamp-2 italic">
+                        "{row.description}"
+                      </p>
+                    ) : (
+                      <p className="text-[12px] text-gray-300 italic font-medium">Chưa có mô tả...</p>
+                    )}
+                    
+                    <div className="flex items-center gap-3 pt-2">
+                      <div className="flex flex-col">
+                        <span className="text-[14px] font-black text-secondary-900 dark:text-white leading-none">
+                          {row.productCount || 0}
+                        </span>
+                        <span className="text-[9px] text-gray-400 font-black uppercase tracking-tighter mt-1">Sản phẩm</span>
+                      </div>
+                      <div className="w-[1px] h-6 bg-gray-100 dark:bg-white/5"></div>
+                      <AdminPill 
+                        label={row.active ? 'Hoạt động' : 'Đang ẩn'} 
+                        type={row.active ? 'success' : 'danger'} 
+                        size="xs"
+                      />
+                    </div>
+                  </div>
                 </div>
-                
-                {row.description && (
-                  <p className="text-[12px] text-gray-500 font-medium leading-relaxed line-clamp-2 px-1">
-                    {row.description}
-                  </p>
-                )}
               </div>
             </div>
           )}

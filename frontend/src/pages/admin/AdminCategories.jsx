@@ -7,6 +7,7 @@ import { fireError, fireSuccess } from '../../utils/swalError'
 import { getApiErrorMessage } from '../../utils/apiError'
 import AdminPageHeader from '../../components/admin/shared/AdminPageHeader'
 import AdminPill from '../../components/admin/shared/AdminPill'
+import AdminTable from '../../components/admin/AdminTable'
 
 const AdminCategories = () => {
   const [categories, setCategories] = useState([])
@@ -225,6 +226,101 @@ const AdminCategories = () => {
     })
     .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
 
+  const categoryColumns = [
+    { 
+      key: 'name', 
+      label: 'Danh mục',
+      render: (val, row) => (
+        <div className="flex items-center gap-4">
+          <div className="h-12 w-12 rounded-xl bg-gray-50 border border-gray-100 overflow-hidden flex-shrink-0">
+            {row.imageUrl ? (
+              <img src={row.imageUrl} alt={val} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-300">
+                <ImageIcon className="h-6 w-6" />
+              </div>
+            )}
+          </div>
+          <div>
+             <div className="text-[14px] font-bold text-gray-900 group-hover:text-primary-600 transition-colors">
+               {val}
+             </div>
+             {row.parentId && (
+               <div className="text-[11px] font-medium text-gray-400 mt-0.5 flex items-center gap-1">
+                  <ChevronRight className="h-3 w-3" />
+                  Con của {row.parentName}
+               </div>
+             )}
+          </div>
+        </div>
+      )
+    },
+    { 
+      key: 'slug', 
+      label: 'Đường dẫn',
+      render: (val) => (
+        <span className="text-[12px] bg-gray-100 px-2.5 py-1 rounded-lg text-gray-600 font-mono font-bold">
+          /{val}
+        </span>
+      )
+    },
+    { 
+      key: 'sortOrder', 
+      label: 'Thứ tự',
+      align: 'center',
+      render: (val) => (
+        <span className="text-[13px] font-black text-gray-700 bg-gray-50 w-8 h-8 inline-flex items-center justify-center rounded-lg border border-gray-100">
+          {val || 0}
+        </span>
+      )
+    },
+    { 
+      key: 'productCount', 
+      label: 'Sản phẩm',
+      align: 'center',
+      render: (val) => (
+        <div className="inline-flex flex-col items-center">
+          <span className="text-[14px] font-black text-gray-900 leading-none">{val || 0}</span>
+          <span className="text-[10px] text-gray-400 mt-1 uppercase font-black tracking-tighter">Sản phẩm</span>
+        </div>
+      )
+    },
+    { 
+      key: 'active', 
+      label: 'Trạng thái',
+      align: 'center',
+      render: (val) => (
+        <AdminPill 
+          label={val ? 'Hiển thị' : 'Đang ẩn'} 
+          type={val ? 'success' : 'danger'} 
+        />
+      )
+    },
+    {
+      key: 'actions',
+      label: 'Thao tác',
+      align: 'right',
+      render: (_, row) => (
+        <div className="flex items-center justify-end gap-1">
+          <button
+            onClick={() => handleEdit(row)}
+            className="p-2 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all"
+            title="Chỉnh sửa"
+          >
+            <Edit2 className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => handleDelete(row)}
+            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+            title="Xóa"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        </div>
+      )
+    }
+  ]
+
   const bulkActionBar = selectedIds.length > 0 && (
     <div className="flex items-center gap-3 bg-gray-900 text-white rounded-xl px-4 py-2 shadow-lg animate-scale-up mr-4">
       <span className="text-[13px] font-bold">
@@ -300,7 +396,6 @@ const AdminCategories = () => {
               className="w-full h-[46px] pl-12 pr-4 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-primary-600/20 focus:bg-white transition-all outline-none text-[14px] font-medium"
             />
           </div>
-
           <div className="relative min-w-[240px]">
             <Filter className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
             <select
@@ -323,125 +418,80 @@ const AdminCategories = () => {
             <div className="w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="bg-gray-50/50">
-                  <th className="px-6 py-4 w-10">
-                    <input 
-                      type="checkbox" 
-                      className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
-                      checked={selectedIds.length > 0 && selectedIds.length === sortedAndFiltered.length}
-                      onChange={handleSelectAll}
-                    />
-                  </th>
-                  <th className="px-4 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-center w-12">STT</th>
-                  <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Danh mục</th>
-                  <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400">Đường dẫn</th>
-                  <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-center">Thứ tự</th>
-                  <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-center">Sản phẩm</th>
-                  <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-center">Trạng thái</th>
-                  <th className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-right">Thao tác</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {sortedAndFiltered.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="px-8 py-20 text-center text-gray-400 font-bold italic">
-                      Không tìm thấy danh mục nào phù hợp
-                    </td>
-                  </tr>
-                ) : (
-                  sortedAndFiltered.map((category, index) => (
-                    <tr key={category.id} className={`hover:bg-gray-50/30 transition-colors group ${selectedIds.includes(category.id) ? 'bg-primary-50/30' : ''}`}>
-                      <td className="px-6 py-5">
-                        <input 
-                          type="checkbox" 
-                          className="rounded border-gray-300 text-primary-600 focus:ring-primary-600"
-                          checked={selectedIds.includes(category.id)}
-                          onChange={() => handleSelectOne(category.id)}
-                        />
-                      </td>
-                      <td className="px-4 py-5 text-center text-[12px] font-bold text-gray-400">
-                        {(index + 1).toString().padStart(2, '0')}
-                      </td>
-                      <td className="px-8 py-5">
-                        <div className="flex items-center gap-4">
-                          <div className="h-12 w-12 rounded-xl bg-gray-50 border border-gray-100 overflow-hidden flex-shrink-0">
-                            {category.imageUrl ? (
-                              <img src={category.imageUrl} alt={category.name} className="w-full h-full object-cover" />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center text-gray-300">
-                                <ImageIcon className="h-6 w-6" />
-                              </div>
-                            )}
-                          </div>
-                          <div>
-                             <div className="text-[14px] font-bold text-gray-900 group-hover:text-primary-600 transition-colors">
-                               {category.name}
-                             </div>
-                             {category.parentId && (
-                               <div className="text-[11px] font-medium text-gray-400 mt-0.5 flex items-center gap-1">
-                                  <ChevronRight className="h-3 w-3" />
-                                  Con của {category.parentName}
-                               </div>
-                             )}
-                          </div>
+          <AdminTable 
+            columns={categoryColumns} 
+            data={sortedAndFiltered} 
+            selectedRows={selectedIds}
+            onSelectRow={(row) => handleSelectOne(row.id)}
+            onSelectAll={handleSelectAll}
+            showIndex={true}
+            renderMobileCard={(row, index, renderActions) => (
+              <div key={row.id || index} className="p-4 bg-white dark:bg-dark-card border-b border-gray-100 dark:border-dark-border animate-fade-in hover:bg-gray-50/50 transition-colors">
+                <div className="flex gap-4">
+                  {/* Left: Image */}
+                  <div className="shrink-0">
+                    <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 p-2 overflow-hidden flex items-center justify-center">
+                      {row.imageUrl ? (
+                        <img src={row.imageUrl} alt={row.name} className="w-full h-full object-cover rounded-xl" />
+                      ) : (
+                        <ImageIcon className="h-8 w-8 text-gray-200" />
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Right: Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-start">
+                      <div className="space-y-1">
+                        <h4 className="text-[16px] font-black text-gray-900 dark:text-white tracking-tight leading-none truncate">
+                          {row.name}
+                        </h4>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-bold bg-gray-100 dark:bg-white/5 px-2 py-0.5 rounded-md text-gray-500 uppercase tracking-tighter">
+                            /{row.slug}
+                          </span>
+                          {row.parentId && (
+                            <span className="text-[9px] font-bold text-primary-600 uppercase flex items-center gap-0.5">
+                              <ChevronRight className="h-2 w-2" />
+                              {row.parentName}
+                            </span>
+                          )}
                         </div>
-                      </td>
+                      </div>
+                      {renderActions(row, index)}
+                    </div>
 
-                      <td className="px-8 py-5">
-                        <span className="text-[12px] bg-gray-100 px-2.5 py-1 rounded-lg text-gray-600 font-mono font-bold">
-                          /{category.slug}
-                        </span>
-                      </td>
-
-                      <td className="px-8 py-5 text-center">
-                        <span className="text-[13px] font-black text-gray-700 bg-gray-50 w-8 h-8 inline-flex items-center justify-center rounded-lg border border-gray-100">
-                          {category.sortOrder || 0}
-                        </span>
-                      </td>
-
-                      <td className="px-8 py-5 text-center">
-                        <div className="inline-flex flex-col items-center">
-                          <span className="text-[14px] font-black text-gray-900 leading-none">{category.productCount || 0}</span>
-                          <span className="text-[10px] text-gray-400 mt-1 uppercase font-black tracking-tighter">Sản phẩm</span>
+                    <div className="mt-3 flex flex-col gap-2">
+                      <div className="flex items-center gap-3">
+                        <div className="flex flex-col">
+                          <span className="text-[14px] font-black text-secondary-900 dark:text-white leading-none">
+                            {row.productCount || 0}
+                          </span>
+                          <span className="text-[9px] text-gray-400 font-black uppercase tracking-tighter mt-1">Sản phẩm</span>
                         </div>
-                      </td>
-
-                      <td className="px-8 py-5 text-center">
+                        <div className="w-[1px] h-6 bg-gray-100 dark:bg-white/5"></div>
+                        <div className="flex flex-col">
+                          <span className="text-[14px] font-black text-secondary-900 dark:text-white leading-none">
+                            {row.sortOrder || 0}
+                          </span>
+                          <span className="text-[9px] text-gray-400 font-black uppercase tracking-tighter mt-1">Thứ tự</span>
+                        </div>
+                        <div className="w-[1px] h-6 bg-gray-100 dark:bg-white/5 ml-auto"></div>
                         <AdminPill 
-                          label={category.active ? 'Đang hiển thị' : 'Đang ẩn'} 
-                          type={category.active ? 'success' : 'danger'} 
+                          label={row.active ? 'Hiển thị' : 'Đang ẩn'} 
+                          type={row.active ? 'success' : 'danger'} 
+                          size="xs"
                         />
-                      </td>
-
-                      <td className="px-8 py-5 text-right">
-                        <div className="flex items-center justify-end gap-1">
-                          <button
-                            onClick={() => handleEdit(category)}
-                            className="p-2 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all"
-                            title="Chỉnh sửa"
-                          >
-                            <Edit2 className="h-4 w-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(category)}
-                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                            title="Xóa"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          />
         )}
       </div>
+
 
       {/* Modal */}
       {showModal && (
