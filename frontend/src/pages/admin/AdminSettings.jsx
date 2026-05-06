@@ -487,11 +487,11 @@ const AdminSettings = () => {
                         {activeTab === 'security' && <SecuritySettings />}
                         {activeTab === 'database' && <BackupManagement />}
                         {activeTab === 'logs' && <SystemLogs />}
-                    </div>
                 </div>
             </div>
+        </div>
+    </div>
     )
 }
 
 export default AdminSettings
-
