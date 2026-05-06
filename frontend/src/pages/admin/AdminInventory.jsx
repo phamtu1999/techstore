@@ -444,6 +444,22 @@ const AdminInventory = () => {
             }}
             showIndex={true}
             itemTitle="biến thể"
+            actions={(row, closeDropdown) => (
+              <div className="space-y-1">
+                <button 
+                  onClick={() => { handleAdjustStock(row); closeDropdown?.() }}
+                  className="w-full px-4 py-2.5 text-left text-[13px] font-bold text-secondary-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                >
+                  <ArrowRightLeft className="h-4 w-4 text-primary-500" /> Điều chỉnh kho
+                </button>
+                <button 
+                  onClick={() => { window.location.href = `/admin/products?search=${row.productName}`; closeDropdown?.() }}
+                  className="w-full px-4 py-2.5 text-left text-[13px] font-bold text-secondary-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                >
+                  <Package className="h-4 w-4 text-emerald-500" /> Xem sản phẩm
+                </button>
+              </div>
+            )}
             renderMobileCard={(row, index, renderActions) => (
               <div key={row.id || index} className="p-2.5 border-b border-gray-50 dark:border-white/5 animate-fade-in hover:bg-gray-50/50 transition-colors">
                 <div className="flex flex-col gap-2">
