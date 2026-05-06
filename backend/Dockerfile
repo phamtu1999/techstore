@@ -13,6 +13,7 @@ RUN ./mvnw clean package -DskipTests
 FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 
+# Install PostgreSQL 17 client
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     gnupg2 \

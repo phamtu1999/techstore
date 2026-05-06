@@ -1,10 +1,9 @@
 # Nixpacks configuration for Spring Boot Backend
 [phases.setup]
 nixPkgs = ["maven", "openjdk17", "postgresql_17"]
-aptPkgs = ["postgresql-client-17"]
 
 [phases.build]
 cmds = ["mvn clean package -DskipTests"]
 
 [start]
-cmd = "sh -c 'exec java ${JAVA_OPTS:-} -Dserver.port=${PORT:-8080} -jar target/backend-0.0.1-SNAPSHOT.jar'"
+cmd = "java -Dserver.port=${PORT:-8080} -jar target/backend-0.0.1-SNAPSHOT.jar"
