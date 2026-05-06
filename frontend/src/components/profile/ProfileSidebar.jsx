@@ -1,8 +1,21 @@
 import { User, Package, MapPin, Heart, Lock, LogOut, ChevronRight, Camera, CreditCard, Bell, LayoutDashboard } from 'lucide-react'
+import { useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const ProfileSidebar = ({ profile, activeTab, setActiveTab, handleLogout, isAdmin }) => {
+const ProfileSidebar = ({ profile, activeTab, setActiveTab, handleLogout, isAdmin, onAvatarChange }) => {
   const navigate = useNavigate()
+  const fileInputRef = useRef(null)
+
+  const handleCameraClick = () => {
+    fileInputRef.current.click()
+  }
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0]
+    if (file && onAvatarChange) {
+      onAvatarChange(file)
+    }
+  }
   const menuItems = [
     { 
       id: 'info', 
@@ -55,7 +68,17 @@ const ProfileSidebar = ({ profile, activeTab, setActiveTab, handleLogout, isAdmi
               </div>
             )}
           </div>
-          <button className="absolute -bottom-1 -right-1 bg-white dark:bg-dark-card p-2.5 rounded-2xl shadow-xl border border-gray-100 dark:border-dark-border text-primary-600 hover:scale-110 active:scale-95 transition-all">
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept="image/*"
+            className="hidden"
+          />
+          <button 
+            onClick={handleCameraClick}
+            className="absolute -bottom-1 -right-1 bg-white dark:bg-dark-card p-2.5 rounded-2xl shadow-xl border border-gray-100 dark:border-dark-border text-primary-600 hover:scale-110 active:scale-95 transition-all"
+          >
             <Camera className="h-4 w-4" />
           </button>
         </div>

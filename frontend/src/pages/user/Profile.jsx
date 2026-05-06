@@ -4,6 +4,7 @@ import { fireError, fireSuccess } from '../../utils/swalError'
 import { getApiErrorMessage } from '../../utils/apiError'
 import { ShieldCheck } from 'lucide-react'
 import { profileAPI } from '../../api/profile'
+import { filesAPI } from '../../api/files'
 import Orders from './Orders'
 import Wishlist from './Wishlist'
 import { useNavigate } from 'react-router-dom'
@@ -341,6 +342,38 @@ const Profile = () => {
     }
   }
 
+  const handleAvatarChange = async (file) => {
+    try {
+      Swal.fire({
+        title: 'Đang xử lý...',
+        html: '<div class="mt-2 text-sm font-bold text-gray-400 animate-pulse uppercase tracking-widest">Đang tải ảnh lên hệ thống...</div>',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading(),
+        customClass: {
+          popup: 'rounded-3xl border-none shadow-2xl',
+        }
+      })
+      
+      const uploadRes = await filesAPI.upload(file, 'avatars')
+      const avatarUrl = uploadRes.data.result
+      
+      await profileAPI.updateProfile({ 
+        fullName: profile.fullName,
+        phone: profile.phone,
+        gender: profile.gender,
+        dateOfBirth: profile.dateOfBirth,
+        avatarUrl 
+      })
+      
+      Swal.close()
+      fireSuccess('Thành công', 'Ảnh đại diện đã được cập nhật mới')
+      fetchData()
+    } catch (error) {
+      Swal.close()
+      fireError(error, 'Không thể cập nhật ảnh đại diện')
+    }
+  }
+
   const handleChangePassword = async (e) => {
     e.preventDefault()
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
@@ -482,6 +515,7 @@ const Profile = () => {
             setActiveTab={setActiveTab} 
             handleLogout={handleLogout} 
             isAdmin={isAdmin}
+            onAvatarChange={handleAvatarChange}
           />
 
           <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-[2rem] p-6 text-white shadow-xl shadow-indigo-100">
