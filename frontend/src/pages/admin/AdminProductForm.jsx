@@ -93,10 +93,10 @@ const AdminProductForm = () => {
         brandId: data.brandId || prev.brandId,
         categoryId: String(data.categoryId || prev.categoryId),
         description: data.description || prev.description,
-        price: data.price || prev.price,
-        originalPrice: data.originalPrice || prev.originalPrice,
-        stockQuantity: data.stockQuantity || prev.stockQuantity,
-        modelName: data.modelName || prev.modelName,
+        price: data.price ?? prev.price,
+        originalPrice: data.originalPrice ?? prev.originalPrice,
+        stockQuantity: data.stockQuantity ?? prev.stockQuantity,
+        modelName: data.modelName ?? prev.modelName,
         sku: data.sku || prev.sku,
         active: data.active ?? prev.active,
         featured: data.featured ?? prev.featured
@@ -296,9 +296,11 @@ const AdminProductForm = () => {
                 brandId: brands[0]?.id || "",
                 categoryId: categories[0]?.id || "",
                 price: 1000000,
+                stockQuantity: 10,
+                modelName: "Phiên bản màu sắc",
                 description: "Mô tả sản phẩm",
                 imageUrls: ["https://example.com/image.jpg"],
-                attributes: [{ name: "RAM", value: "8GB" }]
+                attributes: [{ key: "RAM", value: "8GB" }]
               }, null, 2))}
               className="text-primary-600 text-xs font-bold hover:underline"
             >
