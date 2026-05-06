@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Settings, Store, CreditCard, Globe, Save, RefreshCcw, BellRing, ShieldCheck, ChevronRight, DollarSign, Database } from 'lucide-react'
+import { Settings, Store, CreditCard, Globe, Save, RefreshCcw, BellRing, ShieldCheck, ChevronRight, DollarSign, Database, Activity } from 'lucide-react'
 import { filesAPI } from '../../api/files'
 import { settingsAPI } from '../../api/settings'
 import Swal from 'sweetalert2'
@@ -11,6 +11,7 @@ import SecuritySettings from './SecuritySettings'
 import GeneralSettings from '../../components/admin/settings/GeneralSettings'
 import BroadcastNotification from '../../components/admin/settings/BroadcastNotification'
 import BackupManagement from '../../components/admin/BackupManagement'
+import SystemLogs from '../../components/admin/settings/SystemLogs'
 
 const AdminSettings = () => {
     const [activeTab, setActiveTab] = useState('general')
@@ -211,6 +212,7 @@ const AdminSettings = () => {
         { id: 'security', label: 'Bảo mật', icon: ShieldCheck, group: 'Hệ thống' },
         { id: 'notification', label: 'Thông báo', icon: BellRing, group: 'Hệ thống' },
         { id: 'database', label: 'Dữ liệu', icon: Database, group: 'Hệ thống' },
+        { id: 'logs', label: 'Nhật ký', icon: Activity, group: 'Hệ thống' },
     ]
 
     return (
@@ -443,6 +445,7 @@ const AdminSettings = () => {
                         {activeTab === 'notification' && <BroadcastNotification />}
                         {activeTab === 'security' && <SecuritySettings />}
                         {activeTab === 'database' && <BackupManagement />}
+                        {activeTab === 'logs' && <SystemLogs />}
                     </div>
                 </div>
             </div>
