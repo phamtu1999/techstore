@@ -27,7 +27,7 @@ const HeroBanner: React.FC = () => {
       <div className="absolute inset-0 z-[5] opacity-[0.05] pointer-events-none noise-bg" />
 
       {/* Main Content */}
-      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-24 items-center px-4 sm:px-12 lg:px-24 py-10 sm:py-24 lg:py-36">
+      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-24 items-center px-4 sm:px-12 lg:px-24 py-6 sm:py-24 lg:py-36">
         
         {/* Left Side: Product Intro */}
         <div className="space-y-8 sm:space-y-12 animate-fade-in text-center lg:text-left">
@@ -36,7 +36,7 @@ const HeroBanner: React.FC = () => {
                <Sparkles className="h-3 w-3 animate-pulse" />
                New Arrival · Limited Edition
             </div>
-            <h1 className="text-4xl sm:text-7xl lg:text-9xl leading-[0.85] text-white tracking-tighter uppercase font-black">
+            <h1 className="text-3xl sm:text-7xl lg:text-9xl leading-[0.85] text-white tracking-tighter uppercase font-black">
               FUTURE<br/>
               <span className="text-primary-600 italic">BEYOND</span>
             </h1>
@@ -57,8 +57,8 @@ const HeroBanner: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Side: Product Card Card */}
-        <div className="relative group/card max-w-md mx-auto lg:mx-0">
+        {/* Right Side: Product Card - Hidden on mobile, visible on lg */}
+        <div className="hidden lg:block relative group/card max-w-md mx-auto lg:mx-0">
           <div className="liquid-glass relative z-20 p-8 sm:p-12 rounded-[3rem] border border-white/10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] flex flex-col gap-10 transition-all duration-700 group-hover:rotate-1 group-hover:scale-105">
             <div className="flex justify-between items-start">
               <div className="space-y-1">
