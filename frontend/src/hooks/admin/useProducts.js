@@ -140,6 +140,42 @@ export const useProducts = () => {
     }
   };
 
+  const handleExportExcel = async () => {
+    try {
+      const response = await api.get('/admin/products/export', { responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `products_${new Date().toISOString().split('T')[0]}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      fireSuccess('Thành công', 'Đã tải xuống danh sách sản phẩm!');
+    } catch (error) {
+      fireError(error, 'Lỗi khi xuất file Excel');
+    }
+  };
+
+  const handleImportExcel = async (file) => {
+    if (!file) return;
+    
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      await api.post('/admin/products/import', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      fireSuccess('Thành công', 'Đã nhập sản phẩm từ Excel!');
+      fetchProducts(0);
+      fetchSummary();
+    } catch (error) {
+      fireError(error, 'Lỗi khi nhập file Excel');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     products,
@@ -154,6 +190,8 @@ export const useProducts = () => {
     pagination, setPagination,
     handleDeleteProduct,
     handleToggleStatus,
+    handleExportExcel,
+    handleImportExcel,
     fetchProducts
   };
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, Download, Upload } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import AdminPageHeader from '../../../components/admin/shared/AdminPageHeader';
 import { formatCurrency } from '../../../utils/format';
@@ -21,18 +21,59 @@ const AdminProducts = () => {
     stockFilter, setStockFilter,
     pagination, setPagination,
     handleDeleteProduct,
-    handleToggleStatus
+    handleToggleStatus,
+    handleExportExcel,
+    handleImportExcel
   } = useProducts();
 
   const navigate = useNavigate();
+  const fileInputRef = React.useRef(null);
+
+  const onImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const onFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      handleImportExcel(file);
+      e.target.value = ''; // Reset input
+    }
+  };
+
   const headerRight = (
-    <button 
-      onClick={() => navigate('/admin/products/add')}
-      className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-primary-600/20 active:scale-95"
-    >
-      <Plus className="w-5 h-5" />
-      <span>Thêm sản phẩm</span>
-    </button>
+    <div className="flex items-center gap-3">
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={onFileChange}
+        accept=".xlsx, .xls"
+        className="hidden"
+      />
+      <button 
+        onClick={handleExportExcel}
+        className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-green-600/20 active:scale-95"
+        title="Xuất Excel"
+      >
+        <Download className="w-5 h-5" />
+        <span className="hidden sm:inline">Xuất Excel</span>
+      </button>
+      <button 
+        onClick={onImportClick}
+        className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-4 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-amber-600/20 active:scale-95"
+        title="Nhập Excel"
+      >
+        <Upload className="w-5 h-5" />
+        <span className="hidden sm:inline">Nhập Excel</span>
+      </button>
+      <button 
+        onClick={() => navigate('/admin/products/add')}
+        className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-primary-600/20 active:scale-95"
+      >
+        <Plus className="w-5 h-5" />
+        <span>Thêm sản phẩm</span>
+      </button>
+    </div>
   );
 
   return (
