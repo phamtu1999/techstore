@@ -137,7 +137,7 @@ const Home = () => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 sm:gap-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 sm:gap-6">
           {categories.map((cat) => {
             const Icon = getCategoryIcon(cat.slug)
             const catImg = cat.imageUrl || getCategoryImage(cat.slug)
@@ -145,27 +145,27 @@ const Home = () => {
               <Link
                 key={cat.id}
                 to={`/products?category=${cat.slug}`}
-                className="group relative h-40 sm:h-80 rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-lg hover:shadow-primary-600/20 hover:scale-[1.03] transition-all duration-500"
+                className="group relative h-36 sm:h-56 rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden shadow-md hover:shadow-primary-600/20 hover:scale-[1.03] transition-all duration-500"
               >
                 <div className="absolute inset-0 bg-gray-900" />
                 <img 
                   src={catImg} 
                   alt={cat.name} 
-                  className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-110 group-hover:opacity-100 transition-all duration-700" 
+                  className="absolute inset-0 w-full h-full object-cover opacity-75 group-hover:scale-110 group-hover:opacity-100 transition-all duration-700" 
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
                 
-                <div className="absolute top-3 right-3 sm:top-6 sm:right-6">
-                   <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 text-white group-hover:bg-primary-600 group-hover:border-primary-500 transition-all">
-                     <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
+                <div className="absolute top-2 right-2 sm:top-4 sm:right-4">
+                   <div className="p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-xl border border-white/20 text-white group-hover:bg-primary-600 group-hover:border-primary-500 transition-all">
+                     <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                    </div>
                 </div>
-
-                <div className="absolute bottom-4 left-4 right-4 sm:bottom-8 sm:left-8 sm:right-8 text-center sm:text-left">
-                  <span className="font-black text-white text-base sm:text-xl uppercase tracking-wider leading-none block mb-2 drop-shadow-lg">
+ 
+                <div className="absolute bottom-3 left-3 right-3 sm:bottom-6 sm:left-6 sm:right-6 text-center sm:text-left">
+                  <span className="font-black text-white text-sm sm:text-lg uppercase tracking-wider leading-tight block mb-1 drop-shadow-lg">
                     {cat.name}
                   </span>
-                  <div className="h-1 w-0 bg-primary-600 rounded-full group-hover:w-full transition-all duration-500" />
+                  <div className="h-0.5 w-0 bg-primary-600 rounded-full group-hover:w-full transition-all duration-500" />
                 </div>
               </Link>
             )
