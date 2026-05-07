@@ -3,7 +3,9 @@
 nixPkgs = ["maven", "openjdk17", "postgresql_17"]
 
 [phases.build]
-cmds = ["mvn clean package -DskipTests"]
+env = { MAVEN_OPTS = "-Xms256m -Xmx768m -XX:+UseG1GC -Djava.awt.headless=true" }
+cmds = ["mvn -q -DskipTests clean package"]
 
 [start]
-cmd = "java -Dserver.port=${PORT:-8080} -jar target/backend-0.0.1-SNAPSHOT.jar"
+env = { JAVA_OPTS = "-XX:MaxRAMPercentage=75 -XX:+UseG1GC -Djava.awt.headless=true" }
+cmd = "java ${JAVA_OPTS} -Dserver.port=${PORT:-8080} -jar target/backend-0.0.1-SNAPSHOT.jar"
