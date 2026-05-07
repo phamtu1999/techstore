@@ -4,7 +4,7 @@ import { List } from 'react-window'
 
 const AdminTable = ({ 
   columns, 
-  data, 
+  data = [], 
   onEdit, 
   onDelete, 
   onDuplicate,

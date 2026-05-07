@@ -30,7 +30,8 @@ const AdminLivestreams = () => {
     const fetchStreams = async () => {
         try {
             const response = await api.get('/livestreams');
-            setStreams(response.data.result || []);
+            const result = response.data.result;
+            setStreams(Array.isArray(result) ? result : (result?.content || []));
         } catch (error) {
             Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Không thể tải danh sách livestream', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
         } finally {
@@ -82,7 +83,8 @@ const AdminLivestreams = () => {
                 setIsSearchingProducts(true);
                 try {
                     const response = await api.get(`/products?q=${searchProduct}`);
-                    setProducts(response.data.result.content || []);
+                    const result = response.data.result;
+                    setProducts(Array.isArray(result) ? result : (result?.content || []));
                 } catch (error) {
                     console.error('Search error', error);
                 } finally {

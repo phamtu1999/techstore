@@ -32,6 +32,7 @@ const AdminLogs = () => {
     const [endDate, setEndDate] = useState(toDateInputValue(new Date()));
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+    const [totalElements, setTotalElements] = useState(0);
     const [pageSize] = useState(10);
     const [selectedLog, setSelectedLog] = useState(null);
     const [showModal, setShowModal] = useState(false);

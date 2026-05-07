@@ -6,7 +6,7 @@ import { useCategories } from '../../../hooks/admin/useCategories';
 import CategoriesTable from './CategoriesTable';
 
 const AdminCategories = () => {
-  const { loading, categories, handleDelete } = useCategories();
+  const { loading, categories = [], handleDelete } = useCategories();
   const navigate = useNavigate();
 
   const headerRight = (
