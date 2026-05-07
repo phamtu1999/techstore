@@ -142,7 +142,10 @@ export const useProducts = () => {
 
   const handleExportExcel = async () => {
     try {
-      const response = await api.get('/admin/products/export', { responseType: 'blob' });
+      const response = await api.get('/admin/products/export', { 
+        responseType: 'blob',
+        timeout: 60000 
+      });
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;

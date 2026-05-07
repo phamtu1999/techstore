@@ -14,7 +14,7 @@ const getBaseURL = () => {
 
 const api = axios.create({
   baseURL: getBaseURL(),
-  timeout: 15000,
+  timeout: 30000,
   withCredentials: true, // Crucial for HttpOnly Cookies
   headers: {
     'Content-Type': 'application/json',

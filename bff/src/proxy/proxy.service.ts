@@ -73,7 +73,7 @@ export class ProxyService {
       headers: cleanedHeaders,
       params,
       validateStatus: () => true,
-      timeout: 30000,
+      timeout: 60000,
       responseType: isBinaryRequest ? 'arraybuffer' : 'json',
     };
 
