@@ -174,7 +174,7 @@ const AdminTable = ({
           </div>
           
           <div className="grid grid-cols-2 gap-x-4 gap-y-3 pt-3 border-t border-gray-50 dark:border-white/5">
-             {columns.slice(1).map((column) => (
+             {Array.isArray(columns) && columns.slice(1).map((column) => (
                <div key={column.key} className="flex flex-col gap-1">
                   <span className="text-gray-400 font-bold uppercase text-[9px] tracking-wider">{column.label}</span>
                   <div className="text-gray-900 dark:text-white font-bold text-[13px] line-clamp-2">
@@ -192,7 +192,7 @@ const AdminTable = ({
     <div
       key={row.id || index}
       className={`grid items-center hover:bg-[#f9fafb] transition-colors min-h-[64px] border-b border-gray-100 ${rowClassName ? rowClassName(row) : ''}`}
-      style={{ gridTemplateColumns: `${hasSelection ? '48px ' : ''}${showIndex ? '48px ' : ''}${columns.map(() => 'minmax(0, 1fr)').join(' ')}${hasActions ? ' 128px' : ''}` }}
+      style={{ gridTemplateColumns: `${hasSelection ? '48px ' : ''}${showIndex ? '48px ' : ''}${Array.isArray(columns) ? columns.map(() => 'minmax(0, 1fr)').join(' ') : ''}${hasActions ? ' 128px' : ''}` }}
     >
       {hasSelection && (
         <div className="px-6 py-4 flex justify-center">
@@ -209,7 +209,7 @@ const AdminTable = ({
           {(currentPage * pageSize + index + 1).toString().padStart(2, '0')}
         </div>
       )}
-      {columns.map((column) => (
+      {Array.isArray(columns) && columns.map((column) => (
         <div key={column.key} className="px-6 py-4 text-[14px] text-gray-900">
           {column.render ? column.render(row[column.key], row, index) : row[column.key]}
         </div>
@@ -239,7 +239,7 @@ const AdminTable = ({
   if (isMobile) {
     return (
       <div className="divide-y divide-gray-100 dark:divide-dark-border">
-        {data.map(renderMobileCard)}
+        {Array.isArray(data) && data.map(renderMobileCard)}
       </div>
     )
   }
@@ -247,10 +247,10 @@ const AdminTable = ({
   return (
     <div className="overflow-x-auto custom-scrollbar" ref={containerRef}>
       <div className="min-w-full">
-        <div className="grid items-center bg-gray-50/50 border-b border-gray-100" style={{ gridTemplateColumns: `${hasSelection ? '48px ' : ''}${showIndex ? '48px ' : ''}${columns.map(() => 'minmax(0, 1fr)').join(' ')}${hasActions ? ' 128px' : ''}` }}>
+        <div className="grid items-center bg-gray-50/50 border-b border-gray-100" style={{ gridTemplateColumns: `${hasSelection ? '48px ' : ''}${showIndex ? '48px ' : ''}${Array.isArray(columns) ? columns.map(() => 'minmax(0, 1fr)').join(' ') : ''}${hasActions ? ' 128px' : ''}` }}>
           {hasSelection && <div className="px-6 py-4 w-12"><input type="checkbox" checked={allSelected} onChange={(e) => onSelectAll(e.target.checked)} className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500 cursor-pointer" /></div>}
           {showIndex && <div className="px-4 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 text-center w-12">STT</div>}
-          {columns.map((column) => <div key={column.key} className={`admin-table-header ${column.sortable ? 'cursor-pointer hover:bg-gray-100/50 select-none' : ''}`} onClick={() => column.sortable && handleSort(column.key)}><div className="flex items-center gap-2">{column.label}{column.sortable && <span className="text-gray-300">{getSortIcon(column.key)}</span>}</div></div>)}
+          {Array.isArray(columns) && columns.map((column) => <div key={column.key} className={`admin-table-header ${column.sortable ? 'cursor-pointer hover:bg-gray-100/50 select-none' : ''}`} onClick={() => column.sortable && handleSort(column.key)}><div className="flex items-center gap-2">{column.label}{column.sortable && <span className="text-gray-300">{getSortIcon(column.key)}</span>}</div></div>)}
           {hasActions && <div className="admin-table-header text-center w-32">Hành động</div>}
         </div>
         {virtualized ? (
@@ -258,7 +258,7 @@ const AdminTable = ({
             {({ index, style }) => <div style={style}>{renderRow(data[index], index)}</div>}
           </List>
         ) : (
-          <div>{data.map(renderRow)}</div>
+          <div>{Array.isArray(data) && data.map(renderRow)}</div>
         )}
       </div>
     </div>

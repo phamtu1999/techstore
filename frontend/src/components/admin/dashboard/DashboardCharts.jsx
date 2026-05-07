@@ -3,6 +3,7 @@ import {
   PieChart, Pie, Cell
 } from 'recharts'
 import { useState } from 'react'
+import { Activity } from 'lucide-react'
 
 const DashboardCharts = ({ revenueHistory, statusDistribution, isLoading, userRole }) => {
   const isFinanceVisible = userRole === 'ROLE_ADMIN' || userRole === 'ROLE_SUPER_ADMIN'
@@ -90,39 +91,46 @@ const DashboardCharts = ({ revenueHistory, statusDistribution, isLoading, userRo
         </div>
         
         <div className="w-full h-[300px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={sortedHistory} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <defs>
-                <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
-                  <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-              <XAxis 
-                dataKey="date" 
-                tick={{ fontSize: 10, fontWeight: 600, fill: '#94a3b8' }} 
-                tickFormatter={(val) => val.split('-').slice(1).reverse().join('/')}
-                tickLine={false} axisLine={false} dy={10}
-              />
-              <YAxis 
-                tick={{ fontSize: 10, fontWeight: 600, fill: '#64748b' }} 
-                tickFormatter={formatCurrencyY} 
-                tickLine={false} axisLine={false} 
-              />
-              <Tooltip content={<CustomTooltip />} />
-              <Area 
-                type="monotone" 
-                dataKey="revenue" 
-                name="Doanh thu" 
-                stroke="#10b981" 
-                strokeWidth={3} 
-                fillOpacity={1} 
-                fill="url(#colorRev)" 
-                animationDuration={1500}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+          {sortedHistory.length > 0 ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={sortedHistory} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <XAxis 
+                  dataKey="date" 
+                  tick={{ fontSize: 10, fontWeight: 600, fill: '#94a3b8' }} 
+                  tickFormatter={(val) => val.split('-').slice(1).reverse().join('/')}
+                  tickLine={false} axisLine={false} dy={10}
+                />
+                <YAxis 
+                  tick={{ fontSize: 10, fontWeight: 600, fill: '#64748b' }} 
+                  tickFormatter={formatCurrencyY} 
+                  tickLine={false} axisLine={false} 
+                />
+                <Tooltip content={<CustomTooltip />} />
+                <Area 
+                  type="monotone" 
+                  dataKey="revenue" 
+                  name="Doanh thu" 
+                  stroke="#10b981" 
+                  strokeWidth={3} 
+                  fillOpacity={1} 
+                  fill="url(#colorRev)" 
+                  animationDuration={1500}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 gap-2 bg-gray-50/50 rounded-xl border border-dashed border-gray-200">
+              <Activity className="h-8 w-8 opacity-20" />
+              <span className="text-[10px] font-bold uppercase tracking-widest">Không có dữ liệu doanh thu</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -132,33 +140,40 @@ const DashboardCharts = ({ revenueHistory, statusDistribution, isLoading, userRo
         <p className="text-[13px] text-gray-500 font-medium mb-6">Tỷ lệ phân bổ theo trạng thái</p>
         
         <div className="w-full relative h-[220px] flex-shrink-0">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={pieData}
-                cx="50%"
-                cy="50%"
-                innerRadius={65}
-                outerRadius={85}
-                paddingAngle={4}
-                dataKey="value"
-                onMouseEnter={(_, index) => setActiveIndex(index)}
-                onMouseLeave={() => setActiveIndex(null)}
-                animationDuration={1500}
-                stroke="none"
-              >
-                {pieData.map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`} 
-                    fill={entry.color} 
-                    opacity={activeIndex === index || activeIndex === null ? 1 : 0.4}
-                    className="transition-opacity duration-300 outline-none"
-                  />
-                ))}
-              </Pie>
-              <Tooltip content={<CustomTooltip />} />
-            </PieChart>
-          </ResponsiveContainer>
+          {totalOrders > 0 ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={65}
+                  outerRadius={85}
+                  paddingAngle={4}
+                  dataKey="value"
+                  onMouseEnter={(_, index) => setActiveIndex(index)}
+                  onMouseLeave={() => setActiveIndex(null)}
+                  animationDuration={1500}
+                  stroke="none"
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={entry.color} 
+                      opacity={activeIndex === index || activeIndex === null ? 1 : 0.4}
+                      className="transition-opacity duration-300 outline-none"
+                    />
+                  ))}
+                </Pie>
+                <Tooltip content={<CustomTooltip />} />
+              </PieChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 gap-2">
+              <Activity className="h-8 w-8 opacity-20" />
+              <span className="text-[10px] font-bold uppercase tracking-widest">Không có dữ liệu</span>
+            </div>
+          )}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
             <span className="text-3xl font-black text-gray-900 block leading-none">{totalOrders}</span>
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1 block">TỔNG ĐƠN</span>

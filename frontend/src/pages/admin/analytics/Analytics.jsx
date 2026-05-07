@@ -189,32 +189,39 @@ const Analytics = () => {
             </div>
           </div>
           <div className="h-80 -ml-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={revenueHistory}>
-                <defs>
-                    <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#ff6a00" stopOpacity={0.1}/>
-                        <stop offset="95%" stopColor="#ff6a00" stopOpacity={0}/>
-                    </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="date" tick={{ fontSize: 10, fontWeight: 700 }} axisLine={false} tickLine={false} dy={10} />
-                <YAxis hide />
-                <Tooltip 
-                    contentStyle={{ borderRadius: '1rem', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', fontWeight: 'bold' }}
-                    formatter={(value) => [formatCurrency(value), 'Doanh thu']} 
-                />
-                <Area 
-                    type="monotone" 
-                    dataKey="revenue" 
-                    stroke="#ff6a00" 
-                    strokeWidth={4} 
-                    fillOpacity={1} 
-                    fill="url(#colorRev)" 
-                    animationDuration={2000}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+            {revenueHistory.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={revenueHistory}>
+                  <defs>
+                      <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#ff6a00" stopOpacity={0.1}/>
+                          <stop offset="95%" stopColor="#ff6a00" stopOpacity={0}/>
+                      </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <XAxis dataKey="date" tick={{ fontSize: 10, fontWeight: 700 }} axisLine={false} tickLine={false} dy={10} />
+                  <YAxis hide />
+                  <Tooltip 
+                      contentStyle={{ borderRadius: '1rem', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', fontWeight: 'bold' }}
+                      formatter={(value) => [formatCurrency(value), 'Doanh thu']} 
+                  />
+                  <Area 
+                      type="monotone" 
+                      dataKey="revenue" 
+                      stroke="#ff6a00" 
+                      strokeWidth={4} 
+                      fillOpacity={1} 
+                      fill="url(#colorRev)" 
+                      animationDuration={2000}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 gap-2">
+                <Package className="h-8 w-8 opacity-20" />
+                <span className="text-[10px] font-bold uppercase tracking-widest">Không có dữ liệu doanh thu</span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -290,18 +297,25 @@ const Analytics = () => {
         <div className="bg-white dark:bg-dark-card rounded-[1.75rem] border border-border dark:border-dark-border p-5 sm:p-6 shadow-sm">
             <h3 className="text-lg font-black text-secondary-800 mb-6 uppercase tracking-widest text-center">Trạng thái đơn hàng</h3>
             <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={orderStatusData} layout="vertical">
-                        <XAxis type="number" hide />
-                        <YAxis dataKey="status" type="category" tick={{ fontSize: 10, fontWeight: 900 }} width={80} axisLine={false} tickLine={false} />
-                        <Tooltip cursor={{ fill: 'transparent' }} />
-                        <Bar dataKey="count" radius={[0, 10, 10, 0]} barSize={20}>
-                            {orderStatusData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={['#3b82f6', '#10b981', '#f59e0b', '#ef4444'][index % 4]} />
-                            ))}
-                        </Bar>
-                    </BarChart>
-                </ResponsiveContainer>
+                {orderStatusData.length > 0 ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={orderStatusData} layout="vertical">
+                            <XAxis type="number" hide />
+                            <YAxis dataKey="status" type="category" tick={{ fontSize: 10, fontWeight: 900 }} width={80} axisLine={false} tickLine={false} />
+                            <Tooltip cursor={{ fill: 'transparent' }} />
+                            <Bar dataKey="count" radius={[0, 10, 10, 0]} barSize={20}>
+                                {orderStatusData.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={['#3b82f6', '#10b981', '#f59e0b', '#ef4444'][index % 4]} />
+                                ))}
+                            </Bar>
+                        </BarChart>
+                    </ResponsiveContainer>
+                ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 gap-2">
+                        <ShoppingCart className="h-8 w-8 opacity-20" />
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-center">Không có dữ liệu đơn hàng</span>
+                    </div>
+                )}
             </div>
             <div className="mt-4 pt-4 border-t border-gray-100 dark:border-white/5 flex flex-wrap gap-4 justify-center">
                 <div className="flex items-center gap-2">

@@ -7,7 +7,6 @@ import com.techstore.dto.brand.BrandResponse;
 import com.techstore.service.brand.BrandService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
