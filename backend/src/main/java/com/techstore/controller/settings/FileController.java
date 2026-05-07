@@ -20,7 +20,7 @@ public class FileController {
     private final UploadService uploadService;
 
     @PostMapping("/upload")
-    @PreAuthorize("hasAnyRole('STAFF', 'ADMIN', 'SUPER_ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public ApiResponse<String> uploadFile(
             @AuthenticationPrincipal User user,
             @RequestParam("file") MultipartFile file,
