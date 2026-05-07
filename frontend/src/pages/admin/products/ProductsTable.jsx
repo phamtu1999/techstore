@@ -119,8 +119,8 @@ const ProductsTable = ({
             width: '100px',
             render: (stock) => (
               <div className="flex flex-col items-center">
-                <span className={`text-[13px] font-black ${stock <= 5 ? 'text-red-600' : 'text-gray-900'}`}>{stock}</span>
-                {stock <= 5 && <span className="text-[8px] font-black text-red-500 uppercase leading-none mt-0.5">SẮP HẾT</span>}
+                <span className={`text-[13px] font-black ${stock <= 10 ? 'text-red-600' : 'text-gray-900'}`}>{stock}</span>
+                {stock <= 10 && <span className="text-[8px] font-black text-red-500 uppercase leading-none mt-0.5">SẮP HẾT</span>}
               </div>
             )
           },
