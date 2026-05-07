@@ -4,7 +4,9 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 const AdminPagination = ({ 
   currentPage, 
   totalPages, 
-  onPageChange 
+  pageSize = 10,
+  onPageChange,
+  onPageSizeChange
 }) => {
   if (totalPages <= 1) return null
 
