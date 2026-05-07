@@ -51,15 +51,13 @@ public interface OrderRepository extends JpaRepository<Order, String> {
                      "WHERE (:status IS NULL OR o.status = :status) " +
                      "AND (:search IS NULL OR " +
                      "LOWER(o.receiverName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-                     "LOWER(o.receiverPhone) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-                     "LOWER(o.id) LIKE LOWER(CONCAT('%', :search, '%'))) " +
+                     "LOWER(o.receiverPhone) LIKE LOWER(CONCAT('%', :search, '%'))) " +
                      "ORDER BY o.createdAt DESC",
               countQuery = "SELECT COUNT(DISTINCT o) FROM Order o " +
                      "WHERE (:status IS NULL OR o.status = :status) " +
                      "AND (:search IS NULL OR " +
                      "LOWER(o.receiverName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-                     "LOWER(o.receiverPhone) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-                     "LOWER(o.id) LIKE LOWER(CONCAT('%', :search, '%')))")
+                     "LOWER(o.receiverPhone) LIKE LOWER(CONCAT('%', :search, '%')))")
        Page<Order> searchOrders(@Param("status") com.techstore.entity.order.OrderStatus status, 
                                @Param("search") String search, 
                                Pageable pageable);
