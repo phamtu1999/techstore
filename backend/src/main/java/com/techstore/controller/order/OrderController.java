@@ -65,11 +65,11 @@ public class OrderController {
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'SUPER_ADMIN')")
     public ApiResponse<OrderResponse> updateOrderStatus(
             @PathVariable String orderId,
-            @RequestParam OrderStatus status
+            @RequestBody com.techstore.dto.order.StatusUpdateRequest request
     ) {
         return ApiResponse.<OrderResponse>builder()
                 .message("Order status updated successfully")
-                .result(orderCommandService.updateOrderStatus(orderId, status))
+                .result(orderCommandService.updateOrderStatus(orderId, request.getStatus()))
                 .build();
     }
 
