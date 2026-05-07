@@ -24,6 +24,16 @@ export const useProducts = () => {
     totalElements: 0
   });
 
+  const [selectedRows, setSelectedRows] = useState([]);
+
+  const handleSelectRow = (id, checked) => {
+    setSelectedRows(prev => checked ? [...prev, id] : prev.filter(rowId => rowId !== id));
+  };
+
+  const handleSelectAll = (checked) => {
+    setSelectedRows(checked ? products.map(p => p.id) : []);
+  };
+
   const fetchProducts = useCallback(async (page = 0) => {
     setLoading(true);
     try {

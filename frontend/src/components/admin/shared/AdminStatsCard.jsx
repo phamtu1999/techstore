@@ -2,42 +2,43 @@ import React from 'react'
 import { TrendingUp, TrendingDown } from 'lucide-react'
 
 const AdminStatsCard = ({ 
+  title,
   label, 
   value, 
   icon: Icon, 
   trend, 
   trendValue, 
-  color = 'orange' 
+  type = 'orange' 
 }) => {
+  const displayLabel = title || label;
   const colorMap = {
-    green: {
-      bg: 'bg-emerald-50',
-      icon: 'text-emerald-600',
-      trend: 'text-emerald-600'
+    primary: {
+      bg: 'bg-primary-100',
+      icon: 'text-primary-800',
+    },
+    success: {
+      bg: 'bg-emerald-100',
+      icon: 'text-emerald-800',
     },
     orange: {
-      bg: 'bg-orange-50',
-      icon: 'text-orange-600',
-      trend: 'text-orange-600'
+      bg: 'bg-orange-100',
+      icon: 'text-orange-800',
     },
     blue: {
-      bg: 'bg-blue-50',
-      icon: 'text-blue-600',
-      trend: 'text-blue-600'
+      bg: 'bg-blue-100',
+      icon: 'text-blue-800',
     },
     purple: {
-      bg: 'bg-purple-50',
-      icon: 'text-purple-600',
-      trend: 'text-purple-600'
+      bg: 'bg-purple-100',
+      icon: 'text-purple-800',
     },
     red: {
-      bg: 'bg-red-50',
-      icon: 'text-red-600',
-      trend: 'text-red-600'
+      bg: 'bg-rose-100',
+      icon: 'text-rose-800',
     }
   }
 
-  const styles = colorMap[color] || colorMap.orange
+  const styles = colorMap[type] || colorMap.orange
 
   return (
     <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm transition-all hover:shadow-md group">
@@ -53,7 +54,7 @@ const AdminStatsCard = ({
         )}
       </div>
       <div>
-        <p className="text-[12px] font-bold text-gray-400 uppercase tracking-wider">{label}</p>
+        <p className="text-[12px] font-bold text-gray-400 uppercase tracking-wider">{displayLabel}</p>
         <h3 className="text-2xl font-bold text-gray-900 mt-1">{value}</h3>
       </div>
     </div>

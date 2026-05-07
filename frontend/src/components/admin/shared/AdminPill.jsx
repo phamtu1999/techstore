@@ -6,13 +6,13 @@ const AdminPill = ({
   className = '' 
 }) => {
   const types = {
-    success: 'bg-emerald-50 text-emerald-700 border-emerald-100',
-    warning: 'bg-amber-50 text-amber-700 border-amber-100',
-    info: 'bg-blue-50 text-blue-700 border-blue-100',
-    danger: 'bg-rose-50 text-rose-700 border-rose-100',
-    purple: 'bg-purple-50 text-purple-700 border-purple-100',
-    primary: 'bg-orange-50 text-orange-700 border-orange-100',
-    gray: 'bg-gray-50 text-gray-700 border-gray-100'
+    success: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    warning: 'bg-amber-100 text-amber-800 border-amber-200',
+    info: 'bg-blue-100 text-blue-800 border-blue-200',
+    danger: 'bg-rose-100 text-rose-800 border-rose-200',
+    purple: 'bg-purple-100 text-purple-800 border-purple-200',
+    primary: 'bg-orange-100 text-orange-800 border-orange-200',
+    gray: 'bg-gray-100 text-gray-800 border-gray-200'
   }
 
   return (

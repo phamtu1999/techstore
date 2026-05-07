@@ -20,6 +20,16 @@ export const useUsers = () => {
     totalElements: 0
   });
 
+  const [selectedRows, setSelectedRows] = useState([]);
+
+  const handleSelectRow = (id, checked) => {
+    setSelectedRows(prev => checked ? [...prev, id] : prev.filter(rowId => rowId !== id));
+  };
+
+  const handleSelectAll = (checked) => {
+    setSelectedRows(checked ? users.map(u => u.id) : []);
+  };
+
   const fetchUsers = useCallback(async (page = 0) => {
     setLoading(true);
     try {

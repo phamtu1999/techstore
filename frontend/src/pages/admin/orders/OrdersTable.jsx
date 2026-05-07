@@ -37,26 +37,40 @@ const OrdersTable = ({
   setPagination,
   handleUpdateStatus,
   handleExportInvoice,
-  formatCurrency
+  formatCurrency,
+  selectedRows,
+  handleSelectRow,
+  handleSelectAll
 }) => {
+  const bulkActions = (
+    <>
+      <button className="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-[12px] font-bold transition-colors flex items-center gap-2">
+        <FileText className="w-4 h-4" /> Xuất hàng loạt
+      </button>
+      <button className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 rounded-lg text-[12px] font-bold transition-colors flex items-center gap-2">
+        <Truck className="w-4 h-4" /> Giao hàng loạt
+      </button>
+    </>
+  );
+
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-      <div className="p-6 border-b border-gray-50 flex flex-col md:flex-row justify-between items-center gap-4">
-        <div className="relative w-full md:w-96">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+      <div className="p-4 md:p-6 border-b border-gray-50 flex flex-col lg:flex-row justify-between items-center gap-4">
+        <div className="relative w-full lg:w-96">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <input 
             type="text"
-            placeholder="Tìm theo mã đơn, khách hàng..."
+            placeholder="Mã đơn, khách hàng, SĐT..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-gray-50 border-none rounded-xl text-[14px] font-medium outline-none focus:ring-2 focus:ring-primary-600/20 focus:bg-white transition-all"
+            className="w-full pl-11 pr-4 py-2.5 bg-gray-50 border-none rounded-xl text-[13px] font-medium outline-none focus:ring-2 focus:ring-primary-600/20 focus:bg-white transition-all"
           />
         </div>
-        <div className="flex items-center gap-3 w-full md:w-auto">
+        <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
           <select 
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 bg-gray-50 border-none rounded-xl text-[13px] font-bold outline-none focus:ring-2 focus:ring-primary-600/20 transition-all"
+            className="px-3 py-2 bg-gray-50 border-none rounded-lg text-[12px] font-bold outline-none focus:ring-2 focus:ring-primary-600/20 transition-all cursor-pointer"
           >
             <option value="">Tất cả trạng thái</option>
             <option value="PENDING">Chờ xử lý</option>
@@ -65,8 +79,9 @@ const OrdersTable = ({
             <option value="DELIVERED">Đã giao hàng</option>
             <option value="CANCELLED">Đã hủy</option>
           </select>
-          <div className="text-[11px] font-black uppercase tracking-widest text-gray-400 hidden md:block">
-            {orders.length} / {pagination.totalElements} đơn hàng
+          <div className="h-4 w-[1px] bg-gray-200 mx-1 hidden lg:block" />
+          <div className="text-[11px] font-black uppercase tracking-widest text-gray-400">
+            {orders.length} / {pagination.totalElements} ĐƠN HÀNG
           </div>
         </div>
       </div>
@@ -75,26 +90,30 @@ const OrdersTable = ({
         columns={[
           {
             key: 'orderNumber',
-            label: 'Mã đơn',
-            render: (val) => <span className="font-mono font-bold text-[13px] text-primary-600">#{val}</span>
+            label: 'Đơn hàng',
+            width: '140px',
+            render: (val) => <span className="font-mono font-black text-[13px] text-primary-600 tracking-tight">#{val}</span>
           },
           {
             key: 'receiver',
             label: 'Khách hàng',
+            width: 'minmax(200px, 1.5fr)',
             render: (_, row) => (
-              <div className="flex flex-col">
-                <span className="font-bold text-gray-900 text-[14px] line-clamp-1">{row.receiverName}</span>
-                <span className="text-[11px] text-gray-500">{row.receiverPhone}</span>
+              <div className="flex flex-col min-w-0">
+                <span className="font-bold text-gray-900 text-[13px] truncate">{row.receiverName}</span>
+                <span className="text-[11px] text-gray-400 font-medium">{row.receiverPhone}</span>
               </div>
             )
           },
           {
             key: 'amount',
-            label: 'Tổng tiền',
+            label: 'Thanh toán',
+            align: 'right',
+            width: '160px',
             render: (_, row) => (
-              <div className="flex flex-col">
-                <span className="text-[14px] font-black text-gray-900">{formatCurrency(row.totalAmount)}</span>
-                <span className="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">{row.paymentMethod}</span>
+              <div className="flex flex-col items-end">
+                <span className="text-[13px] font-black text-gray-900">{formatCurrency(row.totalAmount)}</span>
+                <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">{row.paymentMethod}</span>
               </div>
             )
           },
@@ -102,17 +121,20 @@ const OrdersTable = ({
             key: 'status',
             label: 'Trạng thái',
             align: 'center',
+            width: '140px',
             render: (status) => (
-              <AdminPill label={getStatusLabel(status)} type={getStatusType(status)} size="sm" />
+              <AdminPill label={getStatusLabel(status)} type={getStatusType(status)} />
             )
           },
           {
             key: 'createdAt',
             label: 'Ngày đặt',
+            align: 'right',
+            width: '120px',
             render: (date) => (
-              <div className="flex flex-col text-right md:text-left">
-                <span className="text-[12px] font-bold text-gray-600">{new Date(date).toLocaleDateString('vi-VN')}</span>
-                <span className="text-[10px] text-gray-400">{new Date(date).toLocaleTimeString('vi-VN')}</span>
+              <div className="flex flex-col items-end">
+                <span className="text-[12px] font-bold text-gray-700">{new Date(date).toLocaleDateString('vi-VN')}</span>
+                <span className="text-[10px] text-gray-400 font-medium">{new Date(date).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</span>
               </div>
             )
           }
@@ -121,93 +143,45 @@ const OrdersTable = ({
         isLoading={loading}
         showIndex={true}
         itemTitle="đơn hàng"
+        currentPage={pagination.page}
+        pageSize={pagination.size}
+        selectedRows={selectedRows}
+        onSelectRow={handleSelectRow}
+        onSelectAll={handleSelectAll}
+        bulkActions={bulkActions}
         actions={(row, closeDropdown) => (
-          <div className="space-y-1">
+          <>
             <button 
               onClick={() => { window.location.href = `/admin/orders/${row.id}`; closeDropdown?.() }}
-              className="w-full px-4 py-2.5 text-left text-[13px] font-bold text-secondary-700 hover:bg-gray-50 flex items-center gap-3 transition-colors"
+              className="w-full px-4 py-2 text-left text-[13px] font-bold text-gray-700 hover:bg-gray-50 flex items-center gap-3 transition-colors"
             >
-              <ExternalLink className="h-4 w-4 text-primary-500" /> Chi tiết đơn hàng
+              <ExternalLink className="h-4 w-4 text-blue-500" /> Xem chi tiết
             </button>
             <button 
               onClick={() => { handleUpdateStatus(row.id, row.status); closeDropdown?.() }}
-              className="w-full px-4 py-2.5 text-left text-[13px] font-bold text-secondary-700 hover:bg-gray-50 flex items-center gap-3 transition-colors"
+              className="w-full px-4 py-2 text-left text-[13px] font-bold text-gray-700 hover:bg-gray-50 flex items-center gap-3 transition-colors"
             >
-              <Truck className="h-4 w-4 text-orange-500" /> Cập nhật trạng thái
+              <Truck className="h-4 w-4 text-orange-500" /> Đổi trạng thái
             </button>
             <button 
               onClick={() => { handleExportInvoice(row.id); closeDropdown?.() }}
-              className="w-full px-4 py-2.5 text-left text-[13px] font-bold text-emerald-600 hover:bg-emerald-50 flex items-center gap-3 transition-colors"
+              className="w-full px-4 py-2 text-left text-[13px] font-bold text-emerald-600 hover:bg-emerald-50 flex items-center gap-3 transition-colors border-t border-gray-50 mt-1"
             >
               <FileText className="h-4 w-4" /> Xuất hóa đơn (PDF)
             </button>
-          </div>
-        )}
-        renderMobileCard={(row, index, renderActions) => (
-          <div key={row.id || index} className="p-3 border-b border-gray-50 dark:border-white/5 animate-fade-in hover:bg-gray-50/50 transition-colors">
-            <div className="flex flex-col gap-2.5">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                     <span className="text-[11px] font-black text-primary-600 bg-primary-50 dark:bg-primary-500/5 px-1.5 py-0.5 rounded uppercase tracking-tighter shrink-0">
-                       #{row.orderNumber}
-                     </span>
-                     <h4 className="text-[14px] font-black text-gray-900 dark:text-white tracking-tight truncate flex-1">{row.receiverName}</h4>
-                  </div>
-                  <div className="flex items-center gap-2 mt-1.5">
-                    <AdminPill label={getStatusLabel(row.status)} type={getStatusType(row.status)} size="xs" />
-                    <span className="text-[9px] font-bold text-gray-400">{new Date(row.createdAt).toLocaleDateString('vi-VN')}</span>
-                  </div>
-                </div>
-                {renderActions(row, index)}
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 py-2 px-3 bg-gray-50/50 dark:bg-white/5 rounded-xl border border-gray-100/50 dark:border-white/5">
-                 <div className="flex flex-col">
-                    <span className="text-[7px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Thanh toán</span>
-                    <div className="flex items-center gap-1.5">
-                      <CreditCard className="w-3.5 h-3.5 text-emerald-500" />
-                      <span className="text-[13px] font-black text-gray-900 dark:text-white">{formatCurrency(row.totalAmount)}</span>
-                    </div>
-                 </div>
-                 <div className="flex flex-col text-right border-l border-gray-200/50 dark:border-white/5 pl-3">
-                    <span className="text-[7px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Phương thức</span>
-                    <span className="text-[10px] font-black text-gray-500 uppercase tracking-tight">{row.paymentMethod}</span>
-                 </div>
-              </div>
-
-              <div className="flex gap-2">
-                <button 
-                  onClick={() => { window.location.href = `/admin/orders/${row.id}` }}
-                  className="flex-1 flex items-center justify-center gap-1.5 text-[11px] font-black text-primary-600 bg-primary-50 dark:bg-primary-500/5 px-3 py-2 rounded-xl active:scale-95 transition-all uppercase tracking-wider"
-                >
-                  <ShoppingBag className="w-3.5 h-3.5" />
-                  CHI TIẾT
-                </button>
-                <button 
-                  onClick={() => handleExportInvoice(row.id)}
-                  className="flex-1 flex items-center justify-center gap-1.5 text-[11px] font-black text-emerald-600 bg-emerald-50 dark:bg-emerald-500/5 px-3 py-2 rounded-xl active:scale-95 transition-all uppercase tracking-wider"
-                >
-                  <FileText className="w-3.5 h-3.5" />
-                  HÓA ĐƠN
-                </button>
-              </div>
-            </div>
-          </div>
+          </>
         )}
       />
 
-      {!loading && pagination.totalPages > 1 && (
-        <AdminPagination 
-          currentPage={pagination.page}
-          totalPages={pagination.totalPages}
-          onPageChange={(p) => setPagination(prev => ({...prev, page: p}))}
-        />
-      )}
+      <AdminPagination 
+        currentPage={pagination.page}
+        totalPages={pagination.totalPages}
+        pageSize={pagination.size}
+        onPageChange={(p) => setPagination(prev => ({...prev, page: p}))}
+        onPageSizeChange={(s) => setPagination(prev => ({...prev, size: s, page: 0}))}
+      />
     </div>
   );
 };
 
 export default OrdersTable;
-
-
