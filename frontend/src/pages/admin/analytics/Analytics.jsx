@@ -13,7 +13,7 @@ import {
   Cell
 } from 'recharts'
 import { DollarSign, ShoppingBag, Users, AlertTriangle, TrendingUp, Info, Package, ShoppingCart, Download, Loader2 } from 'lucide-react'
-import { fetchDashboardAnalytics } from '../../store/slices/analyticsSlice'
+import { fetchDashboardAnalytics } from '../../../store/slices/analyticsSlice'
 import { analyticsAPI } from '../../../api/analytics'
 import Swal from 'sweetalert2'
 

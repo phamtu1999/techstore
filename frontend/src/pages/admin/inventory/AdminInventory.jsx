@@ -3,9 +3,9 @@ import { Package, History, Trash2, Download } from 'lucide-react';
 import AdminPageHeader from '../../../components/admin/shared/AdminPageHeader';
 import { formatCurrency } from '../../../utils/format';
 import { useInventory } from '../../../hooks/admin/useInventory';
-import InventoryStats from './inventory/InventoryStats';
-import StockTable from './inventory/StockTable';
-import HistoryTable from './inventory/HistoryTable';
+import InventoryStats from './InventoryStats';
+import StockTable from './StockTable';
+import HistoryTable from './HistoryTable';
 
 const AdminInventory = () => {
   const {
