@@ -31,6 +31,7 @@ public class OrderResponse {
     Integer pointsSpent;
     Integer pointsEarned;
     LocalDateTime createdAt;
+    String paymentMethod;
     List<OrderItemResponse> items;
     List<OrderHistoryResponse> timeline;
 

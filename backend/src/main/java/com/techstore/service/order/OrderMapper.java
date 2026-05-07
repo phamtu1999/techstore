@@ -43,6 +43,11 @@ public class OrderMapper {
                         .build())
                 .collect(Collectors.toList()) : List.of();
 
+        String paymentMethod = paymentRepository.findByOrderId(order.getId()).stream()
+                .findFirst()
+                .map(p -> p.getPaymentMethod().name())
+                .orElse("COD");
+
         return OrderResponse.builder()
                 .id(order.getId())
                 .orderNumber(generateOrderNumber(order))
@@ -60,6 +65,7 @@ public class OrderMapper {
                 .pointsSpent(order.getPointsSpent())
                 .pointsEarned(order.getPointsEarned())
                 .createdAt(order.getCreatedAt())
+                .paymentMethod(paymentMethod)
                 .items(items)
                 .timeline(timeline)
                 .build();

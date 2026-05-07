@@ -46,18 +46,18 @@ public interface OrderRepository extends JpaRepository<Order, String> {
               countQuery = "SELECT COUNT(DISTINCT o) FROM Order o")
        Page<Order> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
-       @EntityGraph(attributePaths = {"user", "coupon", "items", "items.variant", "items.variant.product", "items.variant.product.images"})
-       @Query(value = "SELECT DISTINCT o FROM Order o " +
+       @EntityGraph(attributePaths = {"user"})
+       @Query(value = "SELECT o FROM Order o " +
                      "WHERE (:status IS NULL OR o.status = :status) " +
-                     "AND (:search IS NULL OR " +
-                     "LOWER(o.receiverName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-                     "LOWER(o.receiverPhone) LIKE LOWER(CONCAT('%', :search, '%'))) " +
+                     "AND (:search IS NULL OR :search = '' OR " +
+                     "LOWER(o.receiverName) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) OR " +
+                     "LOWER(o.receiverPhone) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%'))) " +
                      "ORDER BY o.createdAt DESC",
-              countQuery = "SELECT COUNT(DISTINCT o) FROM Order o " +
+              countQuery = "SELECT COUNT(o) FROM Order o " +
                      "WHERE (:status IS NULL OR o.status = :status) " +
-                     "AND (:search IS NULL OR " +
-                     "LOWER(o.receiverName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-                     "LOWER(o.receiverPhone) LIKE LOWER(CONCAT('%', :search, '%')))")
+                     "AND (:search IS NULL OR :search = '' OR " +
+                     "LOWER(o.receiverName) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) OR " +
+                     "LOWER(o.receiverPhone) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')))")
        Page<Order> searchOrders(@Param("status") com.techstore.entity.order.OrderStatus status, 
                                @Param("search") String search, 
                                Pageable pageable);
