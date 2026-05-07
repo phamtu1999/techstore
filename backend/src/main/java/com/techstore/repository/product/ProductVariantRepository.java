@@ -47,12 +47,12 @@ public interface ProductVariantRepository extends JpaRepository<ProductVariant, 
     
     List<ProductVariant> findByProductIdOrderBySortOrderAsc(String productId);
 
-    @Query("SELECT v FROM ProductVariant v JOIN FETCH v.product p LEFT JOIN FETCH p.images WHERE v.stockQuantity <= 20")
+    @Query("SELECT v FROM ProductVariant v JOIN FETCH v.product p LEFT JOIN FETCH p.images WHERE v.stockQuantity <= 10")
     List<ProductVariant> findLowStockVariants();
 
     @Query(
-        value = "SELECT v FROM ProductVariant v JOIN FETCH v.product p WHERE v.stockQuantity <= 20",
-        countQuery = "SELECT COUNT(v) FROM ProductVariant v WHERE v.stockQuantity <= 20"
+        value = "SELECT v FROM ProductVariant v JOIN FETCH v.product p WHERE v.stockQuantity <= 10",
+        countQuery = "SELECT COUNT(v) FROM ProductVariant v WHERE v.stockQuantity <= 10"
     )
     Page<ProductVariant> findInventoryLowStockPage(Pageable pageable);
 
@@ -60,11 +60,11 @@ public interface ProductVariantRepository extends JpaRepository<ProductVariant, 
         value = "SELECT v FROM ProductVariant v JOIN FETCH v.product p WHERE " +
                 "(LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
                 "LOWER(v.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-                "LOWER(v.sku) LIKE LOWER(CONCAT('%', :search, '%'))) AND v.stockQuantity <= 20",
+                "LOWER(v.sku) LIKE LOWER(CONCAT('%', :search, '%'))) AND v.stockQuantity <= 10",
         countQuery = "SELECT COUNT(v) FROM ProductVariant v JOIN v.product p WHERE " +
                      "(LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
                      "LOWER(v.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-                     "LOWER(v.sku) LIKE LOWER(CONCAT('%', :search, '%'))) AND v.stockQuantity <= 20"
+                     "LOWER(v.sku) LIKE LOWER(CONCAT('%', :search, '%'))) AND v.stockQuantity <= 10"
     )
     Page<ProductVariant> searchInventoryLowStockPage(String search, Pageable pageable);
 }

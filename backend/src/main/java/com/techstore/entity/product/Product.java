@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+
 @Entity
 @Table(name = "products", indexes = {
         @Index(name = "idx_products_active", columnList = "active"),
@@ -66,6 +67,9 @@ public class Product extends BaseEntity {
 
     @org.hibernate.annotations.Formula("(SELECT COALESCE(SUM(oi.quantity), 0) FROM order_items oi JOIN product_variants v ON oi.variant_id = v.id WHERE v.product_id = id)")
     private Long soldCount;
+
+    @org.hibernate.annotations.Formula("(SELECT COALESCE(SUM(v.stock_quantity), 0) FROM product_variants v WHERE v.product_id = id)")
+    private Integer totalStock;
 
     @org.hibernate.annotations.Formula("(SELECT COALESCE(AVG(r.rating), 0) FROM reviews r WHERE r.product_id = id)")
     private Double rating;

@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @Builder
@@ -28,5 +28,5 @@ public class StoreSettingsResponse {
     private String metaTitle;
     private String metaKeywords;
     private String metaDescription;
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 }

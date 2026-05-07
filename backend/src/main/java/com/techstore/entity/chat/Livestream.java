@@ -7,7 +7,7 @@ import com.techstore.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "livestreams")
@@ -43,8 +43,8 @@ public class Livestream extends BaseEntity {
     @JoinColumn(name = "streamer_id")
     User streamer;
     
-    LocalDateTime startTime;
-    LocalDateTime endTime;
+    Instant startTime;
+    Instant endTime;
 
     public enum LivestreamStatus {
         UPCOMING, LIVE, ENDED

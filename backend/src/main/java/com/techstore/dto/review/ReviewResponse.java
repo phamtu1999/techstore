@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -20,5 +20,5 @@ public class ReviewResponse {
     private String comment;
     private boolean verified;
     private List<String> imageUrls;
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 }

@@ -25,7 +25,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.context.annotation.Profile;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Set;
 
@@ -248,7 +249,7 @@ public class DataInitializer implements CommandLineRunner {
                 .discountValue(new BigDecimal("10"))
                 .maxDiscount(new BigDecimal("500000"))
                 .minPurchase(new BigDecimal("2000000"))
-                .expirationDate(LocalDateTime.now().plusMonths(1))
+                .expirationDate(Instant.now().plus(30, ChronoUnit.DAYS))
                 .usageLimit(100)
                 .active(true)
                 .build());

@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Entity
@@ -22,10 +22,10 @@ public class FlashSale extends BaseEntity {
     String name;
 
     @Column(nullable = false)
-    LocalDateTime startDate;
+    Instant startDate;
 
     @Column(nullable = false)
-    LocalDateTime endDate;
+    Instant endDate;
 
     @Builder.Default
     boolean active = true;

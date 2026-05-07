@@ -6,7 +6,7 @@ import com.techstore.entity.order.Order;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "payments")
@@ -42,7 +42,7 @@ public class Payment extends BaseEntity {
 
     private String ipAddress; // Customer's IP
 
-    private LocalDateTime paymentTime; // Success time from Gateway
+    private Instant paymentTime; // Success time from Gateway
 
     @Column(columnDefinition = "TEXT")
     private String gatewayResponse; // Raw JSON response from Gateway

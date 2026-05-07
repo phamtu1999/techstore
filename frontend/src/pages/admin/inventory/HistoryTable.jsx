@@ -11,15 +11,14 @@ const HistoryTable = ({ history, loading }) => {
             key: 'time',
             label: 'Thời gian',
             render: (_, row) => {
-              const date = row.createdAt ? new Date(row.createdAt) : null;
+              if (!row.createdAt) return '-';
+              const date = new Date(row.createdAt);
+              const dateStr = date.toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
+              const timeStr = date.toLocaleTimeString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', hour12: false });
               return (
                 <div className="flex flex-col">
-                  <span className="text-[13px] font-bold text-gray-900">
-                    {date ? format(date, 'dd/MM/yyyy', { locale: vi }) : '-'}
-                  </span>
-                  <span className="text-[11px] text-gray-400">
-                    {date ? format(date, 'HH:mm:ss', { locale: vi }) : '-'}
-                  </span>
+                  <span className="text-[13px] font-bold text-gray-900">{dateStr}</span>
+                  <span className="text-[11px] text-gray-400">{timeStr}</span>
                 </div>
               );
             }
@@ -88,10 +87,10 @@ const HistoryTable = ({ history, loading }) => {
                 </div>
                 <div className="text-right flex flex-col shrink-0">
                   <span className="text-[10px] font-bold text-gray-600 dark:text-gray-400 leading-none">
-                    {row.createdAt ? format(new Date(row.createdAt), 'dd/MM/yyyy') : '-'}
+                    {row.createdAt ? new Date(row.createdAt).toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }) : '-'}
                   </span>
                   <span className="text-[9px] text-gray-400 font-medium mt-0.5">
-                    {row.createdAt ? format(new Date(row.createdAt), 'HH:mm:ss') : '-'}
+                    {row.createdAt ? new Date(row.createdAt).toLocaleTimeString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', hour12: false }) : '-'}
                   </span>
                 </div>
               </div>

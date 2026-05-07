@@ -3,7 +3,7 @@ package com.techstore.dto.inventory;
 import com.techstore.entity.inventory.TransactionType;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @Builder
@@ -21,5 +21,5 @@ public class InventoryTransactionResponse {
     private String note;
     private String createdBy;
     private String warehouseLocation;
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 }

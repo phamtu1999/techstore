@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Set;
 
 @Data
@@ -21,11 +21,11 @@ public class UserResponse {
     private String avatar;
     private boolean enabled;
     private Set<String> roles;
-    private LocalDateTime createdAt;
+    private Instant createdAt;
     private String status; // ACTIVE, LOCKED, UNVERIFIED
     private Boolean emailVerified;
     private Long totalOrders;
     private Double totalSpent;
-    private LocalDateTime lastLogin;
+    private Instant lastLogin;
     private Boolean twoFactorEnabled;
 }

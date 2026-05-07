@@ -6,7 +6,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -30,7 +30,7 @@ public class OrderResponse {
     String note;
     Integer pointsSpent;
     Integer pointsEarned;
-    LocalDateTime createdAt;
+    Instant createdAt;
     String paymentMethod;
     List<OrderItemResponse> items;
     List<OrderHistoryResponse> timeline;

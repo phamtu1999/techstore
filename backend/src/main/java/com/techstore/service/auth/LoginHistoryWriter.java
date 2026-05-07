@@ -9,8 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -41,7 +39,7 @@ public class LoginHistoryWriter {
                 .deviceInfo(safeDeviceInfo)
                 .status(status)
                 .failureReason(safeFailureReason)
-                .timestamp(LocalDateTime.now())
+                .timestamp(java.time.Instant.now())
                 .build();
 
         log.info("Recording login attempt: {} for user: {}", status, username);

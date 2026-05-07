@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @Service
@@ -19,12 +20,13 @@ import java.time.format.DateTimeFormatter;
 public class LoginHistoryExportService {
 
     private final LoginHistoryQueryService loginHistoryQueryService;
-    private static final DateTimeFormatter CSV_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter CSV_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+            .withZone(ZoneId.of("Asia/Ho_Chi_Minh"));
 
     public String exportLoginHistoryToCsv(
             String username,
-            LocalDateTime startDate,
-            LocalDateTime endDate,
+            Instant startDate,
+            Instant endDate,
             String status
     ) throws IOException {
         // Use a large page size for export
@@ -46,7 +48,7 @@ public class LoginHistoryExportService {
                         loginHistory.getLocation() != null ? loginHistory.getLocation() : "Unknown",
                         loginHistory.getDeviceInfo() != null ? loginHistory.getDeviceInfo() : "Unknown",
                         loginHistory.getStatus().name(),
-                        loginHistory.getTimestamp().format(CSV_DATE_FORMATTER),
+                        CSV_DATE_FORMATTER.format(loginHistory.getTimestamp()),
                         loginHistory.getFailureReason() != null ? loginHistory.getFailureReason() : ""
                 );
             }

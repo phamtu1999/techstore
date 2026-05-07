@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @Builder
@@ -20,8 +20,8 @@ public class ActiveSessionResponse {
     private String username;
     private String ipAddress;
     private String deviceInfo;
-    private LocalDateTime loginTimestamp;
-    private LocalDateTime lastActivityTimestamp;
+    private Instant loginTimestamp;
+    private Instant lastActivityTimestamp;
     private String status;
 
     /**

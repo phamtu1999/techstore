@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -15,7 +15,7 @@ public class ProductListingRow {
     private String id;
     private String name;
     private String slug;
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     private String categoryId;
     private String categoryName;
@@ -36,7 +36,7 @@ public class ProductListingRow {
             String id,
             String name,
             String slug,
-            LocalDateTime createdAt,
+            Instant createdAt,
             String categoryId,
             String categoryName,
             String categorySlug,

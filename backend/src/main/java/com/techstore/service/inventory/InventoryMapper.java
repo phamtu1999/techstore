@@ -22,6 +22,7 @@ public class InventoryMapper {
                 .price(variant.getPrice())
                 .costPrice(variant.getCostPrice() != null ? variant.getCostPrice() : java.math.BigDecimal.ZERO)
                 .stockQuantity(variant.getStockQuantity())
+                .lowStockThreshold(10)
                 .imageUrl(imageUrl)
                 .active(variant.isActive())
                 .build();

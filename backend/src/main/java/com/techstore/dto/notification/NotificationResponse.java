@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @NoArgsConstructor
@@ -19,5 +19,5 @@ public class NotificationResponse {
     String message;
     boolean isRead;
     String link;
-    LocalDateTime createdAt;
+    Instant createdAt;
 }

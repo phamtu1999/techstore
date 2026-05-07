@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -49,8 +49,8 @@ public class SecuritySettingsResponse {
     private List<String> ipBlacklist;
 
     // Audit Fields
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
     private String lastModifiedBy;
 
     /**

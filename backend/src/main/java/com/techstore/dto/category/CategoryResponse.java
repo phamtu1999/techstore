@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -27,6 +27,6 @@ public class CategoryResponse {
     Long productCount;
     @com.fasterxml.jackson.annotation.JsonProperty("active")
     Boolean active;
-    LocalDateTime createdAt;
+    Instant createdAt;
     List<CategoryResponse> children;
 }

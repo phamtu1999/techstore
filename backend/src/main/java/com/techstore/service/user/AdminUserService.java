@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.security.core.context.SecurityContextHolder;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
@@ -143,7 +143,7 @@ public class AdminUserService {
         
         // Soft delete
         user.setDeleted(true);
-        user.setDeletedAt(LocalDateTime.now());
+        user.setDeletedAt(Instant.now());
         user.setActive(false);
         user.setStatus(UserStatus.LOCKED);
         userRepository.save(user);

@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @Builder
@@ -19,5 +19,5 @@ public class ProfileResponse {
     private String avatarUrl;
     private String gender;
     private LocalDate dateOfBirth;
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 }

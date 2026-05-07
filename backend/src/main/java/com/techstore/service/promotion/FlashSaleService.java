@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,7 +20,7 @@ public class FlashSaleService {
 
     @Transactional(readOnly = true)
     public FlashSaleResponse getActiveFlashSale() {
-        return flashSaleRepository.findActiveFlashSale(LocalDateTime.now())
+        return flashSaleRepository.findActiveFlashSale(Instant.now())
                 .map(this::mapToResponse)
                 .orElse(null);
     }

@@ -25,8 +25,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -165,7 +164,7 @@ public class PaymentService {
         payment.setMessage(resolveMessage(params, isSuccess));
         payment.setGatewayResponse(params.toString());
 
-        LocalDateTime paymentTime = parsePayDate(params.get("vnp_PayDate"));
+        Instant paymentTime = parsePayDate(params.get("vnp_PayDate"));
         if (paymentTime != null) {
             payment.setPaymentTime(paymentTime);
         }
@@ -218,15 +217,15 @@ public class PaymentService {
         return new BigDecimal(amount).movePointLeft(2);
     }
 
-    private LocalDateTime parsePayDate(String payDate) {
+    private Instant parsePayDate(String payDate) {
         if (payDate == null || payDate.isBlank()) {
             return null;
         }
         try {
-            Date parsedDate = new SimpleDateFormat("yyyyMMddHHmmss").parse(payDate);
-            return parsedDate.toInstant()
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDateTime();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+            formatter.setTimeZone(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
+            Date parsedDate = formatter.parse(payDate);
+            return parsedDate.toInstant();
         } catch (ParseException exception) {
             return null;
         }

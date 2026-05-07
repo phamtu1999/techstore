@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @Builder
@@ -35,7 +35,7 @@ public class CouponRequest {
 
     @NotNull(message = "Expiration date is required")
     @Future(message = "Expiration date must be in the future")
-    private LocalDateTime expirationDate;
+    private Instant expirationDate;
 
     @Builder.Default
     private Integer usageLimit = 0;

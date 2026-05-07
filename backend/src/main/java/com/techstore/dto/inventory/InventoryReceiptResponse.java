@@ -2,7 +2,7 @@ package com.techstore.dto.inventory;
 
 import lombok.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @Builder
@@ -17,5 +17,5 @@ public class InventoryReceiptResponse {
     private BigDecimal totalAmount;
     private String createdBy; // Name or Email of user
     private String status;
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 }

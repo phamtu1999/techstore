@@ -5,7 +5,7 @@ import com.techstore.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "login_history", indexes = {
@@ -45,7 +45,7 @@ public class LoginHistory {
     private String failureReason;
 
     @Column(nullable = false)
-    private LocalDateTime timestamp;
+    private Instant timestamp;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

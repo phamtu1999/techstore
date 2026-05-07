@@ -7,7 +7,7 @@ import com.techstore.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "coupons")
@@ -43,7 +43,7 @@ public class Coupon extends BaseEntity {
     private Integer usedCount = 0;
 
     @Column(nullable = false)
-    private LocalDateTime expirationDate;
+    private Instant expirationDate;
 
     @Column(nullable = false)
     @Builder.Default

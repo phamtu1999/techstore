@@ -28,6 +28,15 @@ const AdminLayout = () => {
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [storeSettings, setStoreSettings] = useState(null)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [currentTime, setCurrentTime] = useState(new Date())
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000)
+    return () => clearInterval(timer)
+  }, [])
+
+  const timeStr = currentTime.toLocaleTimeString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', hour12: false })
+  const dateStr = currentTime.toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', weekday: 'short', day: '2-digit', month: '2-digit' })
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -128,30 +137,27 @@ const AdminLayout = () => {
       if (filteredItems.length === 0) return null
 
       return (
-        <div key={group.title} className={groupIdx > 0 ? 'mt-6' : ''}>
-          <div className="px-4 mb-2 text-[11px] font-bold text-gray-500 uppercase tracking-[0.2em] opacity-60">
+        <div key={group.title} className={groupIdx > 0 ? 'mt-2' : ''}>
+          <div className="px-4 mb-1 text-[8px] font-black text-gray-500 uppercase tracking-[0.2em] opacity-40">
             {group.title}
           </div>
-          <div className="space-y-1">
+          <div className="space-y-0.5">
             {filteredItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
                 onClick={() => isMobile && setIsMobileMenuOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
+                className={`flex items-center gap-3 px-4 py-2 rounded-xl transition-all duration-200 group ${
                   isActive(item.path)
                     ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/20'
                     : 'text-gray-400 hover:bg-white/5 hover:text-white'
                 }`}
               >
-                <item.icon className={`h-5 w-5 transition-colors ${isActive(item.path) ? 'text-white' : 'text-gray-500 group-hover:text-white'}`} />
-                <span className="font-semibold text-[13.5px]">{item.label}</span>
+                <item.icon className={`h-4 w-4 transition-colors ${isActive(item.path) ? 'text-white' : 'text-gray-500 group-hover:text-white'}`} />
+                <span className="font-semibold text-[12px]">{item.label}</span>
               </Link>
             ))}
           </div>
-          {groupIdx < groups.length - 1 && (
-             <div className="mx-4 mt-4 h-[1px] bg-white/5"></div>
-          )}
         </div>
       )
     })
@@ -161,13 +167,13 @@ const AdminLayout = () => {
     <div className="min-h-screen bg-admin-bg transition-colors duration-300 font-sans">
       <div className="flex">
         {/* Sidebar */}
-        <aside className="hidden lg:flex w-[260px] bg-admin-sidebar text-gray-400 h-screen fixed left-0 top-0 z-40 flex-col shadow-2xl">
+        <aside className="hidden lg:flex w-[260px] bg-admin-sidebar text-gray-400 h-screen fixed left-0 top-0 z-40 flex-col shadow-2xl border-r border-white/5">
           <div className="p-8 pb-4">
             <Link to="/" className="flex items-center gap-3 group" title="Về trang chủ">
               <div className="h-10 w-10 bg-primary-600 rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform duration-300">
                 <Store className="h-6 w-6 text-white" />
               </div>
-              <span className="text-xl font-bold text-white tracking-tight italic">Tech Store</span>
+              <span className="text-xl font-black text-white tracking-tight italic">Tech Store</span>
             </Link>
           </div>
 
@@ -254,7 +260,7 @@ const AdminLayout = () => {
 
         {/* Main Content Area */}
         <main className="flex-1 lg:ml-[260px] min-w-0 min-h-screen">
-          <header className="bg-white dark:bg-dark-card border-b border-gray-100 dark:border-dark-border sticky top-0 z-30 transition-colors duration-300 h-[72px] flex items-center">
+          <header className="bg-white dark:bg-dark-card border-b border-gray-100 dark:border-dark-border sticky top-0 z-30 transition-colors duration-300 h-[72px] flex items-center shadow-sm">
             <div className="px-8 w-full flex items-center justify-between gap-3">
               <div className="flex items-center gap-4 min-w-0">
                 <button
@@ -265,27 +271,36 @@ const AdminLayout = () => {
                   <Menu className="h-6 w-6 text-gray-600 dark:text-dark-text" />
                 </button>
                 <div className="min-w-0">
-                  <h1 className="admin-h1 truncate">
+                  <h1 className="admin-h1 truncate leading-none">
                     {currentLabel}
                   </h1>
+                  <div className="hidden md:flex items-center gap-2 mt-1">
+                    <div className="h-1.5 w-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Hệ thống đang hoạt động</span>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-6">
-                <div className="flex items-center gap-2">
+              <div className="flex items-center gap-4 sm:gap-8">
+                {/* Real-time Clock */}
+                <div className="hidden lg:flex flex-col items-end pr-4 border-r border-gray-100 dark:border-white/5">
+                  <span className="text-[15px] font-black text-gray-900 dark:text-white tabular-nums tracking-tight leading-none">{timeStr}</span>
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter mt-1">{dateStr} (+7)</span>
+                </div>
+
+                <div className="flex items-center gap-3">
                    <button
                     onClick={toggleDarkMode}
-                    className="p-2.5 rounded-lg border border-gray-100 hover:bg-gray-50 dark:hover:bg-dark-bg transition-colors duration-200"
+                    className="p-2.5 rounded-xl border border-gray-100 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors duration-200"
                     title={isDarkMode ? 'Chế độ sáng' : 'Chế độ tối'}
                   >
                     {isDarkMode ? (
-                      <Sun className="h-5 w-5 text-gray-600 dark:text-dark-text" />
+                      <Sun className="h-4.5 w-4.5 text-gray-600 dark:text-dark-text" />
                     ) : (
-                      <Moon className="h-5 w-5 text-gray-600 dark:text-dark-text" />
+                      <Moon className="h-4.5 w-4.5 text-gray-600 dark:text-dark-text" />
                     )}
                   </button>
                 </div>
-
                 <div className="h-8 w-[1px] bg-gray-100"></div>
 
                 <div className="flex items-center gap-3">

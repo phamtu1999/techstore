@@ -14,7 +14,8 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -102,7 +103,10 @@ public class UploadService {
         }
 
         if (currentCount == 1L) {
-            Duration ttl = Duration.between(LocalDateTime.now(), LocalDate.now().plusDays(1).atStartOfDay());
+            ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
+            ZonedDateTime now = ZonedDateTime.now(zoneId);
+            ZonedDateTime nextDay = now.toLocalDate().plusDays(1).atStartOfDay(zoneId);
+            Duration ttl = Duration.between(now, nextDay);
             stringRedisTemplate.expire(redisKey, ttl.isNegative() || ttl.isZero() ? Duration.ofDays(1) : ttl);
         }
 

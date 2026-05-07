@@ -138,12 +138,20 @@ const OrdersTable = ({
             label: 'Ngày đặt',
             align: 'right',
             width: '120px',
-            render: (date) => (
-              <div className="flex flex-col items-end">
-                <span className="text-[12px] font-bold text-gray-700">{date ? format(new Date(date), 'dd/MM/yyyy', { locale: vi }) : '-'}</span>
-                <span className="text-[10px] text-gray-400 font-medium">{date ? format(new Date(date), 'HH:mm', { locale: vi }) : '-'}</span>
-              </div>
-            )
+            render: (dateStr) => {
+              if (!dateStr) return '-';
+              const date = new Date(dateStr);
+              return (
+                <div className="flex flex-col items-end">
+                  <span className="text-[12px] font-bold text-gray-700">
+                    {date.toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}
+                  </span>
+                  <span className="text-[10px] text-gray-400 font-medium">
+                    {date.toLocaleTimeString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', hour: '2-digit', minute: '2-digit', hour12: false })}
+                  </span>
+                </div>
+              );
+            }
           }
         ]}
         data={orders}

@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -356,7 +356,7 @@ public class OrderCommandService {
             coupon = couponRepository.findByCodeAndActiveTrue(couponCode)
                     .orElseThrow(() -> new AppException(ErrorCode.COUPON_INVALID));
 
-            if (coupon.getExpirationDate().isBefore(LocalDateTime.now()) || (coupon.getUsageLimit() > 0 && coupon.getUsedCount() >= coupon.getUsageLimit())) {
+            if (coupon.getExpirationDate().isBefore(Instant.now()) || (coupon.getUsageLimit() > 0 && coupon.getUsedCount() >= coupon.getUsageLimit())) {
                 throw new AppException(ErrorCode.COUPON_INVALID);
             }
 

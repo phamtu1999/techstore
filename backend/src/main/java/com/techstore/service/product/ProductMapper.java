@@ -50,16 +50,9 @@ public class ProductMapper {
 
         BigDecimal minPrice = displayPrice;
         BigDecimal maxPrice = displayPrice;
+        int totalStock = product.getTotalStock() != null ? product.getTotalStock() : 0;
+        int variantCount = product.getVariants() != null ? product.getVariants().size() : 0;
         List<ProductVariantResponse> variantResponses = null;
-        int variantCount = 0;
-        int totalStock = 0;
-        
-        if (product.getVariants() != null) {
-            totalStock = product.getVariants().stream()
-                    .mapToInt(v -> v.getStockQuantity() == null ? 0 : v.getStockQuantity())
-                    .sum();
-            variantCount = product.getVariants().size();
-        }
 
         ProductResponse.ProductResponseBuilder builder = ProductResponse.builder();
 
@@ -110,7 +103,7 @@ public class ProductMapper {
                 .rating(averageRating)
                 .reviewCount(reviewCount)
                 .soldCount(soldCount)
-                .isNew(product.getCreatedAt() != null && product.getCreatedAt().isAfter(java.time.LocalDateTime.now().minusDays(30)))
+                .isNew(product.getCreatedAt() != null && product.getCreatedAt().isAfter(java.time.Instant.now().minus(30, java.time.temporal.ChronoUnit.DAYS)))
                 .active(product.isActive())
                 .createdAt(product.getCreatedAt());
 
@@ -171,7 +164,7 @@ public class ProductMapper {
                 .rating(averageRating)
                 .reviewCount(reviewCount)
                 .defaultVariantId(getVisibleVariants(product).stream().findFirst().map(ProductVariant::getId).orElse(null))
-                .isNew(product.getCreatedAt() != null && product.getCreatedAt().isAfter(java.time.LocalDateTime.now().minusDays(30)));
+                .isNew(product.getCreatedAt() != null && product.getCreatedAt().isAfter(java.time.Instant.now().minus(30, java.time.temporal.ChronoUnit.DAYS)));
 
         if (product.getBrand() != null) {
             builder.brand(BrandResponse.builder()
@@ -212,7 +205,7 @@ public class ProductMapper {
                 .rating(product.getRating() == null ? 0D : product.getRating())
                 .reviewCount(product.getReviewCount() == null ? 0L : product.getReviewCount())
                 .defaultVariantId(product.getDefaultVariantId())
-                .isNew(product.getCreatedAt() != null && product.getCreatedAt().isAfter(java.time.LocalDateTime.now().minusDays(30)));
+                .isNew(product.getCreatedAt() != null && product.getCreatedAt().isAfter(java.time.Instant.now().minus(30, java.time.temporal.ChronoUnit.DAYS)));
 
         if (StringUtils.hasText(product.getBrandId())) {
             builder.brand(BrandResponse.builder()

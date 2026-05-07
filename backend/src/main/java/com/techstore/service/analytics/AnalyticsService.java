@@ -30,18 +30,19 @@ public class AnalyticsService {
 
     @Cacheable(value = "analytics", key = "#period + '_' + T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication().getName()")
     public DashboardResponse getDashboardStats(String period) {
-        java.time.LocalDateTime now = java.time.LocalDateTime.now();
-        java.time.LocalDateTime startDate;
-        java.time.LocalDateTime endDate = now;
+        java.time.ZoneId zoneId = java.time.ZoneId.of("Asia/Ho_Chi_Minh");
+        java.time.ZonedDateTime now = java.time.ZonedDateTime.now(zoneId);
+        java.time.Instant startDate;
+        java.time.Instant endDate = now.toInstant();
 
         if ("today".equals(period)) {
-            startDate = now.toLocalDate().atStartOfDay();
+            startDate = now.toLocalDate().atStartOfDay(zoneId).toInstant();
         } else if ("7d".equals(period)) {
-            startDate = now.minusDays(7);
+            startDate = now.minusDays(7).toInstant();
         } else if ("30d".equals(period)) {
-            startDate = now.minusDays(30);
+            startDate = now.minusDays(30).toInstant();
         } else { // "all"
-            startDate = java.time.LocalDateTime.of(2000, 1, 1, 0, 0); // long time ago
+            startDate = java.time.Instant.parse("2000-01-01T00:00:00Z"); // long time ago
         }
 
         BigDecimal totalRevenue = nullToZero(orderRepository.getTotalRevenueByDateRange(startDate, endDate));

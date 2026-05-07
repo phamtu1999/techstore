@@ -92,14 +92,11 @@ public class ProductSpecification {
 
             // 6. Filter by Low Stock
             if (lowStock != null && lowStock) {
-                Subquery<String> stockSubquery = criteriaQuery.subquery(String.class);
-                Root<ProductVariant> variantRoot = stockSubquery.from(ProductVariant.class);
-                stockSubquery.select(variantRoot.get("id"))
-                        .where(
-                            cb.equal(variantRoot.get("product"), root),
-                            cb.lessThanOrEqualTo(variantRoot.get("stockQuantity"), 20)
-                        );
-                predicates.add(cb.exists(stockSubquery));
+                Subquery<Long> sumSubquery = criteriaQuery.subquery(Long.class);
+                Root<ProductVariant> variantRoot = sumSubquery.from(ProductVariant.class);
+                sumSubquery.select(cb.sum(variantRoot.get("stockQuantity")))
+                        .where(cb.equal(variantRoot.get("product"), root));
+                predicates.add(cb.lessThanOrEqualTo(cb.coalesce(sumSubquery, 0L), 10L));
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));

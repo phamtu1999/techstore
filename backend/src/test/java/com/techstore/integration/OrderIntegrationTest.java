@@ -31,7 +31,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -131,7 +131,7 @@ class OrderIntegrationTest {
                 .discountValue(new BigDecimal("10"))
                 .maxDiscount(new BigDecimal("1000000"))
                 .minPurchase(new BigDecimal("10000000"))
-                .expirationDate(LocalDateTime.now().plusDays(7))
+                .expirationDate(Instant.now().plus(java.time.Duration.ofDays(7)))
                 .usageLimit(100)
                 .usedCount(0)
                 .active(true)

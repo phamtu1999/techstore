@@ -19,7 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -93,7 +93,7 @@ public class LivestreamService {
                 .streamUrl(request.getStreamUrl())
                 .status(Livestream.LivestreamStatus.LIVE)
                 .streamer(streamer)
-                .startTime(LocalDateTime.now())
+                .startTime(Instant.now())
                 .viewerCount(0)
                 .build();
 
@@ -118,7 +118,7 @@ public class LivestreamService {
         livestream.setStatus(newStatus);
         
         if (newStatus == Livestream.LivestreamStatus.ENDED) {
-            livestream.setEndTime(LocalDateTime.now());
+            livestream.setEndTime(Instant.now());
             // Sync final viewer count from Redis before deleting
             String count = redisTemplate.opsForValue().get(VIEWERS_KEY_PREFIX + id);
             if (count != null) {

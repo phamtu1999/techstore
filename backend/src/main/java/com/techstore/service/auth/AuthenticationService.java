@@ -19,7 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
@@ -106,7 +105,7 @@ public class AuthenticationService {
                 
                 var settings = securitySettingsService.getSecuritySettings();
                 if (attempts >= settings.getMaxFailedLoginAttempts()) {
-                    user.setLockoutUntil(LocalDateTime.now().plusMinutes(settings.getAccountLockoutMinutes()));
+                    user.setLockoutUntil(java.time.Instant.now().plus(settings.getAccountLockoutMinutes(), java.time.temporal.ChronoUnit.MINUTES));
                     log.warn("Account locked for user: {} due to too many failed attempts", user.getEmail());
                 }
                 userRepository.save(user);
@@ -143,8 +142,8 @@ public class AuthenticationService {
                 .username(user.getEmail())
                 .ipAddress(ipAddress)
                 .deviceInfo(deviceInfo)
-                .loginTimestamp(LocalDateTime.now())
-                .lastActivityTimestamp(LocalDateTime.now())
+                .loginTimestamp(java.time.Instant.now())
+                .lastActivityTimestamp(java.time.Instant.now())
                 .build();
         return sessionCommandService.saveSession(newSession);
     }

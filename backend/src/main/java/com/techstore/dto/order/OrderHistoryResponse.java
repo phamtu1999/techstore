@@ -4,7 +4,7 @@ import com.techstore.entity.order.OrderStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @NoArgsConstructor
@@ -15,5 +15,5 @@ public class OrderHistoryResponse {
     String id;
     OrderStatus status;
     String description;
-    LocalDateTime createdAt;
+    Instant createdAt;
 }

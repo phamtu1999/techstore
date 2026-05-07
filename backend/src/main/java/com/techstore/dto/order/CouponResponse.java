@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @Builder
@@ -20,7 +20,7 @@ public class CouponResponse {
     private BigDecimal discountValue;
     private BigDecimal minPurchase;
     private BigDecimal maxDiscount;
-    private LocalDateTime expirationDate;
+    private Instant expirationDate;
     private Integer usageLimit;
     private Integer usedCount;
     private boolean active;

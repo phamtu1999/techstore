@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @Builder
@@ -19,7 +19,7 @@ public class TwoFactorUserResponse {
     private String username;
     private String email;
     private String twoFactorMethod;
-    private LocalDateTime enrolledAt;
+    private Instant enrolledAt;
 
     /**
      * Converts User entity to TwoFactorUserResponse DTO

@@ -3,7 +3,7 @@ package com.techstore.dto.settings;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @Builder
@@ -18,7 +18,7 @@ public class SystemLogResponse {
     String status;
     String ipAddress;
     String details;
-    LocalDateTime timestamp;
+    Instant timestamp;
 
     public static SystemLogResponse fromEntity(com.techstore.entity.settings.SystemLog entity) {
         return SystemLogResponse.builder()

@@ -51,7 +51,7 @@ const ProductsTable = ({
           <select 
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-3 py-2 bg-gray-50 border-none rounded-lg text-[12px] font-bold outline-none focus:ring-2 focus:ring-primary-600/20 transition-all cursor-pointer"
+            className="px-3 py-2 bg-gray-50 border-none rounded-lg text-[11px] font-bold outline-none focus:ring-2 focus:ring-primary-600/20 transition-all cursor-pointer"
           >
             <option value="">Tất cả danh mục</option>
             {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
@@ -59,7 +59,7 @@ const ProductsTable = ({
           <select 
             value={brandFilter}
             onChange={(e) => setBrandFilter(e.target.value)}
-            className="px-3 py-2 bg-gray-50 border-none rounded-lg text-[12px] font-bold outline-none focus:ring-2 focus:ring-primary-600/20 transition-all cursor-pointer"
+            className="px-3 py-2 bg-gray-50 border-none rounded-lg text-[11px] font-bold outline-none focus:ring-2 focus:ring-primary-600/20 transition-all cursor-pointer"
           >
             <option value="">Tất cả thương hiệu</option>
             {brands.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
@@ -89,8 +89,8 @@ const ProductsTable = ({
                 <div className="flex flex-col min-w-0">
                   <span className="font-bold text-gray-900 text-[13px] truncate">{row.name}</span>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-[10px] text-gray-400 font-bold flex items-center gap-1 uppercase tracking-tight"><Tag className="w-2.5 h-2.5" /> {row.brand?.name}</span>
-                    <span className="text-[10px] text-gray-400 font-bold flex items-center gap-1 uppercase tracking-tight"><Layers className="w-2.5 h-2.5" /> {row.category?.name}</span>
+                    <span className="text-[9px] text-gray-400 font-black flex items-center gap-1 uppercase tracking-wider bg-gray-50 px-1 rounded"><Tag className="w-2 h-2" /> {row.brand?.name}</span>
+                    <span className="text-[9px] text-gray-400 font-black flex items-center gap-1 uppercase tracking-wider bg-gray-50 px-1 rounded"><Layers className="w-2 h-2" /> {row.category?.name}</span>
                   </div>
                 </div>
               </div>

@@ -4,7 +4,7 @@ import com.techstore.entity.loyalty.LoyaltySource;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @NoArgsConstructor
@@ -17,5 +17,5 @@ public class LoyaltyTransactionResponse {
     LoyaltySource source;
     String description;
     String orderId;
-    LocalDateTime createdAt;
+    Instant createdAt;
 }

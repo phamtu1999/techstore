@@ -65,7 +65,7 @@ public class User extends BaseEntity implements UserDetails {
     private Boolean deleted = false;
 
     @Column(name = "deleted_at")
-    private java.time.LocalDateTime deletedAt;
+    private java.time.Instant deletedAt;
 
     // Two-Factor Authentication fields
     @Column(name = "two_factor_enabled", nullable = false)
@@ -76,14 +76,14 @@ public class User extends BaseEntity implements UserDetails {
     private String twoFactorMethod; // SMS, EMAIL, AUTHENTICATOR_APP
 
     @Column(name = "two_factor_enrolled_at")
-    private java.time.LocalDateTime twoFactorEnrolledAt;
+    private java.time.Instant twoFactorEnrolledAt;
 
     @Column(name = "failed_login_attempts", nullable = false)
     @Builder.Default
     private Integer failedLoginAttempts = 0;
 
     @Column(name = "lockout_until")
-    private java.time.LocalDateTime lockoutUntil;
+    private java.time.Instant lockoutUntil;
 
     @Column(name = "loyalty_points", nullable = false)
     @Builder.Default
@@ -114,7 +114,7 @@ public class User extends BaseEntity implements UserDetails {
     public boolean isAccountNonLocked() {
         if (!active) return false;
         if (lockoutUntil == null) return true;
-        return lockoutUntil.isBefore(java.time.LocalDateTime.now());
+        return lockoutUntil.isBefore(java.time.Instant.now());
     }
 
     @Override

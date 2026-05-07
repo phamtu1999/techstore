@@ -104,7 +104,8 @@ public class OrderMapper {
 
     private String generateOrderNumber(Order order) {
         String datePart = java.time.format.DateTimeFormatter.ofPattern("yyMMdd")
-                .format(order.getCreatedAt() != null ? order.getCreatedAt() : java.time.LocalDateTime.now());
+                .withZone(java.time.ZoneId.of("Asia/Ho_Chi_Minh"))
+                .format(order.getCreatedAt() != null ? order.getCreatedAt() : java.time.Instant.now());
         String idPart = order.getId() != null ? (order.getId().length() > 8 ? order.getId().substring(0, 8) : order.getId()) : "TEMP";
         return String.format("ORD%s%s", datePart, idPart);
     }

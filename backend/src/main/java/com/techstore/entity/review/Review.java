@@ -6,7 +6,7 @@ import com.techstore.entity.user.User;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Entity
@@ -51,7 +51,7 @@ public class Review extends BaseEntity {
     @Column(length = 1000)
     private String replyComment;
 
-    private LocalDateTime replyDate;
+    private Instant replyDate;
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewImage> images;

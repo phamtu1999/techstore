@@ -6,7 +6,7 @@ import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 /**
  * ActiveSession entity for tracking user sessions in Redis.
@@ -32,8 +32,8 @@ public class ActiveSession implements Serializable {
     private String username;
     private String ipAddress;
     private String deviceInfo;
-    private LocalDateTime loginTimestamp;
-    private LocalDateTime lastActivityTimestamp;
+    private Instant loginTimestamp;
+    private Instant lastActivityTimestamp;
 
     /**
      * Validates if the session is still active based on the timeout configuration
@@ -44,8 +44,8 @@ public class ActiveSession implements Serializable {
         if (lastActivityTimestamp == null) {
             return false;
         }
-        LocalDateTime expirationTime = lastActivityTimestamp.plusMinutes(sessionTimeoutMinutes);
-        return LocalDateTime.now().isBefore(expirationTime);
+        Instant expirationTime = lastActivityTimestamp.plus(sessionTimeoutMinutes, java.time.temporal.ChronoUnit.MINUTES);
+        return Instant.now().isBefore(expirationTime);
     }
 
     /**
@@ -61,6 +61,6 @@ public class ActiveSession implements Serializable {
      * Updates the last activity timestamp to the current time
      */
     public void updateLastActivity() {
-        this.lastActivityTimestamp = LocalDateTime.now();
+        this.lastActivityTimestamp = Instant.now();
     }
 }

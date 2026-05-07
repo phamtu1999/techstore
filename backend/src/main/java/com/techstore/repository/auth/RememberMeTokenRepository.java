@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,10 +36,10 @@ public interface RememberMeTokenRepository extends JpaRepository<RememberMeToken
      */
     @Modifying
     @Query("DELETE FROM RememberMeToken t WHERE t.expirationTimestamp < :currentTime")
-    void deleteExpiredTokens(@Param("currentTime") LocalDateTime currentTime);
+    void deleteExpiredTokens(@Param("currentTime") Instant currentTime);
     
     /**
      * Find all expired tokens (for reporting/auditing before deletion)
      */
-    List<RememberMeToken> findByExpirationTimestampBefore(LocalDateTime currentTime);
+    List<RememberMeToken> findByExpirationTimestampBefore(Instant currentTime);
 }

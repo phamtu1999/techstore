@@ -18,7 +18,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -55,7 +56,9 @@ public class BackupCommandService {
 
     @Transactional
     public BackupResponse createBackup() {
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        String timestamp = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")
+                .withZone(ZoneId.of("Asia/Ho_Chi_Minh"))
+                .format(Instant.now());
         String fileName = "backup_" + timestamp + ".sql.gz";
 
         Path tempPath = null;

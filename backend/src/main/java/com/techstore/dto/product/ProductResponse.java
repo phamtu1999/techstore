@@ -8,7 +8,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 
@@ -42,5 +42,5 @@ public class ProductResponse {
     Boolean isNew;
     Integer stock;
     Boolean active;
-    LocalDateTime createdAt;
+    Instant createdAt;
 }

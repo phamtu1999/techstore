@@ -8,20 +8,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Repository
 public interface SystemLogRepository extends JpaRepository<SystemLog, String> {
     Page<SystemLog> findAll(Pageable pageable);
     
-    Page<SystemLog> findByTimestampBetween(LocalDateTime start, LocalDateTime end, Pageable pageable);
+    Page<SystemLog> findByTimestampBetween(Instant start, Instant end, Pageable pageable);
     
     Page<SystemLog> findByActionAndStatusAndTimestampBetween(
-            String action, String status, LocalDateTime start, LocalDateTime end, Pageable pageable);
+            String action, String status, Instant start, Instant end, Pageable pageable);
             
     Page<SystemLog> findByActionAndTimestampBetween(
-            String action, LocalDateTime start, LocalDateTime end, Pageable pageable);
+            String action, Instant start, Instant end, Pageable pageable);
             
     Page<SystemLog> findByStatusAndTimestampBetween(
-            String status, LocalDateTime start, LocalDateTime end, Pageable pageable);
+            String status, Instant start, Instant end, Pageable pageable);
 }

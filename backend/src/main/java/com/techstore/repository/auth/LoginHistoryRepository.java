@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Repository
 public interface LoginHistoryRepository extends JpaRepository<LoginHistory, String> {
@@ -34,8 +34,8 @@ public interface LoginHistoryRepository extends JpaRepository<LoginHistory, Stri
      */
     Page<LoginHistory> findByUsernameAndTimestampBetween(
         String username, 
-        LocalDateTime startDate, 
-        LocalDateTime endDate, 
+        Instant startDate, 
+        Instant endDate, 
         Pageable pageable
     );
     
@@ -44,8 +44,8 @@ public interface LoginHistoryRepository extends JpaRepository<LoginHistory, Stri
      */
     Page<LoginHistory> findByStatusAndTimestampBetween(
         LoginStatus status, 
-        LocalDateTime startDate, 
-        LocalDateTime endDate, 
+        Instant startDate, 
+        Instant endDate, 
         Pageable pageable
     );
     
@@ -55,8 +55,8 @@ public interface LoginHistoryRepository extends JpaRepository<LoginHistory, Stri
     Page<LoginHistory> findByUsernameAndStatusAndTimestampBetween(
         String username, 
         LoginStatus status, 
-        LocalDateTime startDate, 
-        LocalDateTime endDate, 
+        Instant startDate, 
+        Instant endDate, 
         Pageable pageable
     );
 }

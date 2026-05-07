@@ -5,7 +5,7 @@ import com.techstore.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 /**
  * RememberMeToken entity for persistent "Remember Me" authentication.
@@ -41,10 +41,10 @@ public class RememberMeToken {
     private User user;
 
     @Column(name = "expiration_timestamp", nullable = false)
-    private LocalDateTime expirationTimestamp;
+    private Instant expirationTimestamp;
 
     @Column(name = "created_timestamp", nullable = false)
-    private LocalDateTime createdTimestamp;
+    private Instant createdTimestamp;
 
     @Column(name = "device_fingerprint", length = 500)
     private String deviceFingerprint;
@@ -54,7 +54,7 @@ public class RememberMeToken {
      * @return true if token has expired, false if still valid
      */
     public boolean isExpired() {
-        return LocalDateTime.now().isAfter(expirationTimestamp);
+        return Instant.now().isAfter(expirationTimestamp);
     }
 
     /**

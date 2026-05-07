@@ -11,7 +11,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 @RestController
 @RequestMapping("/api/v1/admin/system-logs")
@@ -27,8 +28,8 @@ public class LogController {
     @com.techstore.security.LogAction("VIEW_SYSTEM_LOGS")
     public ApiResponse<Page<SystemLogResponse>> getLogs(
             @RequestParam(required = false) String status,
-            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) Instant startDate,
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) Instant endDate,
             @RequestParam(required = false) String action,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size
@@ -38,8 +39,8 @@ public class LogController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp"));
         
         // Default time range if not provided (last 30 days)
-        LocalDateTime start = startDate != null ? startDate : LocalDateTime.now().minusDays(30);
-        LocalDateTime end = endDate != null ? endDate : LocalDateTime.now();
+        Instant start = startDate != null ? startDate : Instant.now().minus(30, ChronoUnit.DAYS);
+        Instant end = endDate != null ? endDate : Instant.now();
         
         Page<SystemLogResponse> logs = Page.empty();
         
@@ -66,11 +67,11 @@ public class LogController {
     @PreAuthorize("hasRole('ADMIN')")
     public org.springframework.http.ResponseEntity<byte[]> exportLogs(
             @RequestParam(required = false) String status,
-            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) Instant startDate,
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) Instant endDate
     ) {
-        LocalDateTime start = startDate != null ? startDate : LocalDateTime.now().minusDays(90);
-        LocalDateTime end = endDate != null ? endDate : LocalDateTime.now();
+        Instant start = startDate != null ? startDate : Instant.now().minus(90, ChronoUnit.DAYS);
+        Instant end = endDate != null ? endDate : Instant.now();
         
         java.util.List<com.techstore.entity.settings.SystemLog> logs;
         boolean isAllStatus = status == null || status.equalsIgnoreCase("ALL");

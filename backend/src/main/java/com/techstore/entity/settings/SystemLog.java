@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "system_logs")
@@ -36,5 +36,5 @@ public class SystemLog {
     private String details;     // Dữ liệu JSON chi tiết (ví dụ: payload đơn hàng, lỗi stacktrace)
 
     @CreationTimestamp
-    private LocalDateTime timestamp;
+    private Instant timestamp;
 }

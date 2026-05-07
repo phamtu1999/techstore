@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "backups")
@@ -27,5 +27,5 @@ public class Backup {
     private String storageUrl;
     
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 }

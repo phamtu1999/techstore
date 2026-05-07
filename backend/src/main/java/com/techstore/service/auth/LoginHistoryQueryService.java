@@ -12,7 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
@@ -24,8 +24,8 @@ public class LoginHistoryQueryService {
     @Transactional(readOnly = true)
     public Page<LoginHistory> getLoginHistory(
             String username,
-            LocalDateTime startDate,
-            LocalDateTime endDate,
+            Instant startDate,
+            Instant endDate,
             String status,
             int page,
             int size

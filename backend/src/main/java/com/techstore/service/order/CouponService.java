@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Optional;
 
 @Service
@@ -107,7 +107,7 @@ public class CouponService {
                     .build();
         }
 
-        if (coupon.getExpirationDate().isBefore(LocalDateTime.now())) {
+        if (coupon.getExpirationDate().isBefore(Instant.now())) {
             return CouponValidationResponse.builder()
                     .valid(false)
                     .message("Mã giảm giá đã hết hạn")

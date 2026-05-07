@@ -4,7 +4,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -15,8 +15,8 @@ import java.util.List;
 public class FlashSaleResponse {
     String id;
     String name;
-    LocalDateTime startDate;
-    LocalDateTime endDate;
+    Instant startDate;
+    Instant endDate;
     boolean active;
     List<FlashSaleItemResponse> items;
 
