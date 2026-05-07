@@ -6,7 +6,7 @@ import { useCategories } from '../../../hooks/admin/useCategories';
 import CategoriesTable from './CategoriesTable';
 
 const AdminCategories = () => {
-  const { loading, categories = [], handleDelete } = useCategories();
+  const { loading, categories = [], handleDelete, handleToggleStatus } = useCategories();
   const navigate = useNavigate();
 
   const headerRight = (
@@ -30,6 +30,7 @@ const AdminCategories = () => {
         categories={categories}
         loading={loading}
         handleDelete={handleDelete}
+        handleToggleStatus={handleToggleStatus}
       />
     </div>
   );

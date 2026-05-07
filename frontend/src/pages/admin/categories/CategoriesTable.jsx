@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import AdminTable from '../../../components/admin/AdminTable';
 import AdminPill from '../../../components/admin/shared/AdminPill';
 
-const CategoriesTable = ({ categories, loading, handleDelete }) => {
+const CategoriesTable = ({ categories, loading, handleDelete, handleToggleStatus }) => {
   const navigate = useNavigate();
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -33,7 +33,7 @@ const CategoriesTable = ({ categories, loading, handleDelete }) => {
             render: (val) => <span className="text-[12px] text-gray-500 line-clamp-1">{val || 'Không có mô tả'}</span>
           },
           {
-            key: 'status',
+            key: 'active',
             label: 'Trạng thái',
             align: 'center',
             width: '140px',
@@ -51,6 +51,7 @@ const CategoriesTable = ({ categories, loading, handleDelete }) => {
         itemTitle="danh mục"
         onEdit={(row) => navigate(`/admin/categories/edit/${row.id}`)}
         onDelete={(row) => handleDelete(row.id, row.name)}
+        onToggleStatus={(row) => handleToggleStatus(row.id, row.active)}
       />
     </div>
   );
