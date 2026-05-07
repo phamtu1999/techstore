@@ -46,17 +46,20 @@ public class ProductSpecification {
             Join<Product, Category> categoryJoin = null;
             if (StringUtils.hasText(categorySlug)) {
                 categoryJoin = root.join("category");
-                predicates.add(cb.equal(
-                        cb.lower(categoryJoin.get("slug")), 
-                        categorySlug.toLowerCase().trim()
+                String term = categorySlug.trim().toLowerCase();
+                predicates.add(cb.or(
+                        cb.equal(cb.lower(categoryJoin.get("id")), term),
+                        cb.equal(cb.lower(categoryJoin.get("slug")), term)
                 ));
             }
 
             // 3. Filter by Brand
             if (StringUtils.hasText(brandSlug)) {
-                predicates.add(cb.equal(
-                        cb.lower(root.join("brand").get("slug")), 
-                        brandSlug.toLowerCase().trim()
+                var brandJoin = root.join("brand");
+                String term = brandSlug.trim().toLowerCase();
+                predicates.add(cb.or(
+                        cb.equal(cb.lower(brandJoin.get("id")), term),
+                        cb.equal(cb.lower(brandJoin.get("slug")), term)
                 ));
             }
 

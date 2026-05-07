@@ -140,16 +140,18 @@ public class ProductRepositoryImpl implements ProductListingRepository {
         }
 
         if (StringUtils.hasText(categorySlug)) {
-            predicates.add(cb.equal(
-                    cb.lower(categoryJoin.get("slug")),
-                    categorySlug.trim().toLowerCase(Locale.ROOT)
+            String term = categorySlug.trim().toLowerCase(Locale.ROOT);
+            predicates.add(cb.or(
+                    cb.equal(cb.lower(categoryJoin.get("id")), term),
+                    cb.equal(cb.lower(categoryJoin.get("slug")), term)
             ));
         }
 
         if (StringUtils.hasText(brandSlug)) {
-            predicates.add(cb.equal(
-                    cb.lower(brandJoin.get("slug")),
-                    brandSlug.trim().toLowerCase(Locale.ROOT)
+            String term = brandSlug.trim().toLowerCase(Locale.ROOT);
+            predicates.add(cb.or(
+                    cb.equal(cb.lower(brandJoin.get("id")), term),
+                    cb.equal(cb.lower(brandJoin.get("slug")), term)
             ));
         }
 
