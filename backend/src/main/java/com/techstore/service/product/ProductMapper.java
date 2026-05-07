@@ -52,6 +52,14 @@ public class ProductMapper {
         BigDecimal maxPrice = displayPrice;
         List<ProductVariantResponse> variantResponses = null;
         int variantCount = 0;
+        int totalStock = 0;
+        
+        if (product.getVariants() != null) {
+            totalStock = product.getVariants().stream()
+                    .mapToInt(v -> v.getStockQuantity() == null ? 0 : v.getStockQuantity())
+                    .sum();
+            variantCount = product.getVariants().size();
+        }
 
         ProductResponse.ProductResponseBuilder builder = ProductResponse.builder();
 
@@ -98,6 +106,7 @@ public class ProductMapper {
                 .minPrice(minPrice)
                 .maxPrice(maxPrice)
                 .variantCount(variantCount)
+                .stock(totalStock)
                 .rating(averageRating)
                 .reviewCount(reviewCount)
                 .soldCount(soldCount)

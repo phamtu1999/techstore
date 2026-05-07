@@ -40,6 +40,7 @@ public class ProductResponse {
     Long soldCount;
     Integer discountPercentage;
     Boolean isNew;
+    Integer stock;
     Boolean active;
     LocalDateTime createdAt;
 }
