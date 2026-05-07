@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { format } from 'date-fns';
+import { vi } from 'date-fns/locale';
 import { logsAPI } from '../../../api/logs';
 import { 
   FileText,
@@ -188,8 +190,8 @@ const AdminLogs = () => {
                             label: 'Thời gian',
                             render: (val) => (
                                 <div className="flex flex-col">
-                                    <span className="text-sm font-bold text-slate-700">{new Date(val).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
-                                    <span className="text-[10px] font-black text-slate-400">{new Date(val).toLocaleDateString('vi-VN')}</span>
+                                    <span className="text-sm font-bold text-slate-700">{val ? format(new Date(val), 'HH:mm:ss', { locale: vi }) : '-'}</span>
+                                    <span className="text-[10px] font-black text-slate-400">{val ? format(new Date(val), 'dd/MM/yyyy', { locale: vi }) : '-'}</span>
                                 </div>
                             )
                         },
@@ -271,8 +273,8 @@ const AdminLogs = () => {
                                     <div className="flex flex-col gap-0.5">
                                         <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Thời gian</span>
                                         <div className="flex flex-col">
-                                            <span className="text-[13px] font-bold text-slate-700">{new Date(row.timestamp).toLocaleTimeString('vi-VN')}</span>
-                                            <span className="text-[10px] font-black text-slate-400">{new Date(row.timestamp).toLocaleDateString('vi-VN')}</span>
+                                            <span className="text-[13px] font-bold text-slate-700">{row.timestamp ? format(new Date(row.timestamp), 'HH:mm:ss', { locale: vi }) : '-'}</span>
+                                            <span className="text-[10px] font-black text-slate-400">{row.timestamp ? format(new Date(row.timestamp), 'dd/MM/yyyy', { locale: vi }) : '-'}</span>
                                         </div>
                                     </div>
                                     <div className="flex flex-col gap-0.5 text-right">
@@ -350,7 +352,7 @@ const AdminLogs = () => {
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="p-4 bg-slate-50 rounded-2xl">
                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Thời gian</p>
-                                    <p className="text-sm font-bold text-slate-700">{new Date(selectedLog.timestamp).toLocaleString('vi-VN')}</p>
+                                    <p className="text-sm font-bold text-slate-700">{selectedLog.timestamp ? format(new Date(selectedLog.timestamp), 'HH:mm:ss - dd/MM/yyyy', { locale: vi }) : '-'}</p>
                                 </div>
                                 <div className="p-4 bg-slate-50 rounded-2xl">
                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Địa chỉ IP</p>

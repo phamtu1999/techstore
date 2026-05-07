@@ -1,4 +1,5 @@
-import React from 'react';
+import { format } from 'date-fns';
+import { vi } from 'date-fns/locale';
 import AdminTable from '../../../components/admin/AdminTable';
 
 const HistoryTable = ({ history, loading }) => {
@@ -9,12 +10,19 @@ const HistoryTable = ({ history, loading }) => {
           {
             key: 'time',
             label: 'Thời gian',
-            render: (_, row) => (
-              <div className="flex flex-col">
-                <span className="text-[13px] font-bold text-gray-900">{new Date(row.timestamp).toLocaleDateString('vi-VN')}</span>
-                <span className="text-[11px] text-gray-400">{new Date(row.timestamp).toLocaleTimeString('vi-VN')}</span>
-              </div>
-            )
+            render: (_, row) => {
+              const date = row.createdAt ? new Date(row.createdAt) : null;
+              return (
+                <div className="flex flex-col">
+                  <span className="text-[13px] font-bold text-gray-900">
+                    {date ? format(date, 'dd/MM/yyyy', { locale: vi }) : '-'}
+                  </span>
+                  <span className="text-[11px] text-gray-400">
+                    {date ? format(date, 'HH:mm:ss', { locale: vi }) : '-'}
+                  </span>
+                </div>
+              );
+            }
           },
           {
             key: 'sku',
@@ -79,8 +87,12 @@ const HistoryTable = ({ history, loading }) => {
                   <span className="text-[12px] font-black text-gray-900 dark:text-white font-mono mt-0.5 truncate">{row.sku}</span>
                 </div>
                 <div className="text-right flex flex-col shrink-0">
-                  <span className="text-[10px] font-bold text-gray-600 dark:text-gray-400 leading-none">{new Date(row.timestamp).toLocaleDateString('vi-VN')}</span>
-                  <span className="text-[9px] text-gray-400 font-medium mt-0.5">{new Date(row.timestamp).toLocaleTimeString('vi-VN')}</span>
+                  <span className="text-[10px] font-bold text-gray-600 dark:text-gray-400 leading-none">
+                    {row.createdAt ? format(new Date(row.createdAt), 'dd/MM/yyyy') : '-'}
+                  </span>
+                  <span className="text-[9px] text-gray-400 font-medium mt-0.5">
+                    {row.createdAt ? format(new Date(row.createdAt), 'HH:mm:ss') : '-'}
+                  </span>
                 </div>
               </div>
 

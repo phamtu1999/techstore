@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
+import { vi } from 'date-fns/locale';
 import { Search, FileText, ExternalLink, Calendar, User, Package, CreditCard, ShoppingBag, Truck, RefreshCw } from 'lucide-react';
 import AdminTable from '../../../components/admin/AdminTable';
 import AdminPagination from '../../../components/admin/shared/AdminPagination';
@@ -138,8 +140,8 @@ const OrdersTable = ({
             width: '120px',
             render: (date) => (
               <div className="flex flex-col items-end">
-                <span className="text-[12px] font-bold text-gray-700">{new Date(date).toLocaleDateString('vi-VN')}</span>
-                <span className="text-[10px] text-gray-400 font-medium">{new Date(date).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</span>
+                <span className="text-[12px] font-bold text-gray-700">{date ? format(new Date(date), 'dd/MM/yyyy', { locale: vi }) : '-'}</span>
+                <span className="text-[10px] text-gray-400 font-medium">{date ? format(new Date(date), 'HH:mm', { locale: vi }) : '-'}</span>
               </div>
             )
           }
