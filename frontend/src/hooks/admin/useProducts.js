@@ -44,6 +44,7 @@ export const useProducts = () => {
         totalElements: pageData.totalElements,
         page: pageData.pageNumber
       }));
+      setSummary(prev => ({ ...prev, totalProducts: pageData.totalElements }));
     } catch (error) {
       console.error(getApiErrorMessage(error));
     } finally {
@@ -65,8 +66,18 @@ export const useProducts = () => {
   }, []);
 
   const fetchSummary = useCallback(async () => {
-    // Backend doesn't have this endpoint yet, using defaults
-    setSummary({ totalProducts: 0, activeProducts: 0, lowStockProducts: 0 });
+    try {
+      const res = await api.get('/admin/analytics/dashboard');
+      if (res.data?.result) {
+        setSummary(prev => ({
+          ...prev,
+          activeProducts: prev.totalProducts || 0, // Fallback
+          lowStockProducts: res.data.result.lowStockProducts?.length || 0
+        }));
+      }
+    } catch (error) {
+      console.error('Failed to fetch product summary:', error);
+    }
   }, []);
 
   useEffect(() => {

@@ -38,6 +38,7 @@ export const useUsers = () => {
         totalElements: pageData.totalElements,
         page: pageData.pageNumber
       }));
+      setSummary(prev => ({ ...prev, totalUsers: pageData.totalElements }));
     } catch (error) {
       console.error(getApiErrorMessage(error));
     } finally {
@@ -46,8 +47,18 @@ export const useUsers = () => {
   }, [debouncedSearch, pagination.size]);
 
   const fetchSummary = useCallback(async () => {
-    // Backend doesn't have this endpoint yet, using defaults
-    setSummary({ totalUsers: 0, newUsers: 0, activeUsers: 0 });
+    try {
+      const res = await api.get('/admin/analytics/dashboard');
+      if (res.data?.result) {
+        setSummary(prev => ({
+          ...prev,
+          activeUsers: res.data.result.totalCustomers || 0,
+          newUsers: 0 // Placeholder or derive from logic
+        }));
+      }
+    } catch (error) {
+      console.error('Failed to fetch user summary:', error);
+    }
   }, []);
 
   useEffect(() => {

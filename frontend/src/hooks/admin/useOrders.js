@@ -40,6 +40,7 @@ export const useOrders = () => {
         totalElements: pageData.totalElements,
         page: pageData.pageNumber
       }));
+      setSummary(prev => ({ ...prev, totalOrders: pageData.totalElements }));
     } catch (error) {
       console.error(getApiErrorMessage(error));
     } finally {
@@ -48,8 +49,19 @@ export const useOrders = () => {
   }, [debouncedSearch, pagination.size, statusFilter]);
 
   const fetchSummary = useCallback(async () => {
-    // Backend doesn't have this endpoint yet, using defaults
-    setSummary({ totalOrders: 0, totalRevenue: 0, pendingOrders: 0 });
+    try {
+      const res = await api.get('/admin/analytics/dashboard');
+      if (res.data?.result) {
+        const stats = res.data.result;
+        setSummary(prev => ({
+          ...prev,
+          totalRevenue: stats.totalRevenue || 0,
+          pendingOrders: stats.orderStatusDistribution?.['PENDING'] || 0
+        }));
+      }
+    } catch (error) {
+      console.error('Failed to fetch order summary:', error);
+    }
   }, []);
 
   useEffect(() => {
