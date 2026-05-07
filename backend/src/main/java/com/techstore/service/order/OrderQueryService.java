@@ -31,8 +31,8 @@ public class OrderQueryService {
     }
 
     @Transactional(readOnly = true)
-    public Page<OrderResponse> getAllOrders(Pageable pageable) {
-        return orderRepository.findAllByOrderByCreatedAtDesc(pageable)
+    public Page<OrderResponse> getAllOrders(com.techstore.entity.order.OrderStatus status, String search, Pageable pageable) {
+        return orderRepository.searchOrders(status, search, pageable)
                 .map(order -> orderMapper.mapToOrderResponse(order, false));
     }
 
@@ -45,7 +45,8 @@ public class OrderQueryService {
         boolean isOwner = order.getUser().getId().equals(user.getId());
         boolean isManagement = user.getRole() == Role.ROLE_ADMIN || 
                              user.getRole() == Role.ROLE_SUPER_ADMIN || 
-                             user.getRole() == Role.ROLE_MANAGER;
+                             user.getRole() == Role.ROLE_MANAGER ||
+                             user.getRole() == Role.ROLE_STAFF;
 
         if (!isOwner && !isManagement) {
             throw new AppException(ErrorCode.UNAUTHORIZED);

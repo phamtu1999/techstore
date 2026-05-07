@@ -25,7 +25,8 @@ public class CategoryResponse {
     String parentId;
     String parentName;
     Long productCount;
-    boolean active;
+    @com.fasterxml.jackson.annotation.JsonProperty("active")
+    Boolean active;
     LocalDateTime createdAt;
     List<CategoryResponse> children;
 }

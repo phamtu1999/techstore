@@ -38,4 +38,5 @@ public interface ProductRepository extends JpaRepository<Product, String>, JpaSp
     Page<Product> findByNameContainingIgnoreCase(String name, Pageable pageable);
     
     long countByCategoryId(String categoryId);
+    long countByActive(boolean active);
 }

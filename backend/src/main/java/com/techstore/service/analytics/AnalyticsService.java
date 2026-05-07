@@ -24,6 +24,7 @@ public class AnalyticsService {
 
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
+    private final com.techstore.repository.product.ProductRepository productRepository;
     private final ProductVariantRepository productVariantRepository;
     private final CartItemRepository cartItemRepository;
 
@@ -46,6 +47,8 @@ public class AnalyticsService {
         BigDecimal totalRevenue = nullToZero(orderRepository.getTotalRevenueByDateRange(startDate, endDate));
         long totalOrders = orderRepository.countOrdersByDateRange(startDate, endDate);
         long totalCustomers = userRepository.count();
+        long totalProducts = productRepository.count();
+        long activeProducts = productRepository.countByActive(true);
 
         // Growth Metrics
         BigDecimal todayRevenue = nullToZero(orderRepository.getTodayRevenue());
@@ -99,6 +102,8 @@ public class AnalyticsService {
                 .totalOrders(totalOrders)
                 .totalRevenue(totalRevenue)
                 .totalCustomers(totalCustomers)
+                .totalProducts(totalProducts)
+                .activeProducts(activeProducts)
                 .todayRevenue(todayRevenue)
                 .monthlyRevenue(monthlyRevenue)
                 .revenueGrowth(revenueGrowth)

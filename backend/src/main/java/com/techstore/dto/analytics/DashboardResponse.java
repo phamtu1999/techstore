@@ -16,6 +16,8 @@ public class DashboardResponse {
     long totalOrders;
     BigDecimal totalRevenue;
     long totalCustomers;
+    long totalProducts;
+    long activeProducts;
     
     // Growth metrics
     BigDecimal todayRevenue;

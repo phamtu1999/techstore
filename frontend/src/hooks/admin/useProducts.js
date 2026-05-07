@@ -15,6 +15,8 @@ export const useProducts = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [brandFilter, setBrandFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState(''); // 'active' | 'inactive' | ''
+  const [stockFilter, setStockFilter] = useState('');   // 'low' | ''
   const debouncedSearch = useDebounce(searchTerm, 500);
 
   const [pagination, setPagination] = useState({
@@ -43,7 +45,9 @@ export const useProducts = () => {
           size: pagination.size,
           q: debouncedSearch,
           category: categoryFilter || undefined,
-          brand: brandFilter || undefined
+          brand: brandFilter || undefined,
+          active: statusFilter === 'active' ? true : (statusFilter === 'inactive' ? false : undefined),
+          lowStock: stockFilter === 'low' ? true : undefined
         }
       });
       const pageData = unwrapAdminResult(response.data.result);
@@ -60,7 +64,7 @@ export const useProducts = () => {
     } finally {
       setLoading(false);
     }
-  }, [debouncedSearch, pagination.size, categoryFilter, brandFilter]);
+  }, [debouncedSearch, pagination.size, categoryFilter, brandFilter, statusFilter, stockFilter]);
 
   const fetchFilters = useCallback(async () => {
     try {
@@ -79,11 +83,11 @@ export const useProducts = () => {
     try {
       const res = await api.get('/admin/analytics/dashboard');
       if (res.data?.result) {
-        setSummary(prev => ({
-          ...prev,
-          activeProducts: prev.totalProducts || 0, // Fallback
+        setSummary({
+          totalProducts: res.data.result.totalProducts || 0,
+          activeProducts: res.data.result.activeProducts || 0,
           lowStockProducts: res.data.result.lowStockProducts?.length || 0
-        }));
+        });
       }
     } catch (error) {
       console.error('Failed to fetch product summary:', error);
@@ -145,6 +149,8 @@ export const useProducts = () => {
     searchTerm, setSearchTerm,
     categoryFilter, setCategoryFilter,
     brandFilter, setBrandFilter,
+    statusFilter, setStatusFilter,
+    stockFilter, setStockFilter,
     pagination, setPagination,
     handleDeleteProduct,
     handleToggleStatus,

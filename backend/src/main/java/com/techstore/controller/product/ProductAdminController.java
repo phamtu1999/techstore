@@ -46,13 +46,15 @@ public class ProductAdminController {
             @RequestParam(required = false) String brandId,
             @RequestParam(required = false) java.math.BigDecimal minPrice,
             @RequestParam(required = false) java.math.BigDecimal maxPrice,
+            @RequestParam(required = false) Boolean active,
+            @RequestParam(required = false) Boolean lowStock,
             org.springframework.data.domain.Pageable pageable
     ) {
         String searchTerm = StringUtils.hasText(query) ? query : q;
         String resolvedCategory = StringUtils.hasText(category) ? category : categoryId;
         String resolvedBrand = StringUtils.hasText(brand) ? brand : brandId;
         return ApiResponse.<com.techstore.dto.PageResponse<com.techstore.dto.product.ProductResponse>>builder()
-                .result(productService.getAdminProducts(searchTerm, resolvedCategory, resolvedBrand, minPrice, maxPrice, pageable))
+                .result(productService.getAdminProducts(searchTerm, resolvedCategory, resolvedBrand, minPrice, maxPrice, active, lowStock, pageable))
                 .build();
     }
 

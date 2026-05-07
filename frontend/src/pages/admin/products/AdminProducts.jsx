@@ -17,6 +17,8 @@ const AdminProducts = () => {
     searchTerm, setSearchTerm,
     categoryFilter, setCategoryFilter,
     brandFilter, setBrandFilter,
+    statusFilter, setStatusFilter,
+    stockFilter, setStockFilter,
     pagination, setPagination,
     handleDeleteProduct,
     handleToggleStatus
@@ -40,7 +42,13 @@ const AdminProducts = () => {
         rightContent={headerRight}
       />
 
-      <ProductsStats summary={summary} />
+      <ProductsStats 
+        summary={summary} 
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        stockFilter={stockFilter}
+        setStockFilter={setStockFilter}
+      />
 
       <ProductsTable 
         products={products}
@@ -53,6 +61,10 @@ const AdminProducts = () => {
         setCategoryFilter={setCategoryFilter}
         brandFilter={brandFilter}
         setBrandFilter={setBrandFilter}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        stockFilter={stockFilter}
+        setStockFilter={setStockFilter}
         pagination={pagination}
         setPagination={setPagination}
         handleDeleteProduct={handleDeleteProduct}

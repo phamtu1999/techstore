@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { updateOrderStatus } from '../../store/slices/ordersSlice';
 import api from '../../utils/axios';
 import { useDebounce } from '../../hooks/useDebounce';
 import { fireError, fireSuccess } from '../../utils/swalError';
@@ -7,6 +9,7 @@ import Swal from 'sweetalert2';
 import { unwrapAdminResult } from './responseHelpers';
 
 export const useOrders = () => {
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [orders, setOrders] = useState([]);
   const [summary, setSummary] = useState({ totalOrders: 0, totalRevenue: 0, pendingOrders: 0 });
@@ -88,6 +91,7 @@ export const useOrders = () => {
       input: 'select',
       inputOptions: {
         'PENDING': 'Chờ xử lý',
+        'CONFIRMED': 'Đã xác nhận',
         'PROCESSING': 'Đang xử lý',
         'SHIPPING': 'Đang giao hàng',
         'DELIVERED': 'Đã giao hàng',
@@ -106,7 +110,7 @@ export const useOrders = () => {
 
     if (status) {
       try {
-        await api.put(`/admin/orders/${orderId}/status`, null, { params: { status } });
+        await dispatch(updateOrderStatus({ orderId, status })).unwrap();
         fireSuccess('Thành công', 'Trạng thái đơn hàng đã được cập nhật!');
         fetchOrders(pagination.page);
         fetchSummary();

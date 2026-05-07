@@ -28,6 +28,7 @@ import AdminCategoryForm from './pages/admin/categories/AdminCategoryForm'
 import Analytics from './pages/admin/analytics/Analytics'
 import AdminUsers from './pages/admin/users/AdminUsers'
 import AdminOrders from './pages/admin/orders/AdminOrders'
+import AdminOrderDetail from './pages/admin/orders/AdminOrderDetail'
 import AdminCoupons from './pages/admin/coupons/AdminCoupons'
 import AdminSettings from './pages/admin/settings/AdminSettings'
 import AdminInventory from './pages/admin/inventory/AdminInventory'
@@ -101,6 +102,7 @@ function App() {
           
           <Route path="inventory" element={<AdminInventory />} />
           <Route path="orders" element={<AdminOrders />} />
+          <Route path="orders/:id" element={<AdminOrderDetail />} />
           <Route path="analytics" element={<Analytics />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="coupons" element={<AdminCoupons />} />

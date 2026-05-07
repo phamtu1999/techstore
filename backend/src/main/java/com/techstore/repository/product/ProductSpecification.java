@@ -6,6 +6,8 @@ import com.techstore.entity.product.ProductVariant;
 
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
@@ -21,19 +23,19 @@ public class ProductSpecification {
             String brandSlug,
             BigDecimal minPrice,
             BigDecimal maxPrice,
-            boolean onlyActive
+            Boolean active,
+            Boolean lowStock
     ) {
         return (root, criteriaQuery, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            // 1. Filter by Name and Description (Search) - Enhanced Security
+            // 1. Filter by Name and Description (Search)
             if (StringUtils.hasText(query)) {
-                // Sanitize: remove potentially dangerous SQL characters AND escape LIKE special characters
                 String safeQuery = query.trim()
                         .replaceAll("['\";\\\\]", "")
                         .replaceAll("--", "")
-                        .replaceAll("%", "\\\\%")   // escape %
-                        .replaceAll("_", "\\\\_");  // escape _
+                        .replaceAll("%", "\\\\%")
+                        .replaceAll("_", "\\\\_");
 
                 String pattern = "%" + safeQuery.toLowerCase() + "%";
                 predicates.add(cb.or(
@@ -42,10 +44,9 @@ public class ProductSpecification {
                 ));
             }
 
-            // 2. Filter by Category
-            Join<Product, Category> categoryJoin = null;
+            // 2. Filter by Category (Support both ID and Slug)
             if (StringUtils.hasText(categorySlug)) {
-                categoryJoin = root.join("category");
+                Join<Product, Category> categoryJoin = root.join("category");
                 String term = categorySlug.trim().toLowerCase();
                 predicates.add(cb.or(
                         cb.equal(cb.lower(categoryJoin.get("id")), term),
@@ -53,7 +54,7 @@ public class ProductSpecification {
                 ));
             }
 
-            // 3. Filter by Brand
+            // 3. Filter by Brand (Support both ID and Slug)
             if (StringUtils.hasText(brandSlug)) {
                 var brandJoin = root.join("brand");
                 String term = brandSlug.trim().toLowerCase();
@@ -63,14 +64,13 @@ public class ProductSpecification {
                 ));
             }
 
-            // 4. Filter by Price Range using Subquery (Avoids Cartesian product / Duplicates)
+            // 4. Filter by Price Range using Subquery
             if (minPrice != null || maxPrice != null) {
-                var subquery = criteriaQuery.subquery(Long.class);
-                var variantRoot = subquery.from(ProductVariant.class);
+                Subquery<String> subquery = criteriaQuery.subquery(String.class);
+                Root<ProductVariant> variantRoot = subquery.from(ProductVariant.class);
                 
                 List<Predicate> pricePreds = new ArrayList<>();
                 pricePreds.add(cb.equal(variantRoot.get("product"), root));
-                pricePreds.add(cb.isTrue(variantRoot.get("active")));
                 
                 if (minPrice != null) {
                     pricePreds.add(cb.greaterThanOrEqualTo(variantRoot.get("price"), minPrice));
@@ -85,19 +85,21 @@ public class ProductSpecification {
                 predicates.add(cb.exists(subquery));
             }
 
-            // 5. Visibility filters
-            if (onlyActive) {
-                predicates.add(cb.isTrue(root.get("active")));
-                
-                if (categoryJoin == null) {
-                    categoryJoin = root.join("category", jakarta.persistence.criteria.JoinType.LEFT);
-                }
-                
-                // ✅ Only filter active if category exists (using LEFT JOIN logic)
-                predicates.add(cb.or(
-                    cb.isNull(categoryJoin),
-                    cb.isTrue(categoryJoin.get("active"))
-                ));
+            // 5. Filter by Active status
+            if (active != null) {
+                predicates.add(cb.equal(root.get("active"), active));
+            }
+
+            // 6. Filter by Low Stock
+            if (lowStock != null && lowStock) {
+                Subquery<String> stockSubquery = criteriaQuery.subquery(String.class);
+                Root<ProductVariant> variantRoot = stockSubquery.from(ProductVariant.class);
+                stockSubquery.select(variantRoot.get("id"))
+                        .where(
+                            cb.equal(variantRoot.get("product"), root),
+                            cb.lessThanOrEqualTo(variantRoot.get("stockQuantity"), 20)
+                        );
+                predicates.add(cb.exists(stockSubquery));
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));

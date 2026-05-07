@@ -143,6 +143,7 @@ public class ChatService {
         return switch (status) {
             case PENDING -> "⏳ Đang chờ xác nhận";
             case CONFIRMED -> "✅ Đã xác nhận";
+            case PROCESSING -> "⚙️ Đang xử lý";
             case SHIPPING -> "🚚 Đang giao hàng";
             case DELIVERED -> "🏁 Giao hàng thành công";
             case CANCELLED -> "❌ Đã hủy";

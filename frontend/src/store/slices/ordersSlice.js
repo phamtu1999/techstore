@@ -179,9 +179,14 @@ const ordersSlice = createSlice({
         state.isLoading = false
         const updatedOrder = action.payload?.result
         if (updatedOrder) {
+          // Update in list
           const index = state.orders.findIndex(o => o.id === updatedOrder.id)
           if (index !== -1) {
             state.orders[index] = updatedOrder
+          }
+          // Update current order if it's the one being viewed
+          if (state.currentOrder?.id === updatedOrder.id) {
+            state.currentOrder = updatedOrder
           }
         }
       })

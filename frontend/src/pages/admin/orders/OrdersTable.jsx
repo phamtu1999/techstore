@@ -1,5 +1,5 @@
-import React from 'react';
-import { Search, FileText, ExternalLink, Calendar, User, Package, CreditCard, ShoppingBag, Truck } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Search, FileText, ExternalLink, Calendar, User, Package, CreditCard, ShoppingBag, Truck, RefreshCw } from 'lucide-react';
 import AdminTable from '../../../components/admin/AdminTable';
 import AdminPagination from '../../../components/admin/shared/AdminPagination';
 import AdminPill from '../../../components/admin/shared/AdminPill';
@@ -7,6 +7,7 @@ import AdminPill from '../../../components/admin/shared/AdminPill';
 const getStatusLabel = (status) => {
   const map = {
     'PENDING': 'Chờ xử lý',
+    'CONFIRMED': 'Đã xác nhận',
     'PROCESSING': 'Đang xử lý',
     'SHIPPING': 'Đang giao hàng',
     'DELIVERED': 'Đã giao hàng',
@@ -18,6 +19,7 @@ const getStatusLabel = (status) => {
 const getStatusType = (status) => {
   const map = {
     'PENDING': 'warning',
+    'CONFIRMED': 'success',
     'PROCESSING': 'primary',
     'SHIPPING': 'orange',
     'DELIVERED': 'success',
@@ -42,6 +44,8 @@ const OrdersTable = ({
   handleSelectRow,
   handleSelectAll
 }) => {
+  const navigate = useNavigate();
+
   const bulkActions = (
     <>
       <button className="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-[12px] font-bold transition-colors flex items-center gap-2">
@@ -74,6 +78,7 @@ const OrdersTable = ({
           >
             <option value="">Tất cả trạng thái</option>
             <option value="PENDING">Chờ xử lý</option>
+            <option value="CONFIRMED">Đã xác nhận</option>
             <option value="PROCESSING">Đang xử lý</option>
             <option value="SHIPPING">Đang giao hàng</option>
             <option value="DELIVERED">Đã giao hàng</option>
@@ -152,7 +157,7 @@ const OrdersTable = ({
         actions={(row, closeDropdown) => (
           <>
             <button 
-              onClick={() => { window.location.href = `/admin/orders/${row.id}`; closeDropdown?.() }}
+              onClick={() => { navigate(`/admin/orders/${row.id}`); closeDropdown?.() }}
               className="w-full px-4 py-2 text-left text-[13px] font-bold text-gray-700 hover:bg-gray-50 flex items-center gap-3 transition-colors"
             >
               <ExternalLink className="h-4 w-4 text-blue-500" /> Xem chi tiết

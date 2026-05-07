@@ -47,12 +47,14 @@ public class ProductQueryService {
         return PageResponse.of(page);
     }
 
-    @Cacheable(value = "admin_products_v1", key = "{#query, #category, #brand, #minPrice, #maxPrice, #pageable.pageNumber, #pageable.pageSize, #pageable.sort.toString()}")
+    @Cacheable(value = "admin_products_v1", key = "{#query, #category, #brand, #minPrice, #maxPrice, #active, #lowStock, #pageable.pageNumber, #pageable.pageSize, #pageable.sort.toString()}")
     public PageResponse<ProductResponse> getAdminProducts(
             String query, String category, String brand,
-            BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable
+            BigDecimal minPrice, BigDecimal maxPrice, 
+            Boolean active, Boolean lowStock,
+            Pageable pageable
     ) {
-        Specification<Product> spec = ProductSpecification.filterProducts(query, category, brand, minPrice, maxPrice, false);
+        Specification<Product> spec = ProductSpecification.filterProducts(query, category, brand, minPrice, maxPrice, active, lowStock);
         Page<Product> productPage = productRepository.findAll(spec, pageable);
 
         List<String> productIds = productPage.getContent().stream()

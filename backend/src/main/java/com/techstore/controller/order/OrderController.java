@@ -50,9 +50,13 @@ public class OrderController {
 
     @GetMapping({"/api/v1/orders", "/api/v1/admin/orders"})
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'SUPER_ADMIN')")
-    public ApiResponse<Page<OrderResponse>> getAllOrders(Pageable pageable) {
+    public ApiResponse<Page<OrderResponse>> getAllOrders(
+            @RequestParam(required = false) OrderStatus status,
+            @RequestParam(required = false) String search,
+            Pageable pageable
+    ) {
         return ApiResponse.<Page<OrderResponse>>builder()
-                .result(orderQueryService.getAllOrders(pageable))
+                .result(orderQueryService.getAllOrders(status, search, pageable))
                 .build();
     }
 
@@ -100,6 +104,29 @@ public class OrderController {
                 .message("Order cancelled successfully")
                 .result(orderCommandService.cancelOrder(orderId, user))
                 .build();
+    }
+
+    @LogAction("EXPORT_INVOICE")
+    @GetMapping("/api/v1/admin/orders/{orderId}/invoice")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'SUPER_ADMIN')")
+    public org.springframework.http.ResponseEntity<byte[]> exportInvoice(@PathVariable String orderId) {
+        // Placeholder for real PDF generation
+        OrderResponse order = orderQueryService.getOrderById(orderId, (User) org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("HOA DON BAN HANG\n");
+        sb.append("Ma don hang: ").append(order.getOrderNumber()).append("\n");
+        sb.append("Khach hang: ").append(order.getReceiverName()).append("\n");
+        sb.append("Tong tien: ").append(order.getTotalAmount()).append(" VND\n");
+        sb.append("\nDay la ban in thu nghiem. He thong hien chua ho tro PDF.");
+        
+        byte[] content = sb.toString().getBytes();
+        
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "invoice-" + orderId + ".pdf");
+        
+        return new org.springframework.http.ResponseEntity<>(content, headers, org.springframework.http.HttpStatus.OK);
     }
 
     @PostMapping("/api/v1/orders/{orderId}/reorder")

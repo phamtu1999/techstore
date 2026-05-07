@@ -8,7 +8,9 @@ const AdminStatsCard = ({
   icon: Icon, 
   trend, 
   trendValue, 
-  type = 'orange' 
+  type = 'orange',
+  onClick,
+  isActive
 }) => {
   const displayLabel = title || label;
   const colorMap = {
@@ -41,7 +43,17 @@ const AdminStatsCard = ({
   const styles = colorMap[type] || colorMap.orange
 
   return (
-    <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm transition-all hover:shadow-md group">
+    <div 
+      onClick={onClick}
+      className={`
+        bg-white p-6 rounded-2xl border transition-all duration-300 group
+        ${onClick ? 'cursor-pointer' : ''}
+        ${isActive 
+          ? 'border-primary-500 shadow-lg shadow-primary-500/10 scale-[1.02] ring-2 ring-primary-500/5' 
+          : 'border-gray-100 shadow-sm hover:shadow-md hover:scale-[1.01]'
+        }
+      `}
+    >
       <div className="flex items-center justify-between mb-4">
         <div className={`p-3 ${styles.bg} rounded-xl ${styles.icon} transition-colors`}>
           <Icon className="h-6 w-6" />
