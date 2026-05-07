@@ -18,11 +18,6 @@ WORKDIR /app
 
 ENV JAVA_OPTS="-XX:MaxRAMPercentage=75 -XX:+UseG1GC -Djava.awt.headless=true"
 
-# Install PostgreSQL client only when needed at runtime
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    postgresql-client-17 \
-    && rm -rf /var/lib/apt/lists/*
-
 COPY --from=build /app/target/backend-0.0.1-SNAPSHOT.jar /app/backend.jar
 
 EXPOSE 8080
