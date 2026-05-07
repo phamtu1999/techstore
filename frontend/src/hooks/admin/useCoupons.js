@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import api from '../../utils/axios'
 import { fireError, fireSuccess } from '../../utils/swalError'
 import { getApiErrorMessage } from '../../utils/apiError'
+import { unwrapAdminResult } from './responseHelpers'
 
 export const useCoupons = () => {
     const [coupons, setCoupons] = useState([])
@@ -24,7 +25,7 @@ export const useCoupons = () => {
         try {
             setIsLoading(true)
             const response = await api.get('/admin/coupons')
-            setCoupons(response.data.result.content || response.data.result || [])
+            setCoupons(unwrapAdminResult(response.data.result).items)
         } catch (error) {
             console.error(getApiErrorMessage(error))
         } finally {

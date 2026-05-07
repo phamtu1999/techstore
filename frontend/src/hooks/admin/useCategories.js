@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import api from '../../utils/axios';
 import { fireError, fireSuccess } from '../../utils/swalError';
 import Swal from 'sweetalert2';
+import { unwrapAdminResult } from './responseHelpers';
 
 export const useCategories = () => {
   const [loading, setLoading] = useState(true);
@@ -11,7 +12,7 @@ export const useCategories = () => {
     setLoading(true);
     try {
       const response = await api.get('/admin/categories');
-      setCategories(response.data.result || []);
+      setCategories(unwrapAdminResult(response.data.result).items);
     } catch (error) {
       console.error(error);
     } finally {

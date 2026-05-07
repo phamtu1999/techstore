@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import api from '../../utils/axios';
 import { fireError, fireSuccess } from '../../utils/swalError';
 import Swal from 'sweetalert2';
+import { unwrapAdminResult } from './responseHelpers';
 
 export const useBrands = () => {
   const [loading, setLoading] = useState(true);
@@ -11,7 +12,7 @@ export const useBrands = () => {
     setLoading(true);
     try {
       const response = await api.get('/admin/brands');
-      setBrands(response.data.result || []);
+      setBrands(unwrapAdminResult(response.data.result).items);
     } catch (error) {
       console.error(error);
     } finally {

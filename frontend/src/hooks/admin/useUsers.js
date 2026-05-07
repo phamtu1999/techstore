@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { useDebounce } from '../../hooks/useDebounce';
 import { fireError, fireSuccess } from '../../utils/swalError';
 import { getApiErrorMessage } from '../../utils/apiError';
+import { unwrapAdminResult } from './responseHelpers';
 
 export const useUsers = () => {
   const [loading, setLoading] = useState(true);
@@ -29,13 +30,13 @@ export const useUsers = () => {
           search: debouncedSearch
         }
       });
-      const data = response.data.result;
-      setUsers(data.content || []);
+      const pageData = unwrapAdminResult(response.data.result);
+      setUsers(pageData.items);
       setPagination(prev => ({
         ...prev,
-        totalPages: data.totalPages,
-        totalElements: data.totalElements,
-        page: data.number
+        totalPages: pageData.totalPages,
+        totalElements: pageData.totalElements,
+        page: pageData.pageNumber
       }));
     } catch (error) {
       console.error(getApiErrorMessage(error));
@@ -79,7 +80,7 @@ export const useUsers = () => {
 
     if (role) {
       try {
-        await api.put(`/admin/users/${userId}/role`, { role });
+        await api.put(`/admin/users/${userId}/role`, null, { params: { role } });
         fireSuccess('Thành công', 'Quyền hạn đã được cập nhật!');
         fetchUsers(pagination.page);
       } catch (error) {
@@ -106,7 +107,7 @@ export const useUsers = () => {
 
     if (password) {
       try {
-        await api.put(`/admin/users/${userId}/password`, { password });
+        await api.put(`/admin/users/${userId}/password`, null, { params: { newPassword: password } });
         fireSuccess('Thành công', 'Mật khẩu đã được thay đổi!');
       } catch (error) {
         fireError(error, 'Không thể đổi mật khẩu');
@@ -132,7 +133,7 @@ export const useUsers = () => {
 
     if (result.isConfirmed) {
       try {
-        await api.put(`/admin/users/${user.id}/status`, { locked: isLocking });
+        await api.put(`/admin/users/${user.id}/status`);
         fireSuccess('Thành công', isLocking ? 'Tài khoản đã bị khóa!' : 'Tài khoản đã được mở khóa!');
         fetchUsers(pagination.page);
       } catch (error) {

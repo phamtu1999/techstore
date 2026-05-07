@@ -4,6 +4,7 @@ import { useDebounce } from '../../hooks/useDebounce';
 import { fireError, fireSuccess } from '../../utils/swalError';
 import { getApiErrorMessage } from '../../utils/apiError';
 import Swal from 'sweetalert2';
+import { unwrapAdminResult } from './responseHelpers';
 
 export const useProducts = () => {
   const [loading, setLoading] = useState(true);
@@ -30,18 +31,18 @@ export const useProducts = () => {
         params: {
           page,
           size: pagination.size,
-          search: debouncedSearch,
-          categoryId: categoryFilter,
-          brandId: brandFilter
+          q: debouncedSearch,
+          category: categoryFilter || undefined,
+          brand: brandFilter || undefined
         }
       });
-      const data = response.data.result;
-      setProducts(data.content || []);
+      const pageData = unwrapAdminResult(response.data.result);
+      setProducts(pageData.items);
       setPagination(prev => ({
         ...prev,
-        totalPages: data.totalPages,
-        totalElements: data.totalElements,
-        page: data.number
+        totalPages: pageData.totalPages,
+        totalElements: pageData.totalElements,
+        page: pageData.pageNumber
       }));
     } catch (error) {
       console.error(getApiErrorMessage(error));
@@ -56,8 +57,8 @@ export const useProducts = () => {
         api.get('/admin/categories'),
         api.get('/admin/brands')
       ]);
-      setCategories(catRes.data.result || []);
-      setBrands(brandRes.data.result || []);
+      setCategories(unwrapAdminResult(catRes.data.result).items);
+      setBrands(unwrapAdminResult(brandRes.data.result).items);
     } catch (error) {
       console.error(error);
     }

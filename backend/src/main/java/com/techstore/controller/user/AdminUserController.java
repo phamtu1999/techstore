@@ -11,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/admin/users")
@@ -31,9 +30,9 @@ public class AdminUserController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
-    public ApiResponse<List<UserResponse>> getAllUsers() {
-        return ApiResponse.<List<UserResponse>>builder()
-                .result(adminUserService.getAllUsers())
+    public ApiResponse<Page<UserResponse>> getAllUsers(@ModelAttribute UserFilterRequest filter) {
+        return ApiResponse.<Page<UserResponse>>builder()
+                .result(adminUserService.getAllUsers(filter))
                 .build();
     }
 

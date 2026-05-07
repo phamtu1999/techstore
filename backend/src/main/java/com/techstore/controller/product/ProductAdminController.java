@@ -41,14 +41,18 @@ public class ProductAdminController {
             @Pattern(regexp = "^[^'\";<>]*$", message = "Query contains invalid characters")
             String query,
             @RequestParam(required = false) String category,
+            @RequestParam(required = false) String categoryId,
             @RequestParam(required = false) String brand,
+            @RequestParam(required = false) String brandId,
             @RequestParam(required = false) java.math.BigDecimal minPrice,
             @RequestParam(required = false) java.math.BigDecimal maxPrice,
             org.springframework.data.domain.Pageable pageable
     ) {
         String searchTerm = StringUtils.hasText(query) ? query : q;
+        String resolvedCategory = StringUtils.hasText(category) ? category : categoryId;
+        String resolvedBrand = StringUtils.hasText(brand) ? brand : brandId;
         return ApiResponse.<com.techstore.dto.PageResponse<com.techstore.dto.product.ProductResponse>>builder()
-                .result(productService.getAdminProducts(searchTerm, category, brand, minPrice, maxPrice, pageable))
+                .result(productService.getAdminProducts(searchTerm, resolvedCategory, resolvedBrand, minPrice, maxPrice, pageable))
                 .build();
     }
 

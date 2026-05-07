@@ -1,11 +1,14 @@
 package com.techstore.controller.product;
 
 import com.techstore.dto.ApiResponse;
+import com.techstore.dto.PageResponse;
 import com.techstore.dto.brand.BrandRequest;
 import com.techstore.dto.brand.BrandResponse;
 import com.techstore.service.brand.BrandService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,11 +36,27 @@ public class BrandController {
     }
 
     // Admin API
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'SUPER_ADMIN')")
     @GetMapping("/api/v1/admin/brands")
-    public ApiResponse<List<BrandResponse>> adminGetAllBrands() {
-        return ApiResponse.<List<BrandResponse>>builder()
-                .result(brandService.getAllBrands())
+    public ApiResponse<PageResponse<BrandResponse>> adminGetAllBrands(Pageable pageable) {
+        List<BrandResponse> allBrands = brandService.getAllBrands();
+        int page = Math.max(pageable.getPageNumber(), 0);
+        int size = pageable.getPageSize() > 0 ? pageable.getPageSize() : allBrands.size();
+        int fromIndex = Math.min(page * size, allBrands.size());
+        int toIndex = Math.min(fromIndex + size, allBrands.size());
+        List<BrandResponse> content = allBrands.subList(fromIndex, toIndex);
+        return ApiResponse.<PageResponse<BrandResponse>>builder()
+                .result(PageResponse.<BrandResponse>builder()
+                        .content(content)
+                        .pageNumber(page)
+                        .pageSize(size)
+                        .totalElements(allBrands.size())
+                        .totalPages(size == 0 ? 1 : (int) Math.ceil((double) allBrands.size() / size))
+                        .first(page == 0)
+                        .last(toIndex >= allBrands.size())
+                        .hasNext(toIndex < allBrands.size())
+                        .hasPrevious(page > 0)
+                        .build())
                 .build();
     }
 

@@ -4,6 +4,7 @@ import { useDebounce } from '../../hooks/useDebounce';
 import { fireError, fireSuccess } from '../../utils/swalError';
 import { getApiErrorMessage } from '../../utils/apiError';
 import Swal from 'sweetalert2';
+import { unwrapAdminResult } from './responseHelpers';
 
 export const useOrders = () => {
   const [loading, setLoading] = useState(true);
@@ -28,16 +29,16 @@ export const useOrders = () => {
           page,
           size: pagination.size,
           search: debouncedSearch,
-          status: statusFilter
+          status: statusFilter || undefined
         }
       });
-      const data = response.data.result;
-      setOrders(data.content || []);
+      const pageData = unwrapAdminResult(response.data.result);
+      setOrders(pageData.items);
       setPagination(prev => ({
         ...prev,
-        totalPages: data.totalPages,
-        totalElements: data.totalElements,
-        page: data.number
+        totalPages: pageData.totalPages,
+        totalElements: pageData.totalElements,
+        page: pageData.pageNumber
       }));
     } catch (error) {
       console.error(getApiErrorMessage(error));
@@ -83,7 +84,7 @@ export const useOrders = () => {
 
     if (status) {
       try {
-        await api.put(`/admin/orders/${orderId}/status`, { status });
+        await api.put(`/admin/orders/${orderId}/status`, null, { params: { status } });
         fireSuccess('Thành công', 'Trạng thái đơn hàng đã được cập nhật!');
         fetchOrders(pagination.page);
         fetchSummary();
